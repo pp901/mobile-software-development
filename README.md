@@ -4,7 +4,7 @@
 
 **Mobile Software Development · Personal Course Archive**
 
-中国海洋大学 26 夏 · 彭湘莲 · 24020007096
+中国海洋大学 26 夏 
 
 [课程主页](https://oucai.club/classes/MobileDev.html)　·　[GitHub Repository](https://github.com/pp901/mobile-software-development)
 
