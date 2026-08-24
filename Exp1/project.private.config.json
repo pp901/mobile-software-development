@@ -1,0 +1,14 @@
+{
+  "libVersion": "3.17.1",
+  "projectname": "Hello%20world",
+  "setting": {
+    "urlCheck": true,
+    "coverView": true,
+    "lazyloadPlaceholderEnable": false,
+    "skylineRenderEnable": true,
+    "preloadBackgroundData": false,
+    "autoAudits": false,
+    "showShadowRootInWxmlPanel": true,
+    "compileHotReLoad": false
+  }
+}
