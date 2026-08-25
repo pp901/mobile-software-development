@@ -1,0 +1,185 @@
+<navigation-bar title="彭湘莲 · 个人名片" back="{{false}}" color="#173453" background="#FBF7EF"></navigation-bar>
+<scroll-view class="page-scroll" scroll-y="true">
+  <view class="hero">
+    <image class="hero-image" mode="widthFix" src="/img/toutu2.png"></image>
+  </view>
+
+  <view class="hero-note">
+    <text>个人名片 · 第 2 版</text>
+  </view>
+
+  <view class="content">
+    <!-- 个人信息 -->
+    <view class="profile-rail">
+      <view class="profile-rail-main">
+        <view class="profile-signature">
+          <text class="profile-kicker">PROFILE / 2024</text>
+          <text class="profile-name">彭湘莲</text>
+          <text class="profile-name-en">PENG XIANGLIAN</text>
+        </view>
+
+        <view class="profile-details">
+          <view class="profile-detail-row">
+            <text class="profile-detail-label">身份</text>
+            <text class="profile-detail-value">中国海洋大学 · 2024 级本科生</text>
+          </view>
+          <view class="profile-detail-row">
+            <text class="profile-detail-label">专业</text>
+            <text class="profile-detail-value">计算机科学与技术</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="profile-direction">
+        <text class="profile-direction-label">关注方向</text>
+        <view class="profile-direction-value">
+          <text>AI 大模型</text>
+          <text class="profile-direction-divider">/</text>
+          <text>移动开发</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 关于我 -->
+    <view class="section">
+      <view class="section-head">
+        <text class="section-number">01</text>
+        <view class="section-heading">
+          <text class="section-title">个人简介</text>
+          <text class="section-subtitle">profile</text>
+        </view>
+      </view>
+
+      <view class="section-body">
+        <text class="paragraph">我是彭湘莲，中国海洋大学 24 级计算机科学与技术专业学生。现在还在学习和积累阶段，希望通过课程、实验和个人练习，慢慢找到自己想要深入的方向。</text>
+        <text class="paragraph">目前我最关注的是 AI 大模型与移动开发。在学习技术的同时，我也在不断尝试把自己的想法变成真正能够运行的作品。这个名片小程序，就是其中一次练习。</text>
+      </view>
+    </view>
+
+    <view class="personal-note">
+      <text class="note-mark">“</text>
+      <text class="note-text">在学习技术的同时，不断尝试把自己的想法变成真正能够运行的作品。</text>
+    </view>
+
+    <!-- 学习方向 -->
+    <view class="section">
+      <view class="section-head">
+        <text class="section-number">02</text>
+        <view class="section-heading">
+          <text class="section-title">学习方向</text>
+          <text class="section-subtitle">learning</text>
+        </view>
+      </view>
+
+      <view class="focus-list">
+        <view class="focus-item">
+          <view class="focus-title-row">
+            <text class="focus-name">AI 大模型</text>
+            <text class="focus-code">A</text>
+          </view>
+          <text class="focus-description">关注大模型的应用与发展，正在了解它的基本能力和常见应用方式。我希望通过后续学习和项目实践，更具体地理解 AI 如何服务于实际需求。</text>
+          <view class="keyword-row">
+            <text>模型应用</text>
+            <text>需求场景</text>
+            <text>人机协作</text>
+          </view>
+        </view>
+
+        <view class="focus-item">
+          <view class="focus-title-row">
+            <text class="focus-name">移动开发</text>
+            <text class="focus-code">M</text>
+          </view>
+          <text class="focus-description">同时学习移动应用设计与开发，通过课程实验练习小程序的页面布局、交互和功能实现。除了让程序能够运行，我也希望让页面的信息更清楚，使用起来更顺畅。</text>
+          <view class="keyword-row">
+            <text>小程序</text>
+            <text>移动界面</text>
+            <text>交互设计</text>
+          </view>
+        </view>
+
+        <view class="focus-item focus-item--last">
+          <view class="focus-title-row">
+            <text class="focus-name">交叉</text>
+            <text class="focus-code">+</text>
+          </view>
+          <text class="focus-description">我希望进一步探索 AI 与软件开发的结合，把学到的技术放进具体项目中，让它们真正服务于实际需求。</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 近期清单 -->
+    <view class="section">
+      <view class="section-head">
+        <text class="section-number">03</text>
+        <view class="section-heading">
+          <text class="section-title">近期动态</text>
+          <text class="section-subtitle">in progress</text>
+        </view>
+      </view>
+
+      <view class="todo-list">
+        <view class="todo-item">
+          <view class="todo-status">进行中</view>
+          <view class="todo-copy">
+            <text class="todo-title">完成移动软件开发课程实验</text>
+            <text class="todo-description">按照课程要求完成每次实验，在实践中继续学习移动应用的设计和开发方法。</text>
+          </view>
+        </view>
+        <view class="todo-item">
+          <view class="todo-status">持续中</view>
+          <view class="todo-copy">
+            <text class="todo-title">学习并探索 AI 与大模型应用</text>
+            <text class="todo-description">继续关注大模型的发展，理解常见的应用方式，并尝试把学到的内容用到小项目中。</text>
+          </view>
+        </view>
+        <view class="todo-item todo-item--last">
+          <view class="todo-status">长期</view>
+          <view class="todo-copy">
+            <text class="todo-title">积累项目经验，把想法变成作品</text>
+            <text class="todo-description">从课程实验和个人练习开始，认真完成每一个小项目，逐步积累开发经验。</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 技术之外 -->
+    <view class="section life-section">
+      <view class="section-head">
+        <text class="section-number">04</text>
+        <view class="section-heading">
+          <text class="section-title">兴趣日常</text>
+          <text class="section-subtitle">life beyond code</text>
+        </view>
+      </view>
+
+      <view class="life-list">
+        <view class="life-item">
+          <text class="life-name">羽毛球</text>
+          <text class="life-text">喜欢羽毛球带来的专注。运动时可以暂时放下学习中的问题，把注意力放在每一次击球和移动上。</text>
+        </view>
+        <view class="life-item">
+          <text class="life-name">音乐</text>
+          <text class="life-text">习惯用音乐调节生活的节奏。学习、休息或出行时，不同的音乐会让状态和心情也有所不同。</text>
+        </view>
+        <view class="life-item life-item--last">
+          <text class="life-name">旅行</text>
+          <text class="life-text">空闲时喜欢旅行，去不同的地方看看。离开熟悉的环境，可以体验技术世界之外的新鲜事物。</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="closing-note">
+      <text class="closing-title">保持学习，也继续把想法做出来。</text>
+      <text class="closing-text">目前这张名片记录的，是我正在关注的方向和正在完成的事情。以后有新的学习、项目和经历，我会继续把它们补充进来。</text>
+    </view>
+
+    <view class="footer">
+      <button class="share-button" open-type="share" hover-class="share-button--pressed">
+        <text>分享名片给朋友</text>
+        <text class="share-arrow">→</text>
+      </button>
+      <text class="footer-sign">彭湘莲 · 中国海洋大学 · 计算机科学与技术</text>
+    </view>
+  </view>
+</scroll-view>
