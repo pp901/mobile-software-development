@@ -1,0 +1,121 @@
+<!--pages/index/index.wxml-->
+<view class="page">
+
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-box">
+      <view class="search-icon"></view>
+      <input class="search-input" placeholder="搜索海大新闻、关键词" placeholder-class="search-placeholder"
+             value="{{searchKeyword}}" confirm-type="search" bindinput="onSearchInput" bindconfirm="doSearch" />
+      <view class="search-clear" wx:if="{{searchKeyword}}" bindtap="clearSearch">×</view>
+    </view>
+  </view>
+
+  <!-- 搜索结果视图 -->
+  <view wx:if="{{inSearch}}" class="search-panel">
+    <!-- 搜索历史（未产生结果时展示） -->
+    <block wx:if="{{!searchDone}}">
+      <view class="panel-header">
+        <text class="panel-title">搜索历史</text>
+        <text class="panel-action" bindtap="clearSearchHistory">清空</text>
+      </view>
+      <view class="history-chips" wx:if="{{searchHistory.length}}">
+        <view class="chip" wx:for="{{searchHistory}}" wx:key="*this" bindtap="tapHistoryWord" data-word="{{item}}">{{item}}</view>
+      </view>
+      <view class="empty" wx:else>
+        <view class="empty-wave"></view>
+        <view class="empty-text">暂无搜索历史</view>
+      </view>
+    </block>
+
+    <!-- 搜索结果 -->
+    <block wx:else>
+      <view class="panel-header">
+        <text class="panel-title">找到 {{searchResults.length}} 条相关新闻</text>
+      </view>
+      <view class="news-card" hover-class="card-hover" wx:for="{{searchResults}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+        <image class="poster" src="{{item.poster}}" mode="aspectFill" lazy-load="{{true}}" />
+        <view class="info">
+          <view class="card-title">{{item.title}}</view>
+          <view class="card-meta">
+            <text class="tag tag-{{item.category}}">{{item.categoryName}}</text>
+            <text class="date">{{item.add_date}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="empty" wx:if="{{!searchResults.length}}">
+        <view class="empty-wave"></view>
+        <view class="empty-text">未找到相关新闻，换个关键词试试</view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 首页常规视图 -->
+  <block wx:else>
+
+    <!-- 幻灯片 -->
+    <view class="swiper-wrap">
+      <swiper class="swiper" indicator-dots="{{true}}" indicator-color="rgba(255,255,255,0.4)"
+              indicator-active-color="#ffffff" autoplay="{{true}}" interval="4500" duration="500" circular="{{true}}">
+        <swiper-item wx:for="{{swiperNews}}" wx:key="id">
+          <view class="slide" bindtap="goToDetail" data-id="{{item.id}}">
+            <image class="slide-img" src="{{item.poster}}" mode="aspectFill" />
+            <view class="slide-mask"></view>
+            <view class="slide-caption">
+              <text class="tag tag-{{item.category}}">{{item.categoryName}}</text>
+              <view class="slide-title">{{item.title}}</view>
+            </view>
+          </view>
+        </swiper-item>
+      </swiper>
+    </view>
+
+    <!-- 栏目胶囊 -->
+    <scroll-view class="category-bar" scroll-x="{{true}}" enable-flex="{{true}}">
+      <view class="pill {{currentCategory === item.id ? 'pill-active' : ''}}"
+            wx:for="{{categories}}" wx:key="id" bindtap="switchCategory" data-id="{{item.id}}">{{item.name}}</view>
+    </scroll-view>
+
+    <!-- 时间筛选 -->
+    <view class="time-bar">
+      <text class="time-label">时间</text>
+      <view class="tchip {{currentTime === item.id ? 'tchip-active' : ''}}"
+            wx:for="{{timeFilters}}" wx:key="id" bindtap="switchTime" data-id="{{item.id}}">{{item.name}}</view>
+    </view>
+
+    <!-- 骨架屏 -->
+    <block wx:if="{{skeleton}}">
+      <view class="news-card skeleton-card" wx:for="{{[1, 2, 3, 4]}}" wx:key="*this">
+        <view class="sk sk-poster"></view>
+        <view class="sk-group">
+          <view class="sk sk-line w80"></view>
+          <view class="sk sk-line w50"></view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 新闻列表 -->
+    <block wx:else>
+      <view class="list-header">
+        <view class="list-header-line"></view>
+        <text class="list-header-text">{{currentCategory === 'all' ? '最新资讯' : '栏目速览'}}</text>
+      </view>
+      <view class="news-card" hover-class="card-hover" wx:for="{{newsList}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+        <image class="poster" src="{{item.poster}}" mode="aspectFill" lazy-load="{{true}}" />
+        <view class="info">
+          <view class="card-title">{{item.title}}</view>
+          <view class="card-meta">
+            <text class="tag tag-{{item.category}}">{{item.categoryName}}</text>
+            <text class="date">{{item.add_date}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="empty" wx:if="{{!newsList.length}}">
+        <view class="empty-wave"></view>
+        <view class="empty-text">当前筛选下暂无新闻，试试其它栏目或时间</view>
+      </view>
+      <view class="list-end" wx:if="{{newsList.length}}">— 已经到底啦 · 中国海洋大学新闻网 —</view>
+    </block>
+
+  </block>
+</view>

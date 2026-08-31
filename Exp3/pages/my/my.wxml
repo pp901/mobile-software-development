@@ -1,0 +1,151 @@
+<!--pages/my/my.wxml-->
+<view class="page" bindtap="closeSwipe">
+
+  <!-- 波浪头部 -->
+  <view class="wave-header">
+    <view class="wave w1"></view>
+    <view class="wave w2"></view>
+    <view class="wave w3"></view>
+
+    <!-- 未登录 / 编辑资料：头像昵称卡片（新版头像昵称方案） -->
+    <block wx:if="{{!isLogin || editing}}">
+      <view class="login-card">
+        <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <image wx:if="{{tempAvatar}}" class="avatar" src="{{tempAvatar}}" mode="aspectFill" />
+          <view wx:else class="avatar avatar-default">
+            <image class="logo" src="/images/logo.png" mode="aspectFit" />
+          </view>
+        </button>
+        <text class="login-tip">{{tempAvatar ? '头像已就绪，点击可更换' : '点击上方按钮选择微信头像'}}</text>
+        <input class="nickname-input" type="nickname" placeholder="填写昵称（推荐使用微信昵称）"
+               placeholder-class="nickname-placeholder" value="{{nicknameInput}}" bindinput="onNicknameInput" />
+        <button class="login-btn" bindtap="confirmLogin">{{editing ? '保存修改' : '进入海大园'}}</button>
+        <text class="edit-cancel" wx:if="{{editing}}" catchtap="cancelEdit">取消编辑</text>
+      </view>
+    </block>
+
+    <!-- 已登录：头像 + 昵称 -->
+    <block wx:else>
+      <view class="user-box">
+        <image class="avatar" src="{{avatarUrl}}" mode="aspectFill" />
+        <view class="nickName">{{nickName}}</view>
+        <view class="badge">海大人</view>
+        <view class="uid">ID：{{userId}}</view>
+      </view>
+      <view class="top-actions">
+        <view class="logout" catchtap="startEdit">编辑资料</view>
+        <view class="logout" catchtap="logout">退出登录</view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 数据统计 -->
+  <view class="stats" wx:if="{{isLogin}}">
+    <view class="stat">
+      <view class="stat-num">{{favTotal}}</view>
+      <view class="stat-label">收藏</view>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat">
+      <view class="stat-num">{{historyTotal}}</view>
+      <view class="stat-label">足迹</view>
+    </view>
+  </view>
+
+  <!-- 未登录提示 + 上次登录账号一键恢复 -->
+  <view wx:if="{{!isLogin}}" class="empty login-empty">
+    <view class="restore-card" wx:if="{{lastUser}}" catchtap="restoreLast">
+      <image class="restore-avatar" src="{{lastUser.avatarUrl}}" mode="aspectFill" />
+      <view class="restore-info">
+        <view class="restore-label">上次登录</view>
+        <view class="restore-name">{{lastUser.nickName}}</view>
+      </view>
+      <view class="restore-btn">一键恢复</view>
+    </view>
+    <view class="empty-wave"></view>
+    <view class="empty-text">登录后可查看你的收藏与浏览足迹</view>
+  </view>
+
+  <!-- 收藏 / 足迹 -->
+  <block wx:if="{{isLogin}}">
+    <view class="list-panel">
+      <view class="tab-bar">
+        <view class="tab {{tab === 'fav' ? 'tab-active' : ''}}" bindtap="switchTab" data-tab="fav">我的收藏（{{favTotal}}）</view>
+        <view class="tab {{tab === 'history' ? 'tab-active' : ''}}" bindtap="switchTab" data-tab="history">浏览足迹（{{historyTotal}}）</view>
+      </view>
+
+      <!-- 收藏列表 -->
+      <block wx:if="{{tab === 'fav'}}">
+        <!-- 收藏夹切换栏：长按收藏夹可重命名 / 清空 / 删除 -->
+        <scroll-view class="folder-bar" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+          <view class="folder-chips">
+            <view class="folder-chip {{currentFolder === 'all' ? 'chip-active' : ''}}"
+                  bindtap="switchFolder" data-folder="all">全部 {{favTotal}}</view>
+            <view class="folder-chip {{currentFolder === item.id ? 'chip-active' : ''}}"
+                  wx:for="{{favFolders}}" wx:key="id"
+                  bindtap="switchFolder" data-folder="{{item.id}}"
+                  bindlongpress="onFolderLongPress" data-index="{{index}}">{{item.name}} {{item.count}}</view>
+            <view class="folder-chip chip-add" catchtap="createFolder">＋</view>
+          </view>
+        </scroll-view>
+
+        <view class="panel-head">
+          <text class="panel-note">左滑取消收藏 · 长按卡片移动 · 长按收藏夹管理</text>
+          <text class="panel-clear" wx:if="{{currentFolder !== 'all' && favList.length}}" catchtap="clearCurrentFolder">清空收藏夹</text>
+        </view>
+        <view class="swipe-wrap" wx:for="{{favList}}" wx:key="id">
+          <view class="swipe-btn" catchtap="deleteItem" data-id="{{item.id}}" data-type="fav">取消收藏</view>
+          <view class="news-card swipe-card {{openId === item.id ? 'swiped' : ''}}" hover-class="card-hover"
+                catchtap="goToDetail" data-id="{{item.id}}"
+                bindlongpress="onFavLongPress" data-id="{{item.id}}"
+                bindtouchstart="onItemTouchStart" bindtouchend="onItemTouchEnd">
+            <image class="poster" src="{{item.poster}}" mode="aspectFill" lazy-load="{{true}}" />
+            <view class="info">
+              <view class="card-title">{{item.title}}</view>
+              <view class="card-meta">
+                <text class="tag tag-{{item.category}}">{{item.categoryName}}</text>
+                <text class="date">{{item.add_date}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="empty" wx:if="{{!favList.length}}">
+          <view class="empty-wave"></view>
+          <view class="empty-text" wx:if="{{currentFolder === 'all'}}">还没有收藏，去首页发现感兴趣的新闻吧</view>
+          <view class="empty-text" wx:else>该收藏夹暂无收藏</view>
+        </view>
+      </block>
+
+      <!-- 足迹列表（按日期分组） -->
+      <block wx:else>
+        <view class="panel-head">
+          <text class="panel-note">左滑卡片可删除足迹</text>
+          <text class="panel-clear" wx:if="{{historyTotal}}" catchtap="clearAll">清空</text>
+        </view>
+        <block wx:for="{{historyGroups}}" wx:key="label" wx:for-item="group">
+          <view class="hist-group-label">{{group.label}}</view>
+          <view class="swipe-wrap" wx:for="{{group.items}}" wx:key="id">
+            <view class="swipe-btn" catchtap="deleteItem" data-id="{{item.id}}" data-type="history">删除足迹</view>
+            <view class="news-card swipe-card {{openId === item.id ? 'swiped' : ''}}" hover-class="card-hover"
+                  catchtap="goToDetail" data-id="{{item.id}}"
+                  bindtouchstart="onItemTouchStart" bindtouchend="onItemTouchEnd">
+              <image class="poster" src="{{item.poster}}" mode="aspectFill" lazy-load="{{true}}" />
+              <view class="info">
+                <view class="card-title">{{item.title}}</view>
+                <view class="card-meta">
+                  <text class="hist-time">{{item.timeText}}阅读</text>
+                  <text class="date">{{item.add_date}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+        <view class="empty" wx:if="{{!historyTotal}}">
+          <view class="empty-wave"></view>
+          <view class="empty-text">暂无浏览足迹，去看看最新资讯吧</view>
+        </view>
+      </block>
+    </view>
+  </block>
+
+</view>

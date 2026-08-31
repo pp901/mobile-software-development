@@ -1,0 +1,460 @@
+/* ===== 我的页样式 ===== */
+.page {
+  padding-bottom: 40rpx;
+}
+
+/* ---- 波浪头部 ---- */
+.wave-header {
+  position: relative;
+  height: 460rpx;
+  background: linear-gradient(160deg, #0A5BA8 0%, #1577C9 55%, #3AA6DC 100%);
+  overflow: hidden;
+  padding-top: 30rpx;
+}
+
+/* 纯 CSS 波浪：三层椭圆缓慢漂移 */
+.wave {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.w1 {
+  width: 900rpx;
+  height: 300rpx;
+  background: rgba(255, 255, 255, 0.10);
+  bottom: -130rpx;
+  left: -260rpx;
+  animation: drift1 7s ease-in-out infinite alternate;
+}
+
+.w2 {
+  width: 700rpx;
+  height: 240rpx;
+  background: rgba(255, 255, 255, 0.14);
+  bottom: -120rpx;
+  right: -220rpx;
+  animation: drift2 5.5s ease-in-out infinite alternate;
+}
+
+.w3 {
+  width: 1100rpx;
+  height: 260rpx;
+  background: rgba(255, 255, 255, 0.08);
+  bottom: -150rpx;
+  left: -80rpx;
+  animation: drift1 9s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes drift1 {
+  from { transform: translateX(-60rpx); }
+  to { transform: translateX(60rpx); }
+}
+
+@keyframes drift2 {
+  from { transform: translateX(50rpx); }
+  to { transform: translateX(-50rpx); }
+}
+
+/* ---- 未登录卡片 ---- */
+.login-card {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 16rpx;
+}
+
+.avatar-btn {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  line-height: 1;
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+}
+
+.avatar-btn::after {
+  border: none;
+}
+
+.avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  border: 6rpx solid rgba(255, 255, 255, 0.7);
+  box-sizing: border-box;
+  background: #ffffff;
+}
+
+.avatar-default {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-default .logo {
+  width: 110rpx;
+  height: 60rpx;
+  border-radius: 0;
+  border: none;
+}
+
+.login-tip {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 23rpx;
+  margin: 18rpx 0 22rpx;
+}
+
+.nickname-input {
+  width: 420rpx;
+  height: 76rpx;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 38rpx;
+  color: #ffffff;
+  font-size: 26rpx;
+  text-align: center;
+  margin-bottom: 24rpx;
+}
+
+.nickname-placeholder {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.login-btn {
+  width: 300rpx;
+  height: 76rpx;
+  line-height: 76rpx;
+  background: #ffffff;
+  color: #0A5BA8;
+  font-size: 29rpx;
+  font-weight: 700;
+  border-radius: 38rpx;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 8rpx 24rpx rgba(4, 40, 80, 0.25);
+}
+
+.login-btn::after {
+  border: none;
+}
+
+/* 取消编辑链接 */
+.edit-cancel {
+  margin-top: 20rpx;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 24rpx;
+  padding: 6rpx 20rpx;
+}
+
+/* ---- 已登录用户信息 ---- */
+.user-box {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 26rpx;
+}
+
+.user-box .avatar {
+  width: 170rpx;
+  height: 170rpx;
+}
+
+.nickName {
+  color: #ffffff;
+  font-size: 36rpx;
+  font-weight: 700;
+  margin-top: 20rpx;
+  max-width: 500rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badge {
+  margin-top: 14rpx;
+  padding: 4rpx 24rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2rpx solid rgba(255, 255, 255, 0.5);
+  border-radius: 24rpx;
+  color: #ffffff;
+  font-size: 22rpx;
+}
+
+.uid {
+  margin-top: 10rpx;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 20rpx;
+  max-width: 500rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- 已登录顶部操作（编辑资料 / 退出登录） ---- */
+.top-actions {
+  position: absolute;
+  z-index: 2;
+  right: 30rpx;
+  top: 30rpx;
+  display: flex;
+}
+
+.logout {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 24rpx;
+  padding: 8rpx 20rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.4);
+  border-radius: 26rpx;
+  margin-left: 14rpx;
+}
+
+/* ---- 统计条 ---- */
+.stats {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 24rpx;
+  margin: -50rpx 24rpx 0;
+  padding: 26rpx 0;
+  position: relative;
+  z-index: 3;
+  box-shadow: 0 10rpx 30rpx rgba(10, 60, 120, 0.12);
+}
+
+.stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-num {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #0A5BA8;
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #7A8CA0;
+  margin-top: 6rpx;
+}
+
+.stat-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: #EEF3F9;
+}
+
+.login-empty {
+  margin-top: 60rpx;
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+}
+
+/* ---- 上次登录账号一键恢复卡片 ---- */
+.restore-card {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 24rpx 28rpx;
+  margin-bottom: 40rpx;
+  box-shadow: 0 10rpx 30rpx rgba(10, 60, 120, 0.12);
+}
+
+.restore-avatar {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 50%;
+  background: #EEF3F9;
+  border: 4rpx solid #E4EEF8;
+  flex-shrink: 0;
+}
+
+.restore-info {
+  flex: 1;
+  min-width: 0;
+  margin-left: 20rpx;
+  text-align: left;
+}
+
+.restore-label {
+  font-size: 21rpx;
+  color: #AEBACB;
+}
+
+.restore-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #12283F;
+  margin-top: 4rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.restore-btn {
+  flex-shrink: 0;
+  padding: 12rpx 30rpx;
+  background: #0A5BA8;
+  color: #ffffff;
+  border-radius: 30rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  box-shadow: 0 6rpx 16rpx rgba(10, 91, 168, 0.28);
+}
+
+/* ---- 列表面板 ---- */
+.list-panel {
+  padding: 30rpx 24rpx 0;
+}
+
+.tab-bar {
+  display: flex;
+  background: #E8EFF7;
+  border-radius: 40rpx;
+  padding: 8rpx;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  height: 64rpx;
+  line-height: 64rpx;
+  border-radius: 34rpx;
+  font-size: 26rpx;
+  color: #51606F;
+  transition: all 0.2s;
+}
+
+.tab-active {
+  background: #ffffff;
+  color: #0A5BA8;
+  font-weight: 700;
+  box-shadow: 0 4rpx 12rpx rgba(10, 60, 120, 0.12);
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 24rpx 4rpx 20rpx;
+}
+
+.panel-note {
+  font-size: 23rpx;
+  color: #AEBACB;
+}
+
+.panel-clear {
+  font-size: 24rpx;
+  color: #FF6B6B;
+}
+
+/* ---- 收藏夹切换栏 ---- */
+.folder-bar {
+  margin-top: 24rpx;
+  white-space: nowrap;
+}
+
+.folder-chips {
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 2rpx;
+}
+
+.folder-chip {
+  display: inline-block;
+  padding: 10rpx 26rpx;
+  margin-right: 16rpx;
+  background: #E8EFF7;
+  border-radius: 30rpx;
+  font-size: 24rpx;
+  color: #51606F;
+  max-width: 280rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+.chip-active {
+  background: #0A5BA8;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 6rpx 16rpx rgba(10, 91, 168, 0.28);
+}
+
+.chip-add {
+  background: #ffffff;
+  border: 2rpx dashed #3AA6DC;
+  color: #3AA6DC;
+  font-size: 28rpx;
+  padding: 8rpx 24rpx;
+}
+
+.hist-time {
+  margin-right: 12rpx;
+  color: #3AA6DC;
+}
+
+/* ---- 足迹日期分组标签 ---- */
+.hist-group-label {
+  display: flex;
+  align-items: center;
+  margin: 26rpx 4rpx 18rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #51606F;
+}
+
+.hist-group-label::before {
+  content: '';
+  width: 8rpx;
+  height: 26rpx;
+  border-radius: 6rpx;
+  background: #3AA6DC;
+  margin-right: 12rpx;
+}
+
+/* ---- 左滑删除 ---- */
+.swipe-wrap {
+  position: relative;
+  margin-bottom: 20rpx;
+}
+
+.swipe-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 150rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(160deg, #FF8A80, #FF6B6B);
+  color: #ffffff;
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swipe-card {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 0;
+  transition: transform 0.25s ease;
+}
+
+.swipe-card.swiped {
+  transform: translateX(-150rpx);
+}

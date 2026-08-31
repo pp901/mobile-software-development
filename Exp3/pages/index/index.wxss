@@ -1,0 +1,273 @@
+/* ===== 首页样式 ===== */
+.page {
+  padding: 24rpx 24rpx 40rpx;
+}
+
+/* ---- 搜索栏 ---- */
+.search-bar {
+  margin-bottom: 24rpx;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  height: 76rpx;
+  background: #ffffff;
+  border-radius: 38rpx;
+  padding: 0 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(10, 60, 120, 0.06);
+}
+
+/* CSS 放大镜 */
+.search-icon {
+  width: 22rpx;
+  height: 22rpx;
+  border: 4rpx solid #8A9AA9;
+  border-radius: 50%;
+  position: relative;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.search-icon::after {
+  content: '';
+  position: absolute;
+  right: -10rpx;
+  bottom: -8rpx;
+  width: 12rpx;
+  height: 4rpx;
+  background: #8A9AA9;
+  border-radius: 2rpx;
+  transform: rotate(45deg);
+}
+
+.search-input {
+  flex: 1;
+  height: 60rpx;
+  font-size: 27rpx;
+  color: #17324D;
+}
+
+.search-placeholder {
+  color: #AEBACB;
+}
+
+.search-clear {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: #E3EAF3;
+  color: #8A9AA9;
+  font-size: 30rpx;
+  text-align: center;
+  line-height: 36rpx;
+  flex-shrink: 0;
+}
+
+/* ---- 轮播 ---- */
+.swiper-wrap {
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 10rpx 30rpx rgba(10, 91, 168, 0.18);
+}
+
+.swiper {
+  height: 360rpx;
+  width: 100%;
+}
+
+.slide {
+  position: relative;
+  height: 360rpx;
+}
+
+.slide-img {
+  width: 750rpx;
+  height: 360rpx;
+}
+
+.slide-mask {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 200rpx;
+  background: linear-gradient(to top, rgba(7, 30, 56, 0.78), rgba(7, 30, 56, 0));
+}
+
+.slide-caption {
+  position: absolute;
+  left: 24rpx;
+  right: 24rpx;
+  bottom: 20rpx;
+}
+
+.slide-title {
+  color: #ffffff;
+  font-size: 30rpx;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 10rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* ---- 栏目胶囊 ---- */
+.category-bar {
+  white-space: nowrap;
+  margin: 26rpx 0 6rpx;
+}
+
+.pill {
+  display: inline-block;
+  padding: 10rpx 30rpx;
+  margin-right: 16rpx;
+  border-radius: 30rpx;
+  background: #ffffff;
+  color: #51606F;
+  font-size: 26rpx;
+  transition: all 0.2s;
+}
+
+.pill-active {
+  background: linear-gradient(135deg, #0A5BA8, #3AA6DC);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 6rpx 16rpx rgba(10, 91, 168, 0.35);
+}
+
+/* ---- 时间筛选 ---- */
+.time-bar {
+  display: flex;
+  align-items: center;
+  margin: 16rpx 4rpx 4rpx;
+}
+
+.time-label {
+  font-size: 23rpx;
+  color: #AEBACB;
+  margin-right: 14rpx;
+  flex-shrink: 0;
+}
+
+.tchip {
+  padding: 6rpx 22rpx;
+  margin-right: 14rpx;
+  border-radius: 26rpx;
+  border: 2rpx solid #D7E2EF;
+  background: #ffffff;
+  color: #51606F;
+  font-size: 23rpx;
+  transition: all 0.2s;
+}
+
+.tchip-active {
+  border-color: #3AA6DC;
+  background: #EAF5FD;
+  color: #0A5BA8;
+  font-weight: 600;
+}
+
+/* ---- 列表标题 ---- */
+.list-header {
+  display: flex;
+  align-items: center;
+  margin: 26rpx 4rpx 22rpx;
+}
+
+.list-header-line {
+  width: 8rpx;
+  height: 30rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(180deg, #0A5BA8, #3AA6DC);
+  margin-right: 14rpx;
+}
+
+.list-header-text {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #17324D;
+}
+
+.list-end {
+  text-align: center;
+  color: #AEBACB;
+  font-size: 24rpx;
+  padding: 20rpx 0 10rpx;
+}
+
+/* ---- 搜索面板 ---- */
+.search-panel {
+  min-height: 400rpx;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10rpx 4rpx 24rpx;
+}
+
+.panel-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #17324D;
+}
+
+.panel-action {
+  font-size: 24rpx;
+  color: #8A9AA9;
+}
+
+.history-chips {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 10rpx 26rpx;
+  background: #ffffff;
+  border-radius: 30rpx;
+  color: #51606F;
+  font-size: 25rpx;
+  margin: 0 16rpx 16rpx 0;
+  box-shadow: 0 4rpx 12rpx rgba(10, 60, 120, 0.05);
+}
+
+/* ---- 骨架屏 ---- */
+.skeleton-card {
+  pointer-events: none;
+}
+
+.sk {
+  background: #E9EFF6;
+  border-radius: 12rpx;
+  animation: skBlink 1.2s ease-in-out infinite;
+}
+
+.sk-poster {
+  width: 220rpx;
+  height: 150rpx;
+  border-radius: 14rpx;
+  flex-shrink: 0;
+}
+
+.sk-group {
+  flex: 1;
+  margin-left: 22rpx;
+}
+
+.sk-line {
+  height: 28rpx;
+  margin-bottom: 20rpx;
+}
+
+.w80 { width: 80%; }
+.w50 { width: 50%; }
+
+@keyframes skBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

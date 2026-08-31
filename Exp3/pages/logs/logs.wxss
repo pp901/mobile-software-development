@@ -1,0 +1,7 @@
+/* pages/logs/logs.wxss（占位页） */
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 40rpx;
+  color: #999;
+}

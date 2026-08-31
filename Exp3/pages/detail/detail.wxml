@@ -1,0 +1,61 @@
+<!--pages/detail/detail.wxml-->
+<view class="page">
+
+  <!-- 头图（点击可全屏预览） -->
+  <view class="hero">
+    <image class="hero-img" src="{{article.poster}}" mode="aspectFill" bindtap="previewPoster" />
+    <view class="hero-mask"></view>
+    <view class="hero-tag tag tag-{{article.category}}">{{article.categoryName}}</view>
+  </view>
+
+  <!-- 正文卡片 -->
+  <view class="body">
+    <view class="title">{{article.title}}</view>
+
+    <view class="meta">
+      <text class="meta-src">中国海洋大学</text>
+      <text class="meta-date">{{article.add_date}}</text>
+    </view>
+
+    <view class="divider"></view>
+
+    <view class="content" style="font-size: {{fontSize}}rpx;">
+      <text class="paragraph" wx:for="{{paragraphs}}" wx:key="*this">{{item}}</text>
+    </view>
+
+    <view class="footer-note">
+      <view class="footer-wave"></view>
+      <text>— 中国海洋大学新闻网 · 观海听涛 —</text>
+    </view>
+  </view>
+
+  <!-- 相关阅读（同栏目推荐） -->
+  <view class="related" wx:if="{{relatedNews.length}}">
+    <view class="related-head">
+      <view class="related-line"></view>
+      <text class="related-title">相关阅读</text>
+    </view>
+    <view class="related-item" wx:for="{{relatedNews}}" wx:key="id" hover-class="related-hover"
+          bindtap="goToDetail" data-id="{{item.id}}">
+      <view class="related-text">{{item.title}}</view>
+      <text class="related-date">{{item.add_date}}</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏：分享 / 收藏 / 字号 -->
+  <view class="action-bar">
+    <button class="action-btn" open-type="share" hover-class="action-hover">
+      <image class="action-icon" src="/images/icons/share.png" mode="aspectFit" />
+      <text class="action-label">分享</text>
+    </button>
+    <view class="action-btn {{isAdd ? 'fav-on' : ''}} {{favPopping ? 'popping' : ''}}" hover-class="action-hover" bindtap="toggleFavorite">
+      <image class="action-icon" src="{{isAdd ? '/images/icons/heart_on.png' : '/images/icons/heart.png'}}" mode="aspectFit" />
+      <text class="action-label {{isAdd ? 'label-on' : ''}}">{{isAdd ? '已收藏' : '收藏'}}</text>
+    </view>
+    <view class="action-btn" hover-class="action-hover" bindtap="cycleFont">
+      <image class="action-icon" src="/images/icons/font.png" mode="aspectFit" />
+      <text class="action-label">字号</text>
+    </view>
+  </view>
+
+</view>
