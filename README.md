@@ -23,7 +23,7 @@
 | Stage | Content | Status |
 | :---: | --- | :---: |
 | 01 | 开发环境与小程序基础 | In progress |
-| 02 | 课程实验归档 | [EXP1](#exp1) · [EXP2](#exp2) · [EXP3](#exp3) 已完成 |
+| 02 | 课程实验归档 | [EXP1](#exp1) · [EXP2](#exp2) · [EXP3](#exp3) · [EXP4](#exp4) 已完成 |
 | 03 | 个人项目实践 | Coming soon |
 | 04 | 课程总结与作品展示 | Coming soon |
 
@@ -86,6 +86,25 @@
 
 </div>
 
+### EXP4　推箱子游戏：Canvas 绘图与关卡进度 <a id="exp4"></a>
+
+一个基于 Canvas 2D 的推箱子小游戏：选关首页管理解锁进度与星级纪录，游戏页负责地图绘制、推箱判定与通关动效，8 个关卡均经 BFS 验证可解。
+
+| Focus | Implementation |
+| --- | --- |
+| 页面 | 选关首页 / 游戏页 · Canvas 2D 绘图 + `dpr` 高分屏适配 |
+| 关卡 | 8 关地图矩阵（`utils/data.js`）· BFS 求解验证可解性并定三星线 |
+| 进度 | 解锁进度 / 星级 / 最佳步数 · `utils/store.js` 存储封装 |
+| 交互 | 方向键与滑动手势 · 150ms 补间动画 · 3 次撤销限制 · 死局提示 · 通关撒花与震动反馈 |
+
+**核心体验：** `关卡设计 → BFS 验证 → Canvas 分层绘制 → 动效反馈 → 进度闭环`
+
+<div align="right">
+
+[查看 EXP4 源码 →](./Exp4/)
+
+</div>
+
 ## Repository
 
 ```text
@@ -93,6 +112,7 @@
 ├── Exp1/        # 实验 1：第一个微信小程序
 ├── Exp2/        # 实验 2：个人名片小程序
 ├── Exp3/        # 实验 3：高校新闻网小程序
+├── Exp4/        # 实验 4：推箱子游戏小程序
 ├── README.md    # 课程总览
 └── .gitignore
 ```
@@ -103,7 +123,7 @@
 
 - 开发工具：微信开发者工具
 - 当前项目：原生微信小程序
-- 实验记录：[EXP1 博客](https://blog.csdn.net/ppxl01/article/details/164024454) · [EXP2 博客](https://blog.csdn.net/ppxl01/article/details/164054481) · [EXP3 博客](https://blog.csdn.net/ppxl01/article/details/164219398)
+- 实验记录：[EXP1 博客](https://blog.csdn.net/ppxl01/article/details/164024454) · [EXP2 博客](https://blog.csdn.net/ppxl01/article/details/164054481) · [EXP3 博客](https://blog.csdn.net/ppxl01/article/details/164219398) · [EXP4 博客](https://blog.csdn.net/ppxl01/article/details/164256841)
 
 ---
 
