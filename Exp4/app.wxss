@@ -1,0 +1,21 @@
+/**app.wxss——全局：深夜霓虹主题（深蓝夜幕 + 红鸟主色 + 金星）**/
+page {
+  background: linear-gradient(180deg, #232c52 0%, #1a2240 46%, #12182f 100%);
+  min-height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+/* 全局 CSS 箭头（替代字体箭头，跨端渲染一致） */
+.chev {
+  width: 26rpx;
+  height: 26rpx;
+  border-left: 10rpx solid #ff5a4e;
+  border-top: 10rpx solid #ff5a4e;
+  border-radius: 3rpx;
+  box-sizing: border-box;
+}
+.chev-up { transform: rotate(45deg); }
+.chev-right { transform: rotate(135deg); }
+.chev-down { transform: rotate(225deg); }
+.chev-left { transform: rotate(315deg); }

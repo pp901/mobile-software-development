@@ -1,0 +1,335 @@
+/* pages/game/game.wxss——游戏页：深夜霓虹风 */
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 26rpx 22rpx 70rpx;
+}
+
+/* ---------- 信息栏 ---------- */
+.hud {
+  width: 100%;
+  display: flex;
+  background: #232c4e;
+  border: 2rpx solid rgba(255, 255, 255, 0.07);
+  border-radius: 28rpx;
+  padding: 22rpx 16rpx 18rpx;
+  box-shadow: 0 10rpx 26rpx rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+  animation: rise 0.45s backwards;
+}
+
+.hud-chip {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 4rpx;
+}
+
+.hud-label {
+  font-size: 22rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+  color: #7f89b3;
+  margin-top: 6rpx;
+}
+
+.hud-num {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #eef1ff;
+}
+
+.hud-best {
+  font-size: 28rpx;
+}
+
+/* 归位点：直接用小猪素材 */
+.pigs {
+  display: flex;
+  align-items: center;
+}
+
+.pig-dot {
+  width: 32rpx;
+  height: 32rpx;
+  margin: 0 3rpx;
+  filter: grayscale(1) brightness(0.6);
+  opacity: 0.5;
+  transform: scale(0.92);
+  transition: all 0.25s ease;
+}
+
+.pig-on {
+  filter: drop-shadow(0 0 10rpx rgba(88, 194, 79, 0.8));
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+/* ---------- 棋盘框（深夜石板框） ---------- */
+.board-frame {
+  margin-top: 30rpx;
+  padding: 22rpx;
+  border-radius: 40rpx;
+  background: linear-gradient(180deg, #39456f 0%, #28325a 100%);
+  border: 2rpx solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 16rpx 0 #0e1330, 0 26rpx 44rpx rgba(0, 0, 0, 0.55);
+  animation: rise 0.45s 70ms backwards;
+}
+
+.board-mat {
+  padding: 14rpx;
+  border-radius: 26rpx;
+  background: #141b36;
+  box-shadow: 0 4rpx 0 rgba(0, 0, 0, 0.5) inset;
+}
+
+.board {
+  display: block;
+  border-radius: 12rpx;
+}
+
+/* ---------- 关卡开始卡片（全屏遮罩） ---------- */
+.start-mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(5, 8, 22, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.start-card {
+  width: 86%;
+  background: #232c4e;
+  border: 2rpx solid rgba(255, 255, 255, 0.1);
+  border-radius: 32rpx;
+  padding: 44rpx 36rpx 36rpx;
+  text-align: center;
+  box-shadow: 0 16rpx 36rpx rgba(0, 0, 0, 0.6);
+  animation: popIn 0.35s backwards;
+  box-sizing: border-box;
+}
+
+.start-level {
+  font-size: 26rpx;
+  font-weight: 800;
+  letter-spacing: 4rpx;
+  color: #7f89b3;
+}
+
+.start-name {
+  margin-top: 6rpx;
+  font-size: 52rpx;
+  font-weight: 900;
+  color: #ff5a4e;
+  text-shadow: 0 0 26rpx rgba(255, 90, 78, 0.6), 0 5rpx 0 rgba(0, 0, 0, 0.4);
+}
+
+.start-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30rpx;
+}
+
+.start-ic {
+  width: 60rpx;
+  height: 60rpx;
+  margin: 0 12rpx;
+}
+
+.start-goal {
+  width: 72rpx;
+  height: 72rpx;
+}
+
+.start-goals {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 28rpx;
+}
+
+.goal-chip {
+  display: flex;
+  align-items: center;
+  padding: 10rpx 24rpx;
+  margin: 8rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #cbd3f0;
+  background: #1b2340;
+  border-radius: 999rpx;
+}
+
+.goal-ic {
+  width: 34rpx;
+  height: 34rpx;
+  margin-right: 10rpx;
+}
+
+.goal-star {
+  color: #ffc93c;
+  font-size: 30rpx;
+  margin-right: 8rpx;
+}
+
+.start-rules {
+  margin-top: 20rpx;
+  font-size: 23rpx;
+  line-height: 1.7;
+  color: #7f89b3;
+}
+
+.start-btn {
+  margin: 32rpx auto 0;
+  width: 300rpx;
+  padding: 22rpx 0;
+  font-size: 32rpx;
+  font-weight: 800;
+  letter-spacing: 4rpx;
+  color: #ffffff;
+  background: linear-gradient(180deg, #ff7a6e 0%, #ff5a4e 100%);
+  border-radius: 999rpx;
+  box-shadow: 0 10rpx 0 #b7362c, 0 0 24rpx rgba(255, 90, 78, 0.45);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.start-btn-press {
+  transform: translateY(8rpx);
+  box-shadow: 0 2rpx 0 #b7362c;
+}
+
+.start-back {
+  margin-top: 24rpx;
+  display: inline-block;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #7f89b3;
+  padding: 8rpx 20rpx;
+}
+
+.start-back-press {
+  opacity: 0.6;
+}
+
+/* ---------- 方向键 ---------- */
+.pad {
+  margin-top: 40rpx;
+  display: grid;
+  grid-template-columns: repeat(3, 116rpx);
+  grid-auto-rows: 116rpx;
+  gap: 22rpx;
+  animation: rise 0.45s 140ms backwards;
+}
+
+.key-up { grid-column: 2; grid-row: 1; }
+.key-left { grid-column: 1; grid-row: 2; }
+.key-down { grid-column: 2; grid-row: 2; }
+.key-right { grid-column: 3; grid-row: 2; }
+
+.key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #2a345c;
+  border: 2rpx solid rgba(255, 255, 255, 0.08);
+  border-radius: 34rpx;
+  box-shadow: 0 10rpx 0 #121936, 0 14rpx 24rpx rgba(0, 0, 0, 0.35);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.key-press {
+  transform: translateY(8rpx);
+  box-shadow: 0 2rpx 0 #121936, 0 4rpx 10rpx rgba(0, 0, 0, 0.3);
+}
+
+.key-chev {
+  border-left-color: #ff5a4e;
+  border-top-color: #ff5a4e;
+  border-left-width: 12rpx;
+  border-top-width: 12rpx;
+  filter: drop-shadow(0 0 6rpx rgba(255, 90, 78, 0.6));
+}
+
+/* 光学校正：旋转后的箭头质心偏移 */
+.chev-up-pos { margin-top: 10rpx; }
+.chev-down-pos { margin-bottom: 10rpx; }
+.chev-left-pos { margin-left: 10rpx; }
+.chev-right-pos { margin-right: 10rpx; }
+
+/* ---------- 功能按钮 ---------- */
+.actions {
+  margin-top: 40rpx;
+  display: flex;
+  animation: rise 0.45s 200ms backwards;
+}
+
+.btn {
+  padding: 20rpx 36rpx;
+  margin: 0 12rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #cbd3f0;
+  background: #2a345c;
+  border: 2rpx solid rgba(255, 255, 255, 0.08);
+  border-radius: 999rpx;
+  box-shadow: 0 8rpx 0 #121936, 0 12rpx 20rpx rgba(0, 0, 0, 0.3);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-press {
+  transform: translateY(6rpx);
+  box-shadow: 0 2rpx 0 #121936, 0 4rpx 10rpx rgba(0, 0, 0, 0.25);
+}
+
+.btn-main {
+  color: #ffffff;
+  background: linear-gradient(180deg, #ff7a6e 0%, #ff5a4e 100%);
+  box-shadow: 0 8rpx 0 #b7362c, 0 0 20rpx rgba(255, 90, 78, 0.4);
+}
+
+.btn-main-press {
+  transform: translateY(6rpx);
+  box-shadow: 0 2rpx 0 #b7362c, 0 4rpx 10rpx rgba(0, 0, 0, 0.3);
+}
+
+.btn-off {
+  color: #4d5680;
+}
+
+.tip {
+  margin-top: 34rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #7f89b3;
+}
+
+/* ---------- 动画 ---------- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

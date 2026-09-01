@@ -1,0 +1,270 @@
+/* pages/index/index.wxss——选关首页：深夜霓虹风 */
+.page {
+  padding: 30rpx 28rpx 60rpx;
+}
+
+/* ---------- 头部 ---------- */
+.hero {
+  text-align: center;
+  padding: 34rpx 0 4rpx;
+  animation: rise 0.5s backwards;
+}
+
+.hero-title {
+  font-size: 96rpx;
+  font-weight: 900;
+  letter-spacing: 8rpx;
+  color: #ffffff;
+  text-shadow: 0 0 30rpx rgba(255, 90, 78, 0.55), 0 8rpx 0 rgba(0, 0, 0, 0.45);
+}
+
+/* 素材图示：小鸟 → 箱子 → 猪 */
+.hero-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 26rpx;
+}
+
+.flow-ic {
+  width: 64rpx;
+  height: 64rpx;
+  margin: 0 14rpx;
+  filter: drop-shadow(0 0 16rpx rgba(255, 255, 255, 0.25));
+}
+
+.flow-goal {
+  width: 78rpx;
+  height: 78rpx;
+}
+
+.flow-arrow {
+  border-left-color: #ff5a4e;
+  border-top-color: #ff5a4e;
+  filter: drop-shadow(0 0 8rpx rgba(255, 90, 78, 0.8));
+}
+
+.hero-sub {
+  margin-top: 20rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+  color: #8a93b8;
+}
+
+/* ---------- 星星进度 ---------- */
+.progress {
+  margin: 34rpx auto 40rpx;
+  width: 430rpx;
+  text-align: center;
+  animation: rise 0.5s 80ms backwards;
+}
+
+.progress-track {
+  height: 20rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 3rpx 6rpx rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #ffd45c, #ffb930);
+  box-shadow: 0 0 16rpx rgba(255, 201, 60, 0.8);
+  transition: width 0.4s ease;
+}
+
+.progress-text {
+  display: inline-block;
+  margin-top: 14rpx;
+  padding: 6rpx 26rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #cbd3f0;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999rpx;
+}
+
+/* ---------- 关卡卡片 ---------- */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.card {
+  position: relative;
+  width: 334rpx;
+  margin-bottom: 26rpx;
+  padding: 16rpx 16rpx 20rpx;
+  background: #232c4e;
+  border: 2rpx solid rgba(255, 255, 255, 0.07);
+  border-radius: 30rpx;
+  box-shadow: 0 14rpx 30rpx rgba(0, 0, 0, 0.45);
+  box-sizing: border-box;
+  overflow: hidden;
+  animation: rise 0.55s backwards;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card-press {
+  transform: translateY(6rpx);
+  box-shadow: 0 6rpx 14rpx rgba(0, 0, 0, 0.45);
+}
+
+.card-locked {
+  filter: grayscale(0.55);
+  opacity: 0.75;
+}
+
+.mini-frame {
+  box-sizing: border-box;
+  border-radius: 22rpx;
+  background: #141b36;
+  border: 4rpx solid #39456f;
+  overflow: hidden;
+}
+
+.mini {
+  display: block;
+  width: 290rpx;
+  height: 290rpx;
+  margin: 0 auto;
+}
+
+/* ---------- 卡片信息 ---------- */
+.card-info {
+  padding: 16rpx 6rpx 0;
+}
+
+.card-name {
+  display: flex;
+  align-items: center;
+}
+
+.card-no {
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  text-align: center;
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #ffffff;
+  background: #ff5a4e;
+  border-radius: 12rpx;
+  margin-right: 12rpx;
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #eef1ff;
+}
+
+.card-bottom {
+  margin-top: 10rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stars {
+  font-size: 28rpx;
+  letter-spacing: 6rpx;
+}
+
+.star {
+  color: #3a4368;
+}
+
+.star-on {
+  color: #ffc93c;
+  text-shadow: 0 0 10rpx rgba(255, 201, 60, 0.7);
+  animation: starPop 0.45s backwards;
+}
+
+.best {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #7f89b3;
+}
+
+/* ---------- 锁定态 ---------- */
+.lock {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(16, 22, 44, 0.82);
+}
+
+.lock-ic {
+  position: relative;
+  width: 46rpx;
+  height: 36rpx;
+  margin-bottom: 26rpx;
+  background: #5a6591;
+  border-radius: 10rpx;
+  box-shadow: 0 4rpx 0 rgba(0, 0, 0, 0.35);
+}
+
+.lock-ic::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -18rpx;
+  width: 24rpx;
+  height: 18rpx;
+  border: 6rpx solid #5a6591;
+  border-bottom: none;
+  border-radius: 14rpx 14rpx 0 0;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
+.lock-text {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #8a93b8;
+}
+
+.footer-tip {
+  text-align: center;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #7f89b3;
+  margin-top: 10rpx;
+}
+
+/* ---------- 动画 ---------- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes starPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(-40deg);
+  }
+  70% {
+    transform: scale(1.35) rotate(8deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}

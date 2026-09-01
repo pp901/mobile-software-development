@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/game/game"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#1A2340",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "推箱子",
+    "backgroundColor": "#232C52"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

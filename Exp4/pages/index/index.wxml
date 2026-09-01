@@ -1,0 +1,55 @@
+<!--pages/index/index.wxml——选关首页-->
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">推箱子</view>
+    <view class="hero-flow">
+      <image class="flow-ic" src="/images/icons/bird.png" />
+      <view class="chev chev-right flow-arrow"></view>
+      <image class="flow-ic" src="/images/icons/box.png" />
+      <view class="chev chev-right flow-arrow"></view>
+      <image class="flow-ic flow-goal" src="/images/icons/pig.png" />
+    </view>
+    <view class="hero-sub">把箱子全部推到小猪身上即可通关</view>
+  </view>
+
+  <view class="progress">
+    <view class="progress-track">
+      <view class="progress-fill" style="width: {{totalStars * 100 / maxStars}}%"></view>
+    </view>
+    <view class="progress-text">已收集 {{totalStars}} / {{maxStars}} 颗星</view>
+  </view>
+
+  <view class="grid">
+    <view
+      class="card {{item.locked ? 'card-locked' : ''}}"
+      wx:for="{{levels}}"
+      wx:key="n"
+      style="animation-delay: {{index * 90}}ms"
+      data-n="{{item.n}}"
+      hover-class="{{item.locked ? '' : 'card-press'}}"
+      bindtap="onTapLevel"
+    >
+      <view class="mini-frame">
+        <image class="mini" src="/images/level0{{item.n}}.png" mode="aspectFit" />
+      </view>
+      <view class="card-info">
+        <view class="card-name">
+          <text class="card-no">{{item.n}}</text>
+          <text class="card-title">{{item.name}}</text>
+        </view>
+        <view class="card-bottom">
+          <view class="stars">
+            <text wx:for="{{item.starsArr}}" wx:for-item="s" wx:key="*this" class="star {{s ? 'star-on' : ''}}">★</text>
+          </view>
+          <text class="best">{{item.best ? '最佳 ' + item.best + ' 步' : '目标 ' + item.par + ' 步'}}</text>
+        </view>
+      </view>
+      <view class="lock" wx:if="{{item.locked}}">
+        <view class="lock-ic"></view>
+        <text class="lock-text">通过上一关解锁</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="footer-tip">已解锁的关卡可直接开始</view>
+</view>

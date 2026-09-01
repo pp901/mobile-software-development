@@ -1,0 +1,107 @@
+<!--pages/game/game.wxml——游戏页-->
+<view class="page">
+  <!-- 信息栏 -->
+  <view class="hud">
+    <view class="hud-chip">
+      <text class="hud-label">步数</text>
+      <text class="hud-num">{{steps}}</text>
+    </view>
+    <view class="hud-chip">
+      <text class="hud-label">目标</text>
+      <text class="hud-num">{{par}}</text>
+    </view>
+    <view class="hud-chip">
+      <text class="hud-label">最佳</text>
+      <text class="hud-num hud-best">{{bestText}}</text>
+    </view>
+    <view class="hud-chip">
+      <view class="pigs">
+        <image
+          wx:for="{{dotsArr}}"
+          wx:key="*this"
+          src="/images/icons/pig.png"
+          class="pig-dot {{placed > item ? 'pig-on' : ''}}"
+        />
+      </view>
+      <text class="hud-label">归位</text>
+    </view>
+  </view>
+
+  <!-- 游戏棋盘（木质画框 + 奶油衬垫） -->
+  <view class="board-frame">
+    <view class="board-mat">
+      <canvas
+        type="2d"
+        id="gameCanvas"
+        class="board"
+        style="width: {{cvSize}}px; height: {{cvSize}}px;"
+        bindtouchstart="onTouchStart"
+        bindtouchend="onTouchEnd"
+        catchtouchmove="onTouchMove"
+      ></canvas>
+    </view>
+  </view>
+
+  <!-- 方向键（CSS 箭头，跨端对齐） -->
+  <view class="pad">
+    <view class="key key-up" hover-class="key-press" hover-stay-time="80" bindtap="up">
+      <view class="chev chev-up key-chev chev-up-pos"></view>
+    </view>
+    <view class="key key-left" hover-class="key-press" hover-stay-time="80" bindtap="left">
+      <view class="chev chev-left key-chev chev-left-pos"></view>
+    </view>
+    <view class="key key-down" hover-class="key-press" hover-stay-time="80" bindtap="down">
+      <view class="chev chev-down key-chev chev-down-pos"></view>
+    </view>
+    <view class="key key-right" hover-class="key-press" hover-stay-time="80" bindtap="right">
+      <view class="chev chev-right key-chev chev-right-pos"></view>
+    </view>
+  </view>
+
+  <!-- 功能按钮 -->
+  <view class="actions">
+    <view class="btn {{canUndo && undosLeft > 0 ? '' : 'btn-off'}}" hover-class="btn-press" bindtap="undo">撤销 ×{{undosLeft}}</view>
+    <view class="btn btn-main" hover-class="btn-main-press" bindtap="onRestartTap">重新开始</view>
+    <view class="btn" hover-class="btn-press" bindtap="goIndex">选关</view>
+  </view>
+
+  <view class="tip">小提示：撤销只有 3 次，想好再推</view>
+
+  <!-- 关卡开始卡片（全屏遮罩，点击开始才可操作） -->
+  <view class="start-mask" wx:if="{{!started}}" catchtouchmove="onTouchMove">
+    <view class="start-card">
+      <view class="start-level">第 {{level}} 关</view>
+      <view class="start-name">{{levelName}}</view>
+      <view class="start-flow">
+        <image class="start-ic" src="/images/icons/bird.png" />
+        <view class="chev chev-right start-arrow"></view>
+        <image class="start-ic" src="/images/icons/box.png" />
+        <view class="chev chev-right start-arrow"></view>
+        <image class="start-ic start-goal" src="/images/icons/pig.png" />
+      </view>
+      <view class="start-goals">
+        <view class="goal-chip">
+          <image class="goal-ic" src="/images/icons/box.png" />
+          <text>推 {{total}} 个箱子上小猪</text>
+        </view>
+        <view class="goal-chip">
+          <text class="goal-star">★</text>
+          <text>{{par}} 步内三星</text>
+        </view>
+      </view>
+      <view class="start-rules" wx:if="{{level === 1}}">箱子只能推不能拉 · 滑动棋盘或点方向键移动</view>
+      <view class="start-rules" wx:else>小心死角，卡住了可以撤销</view>
+      <view class="start-btn" hover-class="start-btn-press" bindtap="startGame">开始游戏</view>
+      <view class="start-back" hover-class="start-back-press" bindtap="goIndex">返回选关</view>
+    </view>
+  </view>
+
+  <!-- 棋盘加载异常兜底 -->
+  <view class="start-mask" wx:if="{{boardError}}" catchtouchmove="onTouchMove">
+    <view class="start-card">
+      <view class="start-name">棋盘加载失败了</view>
+      <view class="start-rules">请点击下方按钮重试，若仍失败请重新编译项目</view>
+      <view class="start-btn" hover-class="start-btn-press" bindtap="retryBoard">重新加载</view>
+    </view>
+  </view>
+</view>
