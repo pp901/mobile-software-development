@@ -1,0 +1,8 @@
+<view class="navigation" style="padding-top:{{statusHeight}}px;background:{{background}};color:{{color}};opacity:{{show ? 1 : 0}};">
+  <view class="navigation-inner" style="height:{{barHeight}}px;padding-right:{{capsuleWidth}}px;">
+    <button wx:if="{{back}}" class="navigation-back" bindtap="back" aria-label="返回" hover-class="nav-pressed"><view class="back-chevron"></view></button>
+    <view wx:else class="navigation-left"><slot name="left"></slot></view>
+    <text class="navigation-title">{{title}}</text>
+    <view class="navigation-action"><slot name="right"></slot></view>
+  </view>
+</view>

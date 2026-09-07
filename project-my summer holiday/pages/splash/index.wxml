@@ -1,0 +1,7 @@
+<view class="splash">
+  <view class="grain"></view>
+  <text class="edition">A LIFE JOURNAL · 2026</text>
+  <view class="brand-wrap"><text class="brand brand-serif">ongoing_</text><text class="cn">未完</text><view class="brand-dot"></view></view>
+  <view class="splash-bottom"><view class="hairline"></view><text>生活未完，故事仍在继续。</text><text class="loading-copy">正在翻开今天</text></view>
+</view>
+

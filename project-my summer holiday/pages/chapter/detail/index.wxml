@@ -1,0 +1,56 @@
+<view class="chapter-page" wx:if="{{chapter}}">
+  <navigation-bar title="" background="#FAF7F1"><button slot="right" class="nav-circle" bindtap="more" aria-label="更多"><image src="/assets/icons/more.svg" /></button></navigation-bar>
+  <view class="hero">
+    <image class="hero-photo" src="{{chapter.cover}}" mode="aspectFill" /><view class="hero-shade"></view>
+    <view class="hero-hand">慢下来，
+把日子过成喜欢的样子。<text>Still Ongoing …</text></view>
+  </view>
+  <view class="chapter-paper">
+    <view class="hero-copy">
+      <view class="hero-status"><text>{{chapter.englishTitle}}</text><text>·</text><text>{{chapter.statusText}}</text></view>
+      <text class="hero-title brand-serif">{{chapter.title}}</text><text class="hero-description">{{chapter.dateRange}}</text>
+      <view class="hero-progress"><view><text>DAY {{chapter.dayCurrent}} / {{chapter.dayTotal}}</text><text>{{chapter.progress}}%</text></view><view class="hero-track"><view style="width: {{chapter.progress}}%"></view></view></view>
+    </view>
+  <view class="chapter-stats">
+    <view><text class="stat-number brand-serif">{{chapter.momentCount}}</text><text>瞬间</text></view><view class="stat-line"></view>
+    <view><text class="stat-number brand-serif">{{chapter.placeCount}}</text><text>足迹</text></view><view class="stat-line"></view>
+    <view><text class="stat-number brand-serif">{{chapter.goalsDone}}/{{chapter.goalsTotal}}</text><text>目标</text></view>
+  </view>
+  <scroll-view class="chapter-tabs" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="chapter-tab-list page-pad"><button wx:for="{{chapter.modules}}" wx:key="*this" class="chapter-tab {{activeTab === item ? 'active' : ''}}" data-tab="{{item}}" bindtap="changeTab">{{item}}</button></view>
+  </scroll-view>
+  <view class="chapter-content page-pad safe-bottom">
+    <block wx:if="{{activeTab === '瞬间'}}">
+      <view class="content-intro"><view><text class="content-title">所有瞬间</text></view><button class="small-add" bindtap="createMoment">＋ 留下片刻</button></view>
+      <view class="timeline" wx:if="{{moments.length}}">
+        <view class="timeline-row" wx:for="{{visibleMoments}}" wx:key="id"><view class="timeline-mark"><view class="timeline-dot {{item.milestone ? 'milestone' : ''}}"></view><view class="timeline-line"></view></view><view class="timeline-card"><moment-card moment="{{item}}" bind:open="openMoment" /></view></view>
+      </view>
+      <view wx:else class="empty-state surface"><text class="empty-mark">＋</text><text class="empty-title">这一章还很安静</text><text class="empty-copy">从一个画面或一句话开始，留下第一个片刻。</text><button class="secondary-button empty-action" bindtap="createMoment">留下第一个 Moment</button></view>
+      <button wx:if="{{visibleMoments.length < moments.length}}" class="secondary-button more-button" bindtap="showAll">继续翻看这一章</button>
+    </block>
+    <block wx:elif="{{activeTab === '足迹' || activeTab === '地图' || activeTab === '路线'}}">
+      <view class="content-intro"><view><text class="eyebrow">PLACES</text><text class="content-title">故事发生过的地方</text></view></view>
+      <view class="route-card">
+        <view class="route-line"></view><view class="route-stop stop-one"></view><view class="route-stop stop-two"></view><view class="route-stop stop-three"></view>
+        <text class="route-label label-one">{{places[0].name || '第一站'}}</text><text class="route-label label-two">{{places[1].name || '下一站'}}</text><text class="route-label label-three">{{places[2].name || '等你记录'}}</text><text class="route-count brand-serif">{{places.length}}</text><text class="route-unit">个地方 · 足迹概览</text>
+      </view>
+      <view class="place-grid" wx:if="{{places.length}}"><view class="place-card" wx:for="{{places}}" wx:key="name"><image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" /><view wx:else class="place-placeholder"></view><view class="place-shade"></view><view><text>{{item.name}}</text><text>{{item.count}} 个 Moment</text></view></view></view>
+      <view wx:else class="empty-state"><text class="empty-title">还没有留下足迹</text><text class="empty-copy">在 Moment 中标记地点，这里就会慢慢亮起来。</text></view>
+    </block>
+    <block wx:elif="{{activeTab === '目标' || activeTab === '进度' || activeTab === '里程碑'}}">
+      <view class="content-intro"><view><text class="eyebrow">WISH LIST</text><text class="content-title">这一章想完成的事</text></view></view>
+      <view class="goal-summary surface"><view class="goal-ring"><text>{{completion}}%</text></view><view><text class="goal-summary-title">{{chapter.goalsDone}} 件事已经发生</text><text class="goal-summary-copy">每个完成，都可以成为一个 Milestone。</text></view></view>
+      <view wx:if="{{chapter.goals.length}}" class="goal-list surface"><button class="goal-row pressable" wx:for="{{chapter.goals}}" wx:key="id" data-id="{{item.id}}" bindtap="toggleGoal"><view class="goal-check {{item.done ? 'done' : ''}}"><image wx:if="{{item.done}}" src="/assets/icons/check.svg" /></view><text class="{{item.done ? 'done-text' : ''}}">{{item.title}}</text></button></view>
+      <view wx:else class="empty-state"><text class="empty-mark">_</text><text class="empty-title">愿望还没有写到这里</text></view>
+    </block>
+    <block wx:else>
+      <view class="review-preview">
+        <text class="eyebrow">CHAPTER REVIEW</text><text class="review-title brand-serif">{{chapter.dayTotal}} days,\na kinder you.</text>
+        <view class="photo-strip"><image src="/assets/images/moment-study.webp" mode="aspectFill" /><image src="{{chapter.cover}}" mode="aspectFill" /><image src="/assets/images/moment-sunset.webp" mode="aspectFill" /></view>
+        <text class="review-copy">不是普通的统计，而是这段经历留下的影像、足迹、心情和完成。</text>
+        <button class="primary-button" bindtap="openReview">{{chapter.status === 'ONGOING' ? '预览这一章的回望' : '查看完整回望'}}</button>
+      </view>
+    </block>
+  </view>
+  </view><app-tabbar active="" />
+</view>

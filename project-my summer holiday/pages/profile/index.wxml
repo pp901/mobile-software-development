@@ -1,0 +1,35 @@
+<view class="page-shell safe-bottom">
+  <navigation-bar title="我的" background="#F6F3ED" color="#26312B" />
+  <view class="profile-head page-pad">
+    <image class="avatar" src="{{profile.avatar}}" mode="aspectFill" />
+    <view class="profile-copy"><text class="name">{{profile.nickname}}</text><text class="bio">{{profile.bio}}</text></view>
+  </view>
+
+  <view class="stats page-pad">
+    <view><text class="number brand-serif">{{chapterCount}}</text><text>人生章节</text></view>
+    <view class="divider"></view>
+    <view><text class="number brand-serif">{{momentCount}}</text><text>收藏片刻</text></view>
+  </view>
+
+  <view class="settings page-pad">
+    <text class="group-title eyebrow">记录偏好</text>
+    <view class="setting-group surface">
+      <view class="setting-row"><view><text class="setting-name">私密记录</text><text class="setting-desc">新内容默认只对自己可见</text></view><switch checked="{{privateMode}}" color="#587362" bindchange="togglePrivate" /></view>
+      <view class="setting-row"><view><text class="setting-name">保留原图</text><text class="setting-desc">保存 Moment 中的高清图片</text></view><switch checked="{{saveOriginal}}" color="#587362" bindchange="toggleSave" /></view>
+    </view>
+
+    <text class="group-title eyebrow">内容与数据</text>
+    <view class="setting-group surface">
+      <button class="setting-row pressable" bindtap="notReady"><view><text class="setting-name">个性化主题</text><text class="setting-desc">季节色与 Chapter 封面样式</text></view><text class="arrow">›</text></button>
+      <button class="setting-row pressable" bindtap="notReady"><view><text class="setting-name">数据与备份</text><text class="setting-desc">管理云同步与本地记录</text></view><text class="arrow">›</text></button>
+    </view>
+
+    <text class="group-title eyebrow">关于 ongoing_</text>
+    <view class="setting-group surface">
+      <button class="setting-row pressable" bindtap="replayGuide"><text class="setting-name">重新查看产品引导</text><text class="arrow">›</text></button>
+      <button class="setting-row pressable" bindtap="resetDemo"><text class="setting-name danger-text">恢复示例数据</text><text class="arrow">›</text></button>
+    </view>
+    <view class="signature"><text class="brand-serif">ongoing_</text><text>生活未完，故事仍在继续。</text></view>
+  </view>
+</view>
+

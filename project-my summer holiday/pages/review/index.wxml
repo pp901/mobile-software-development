@@ -1,0 +1,47 @@
+<view class="review-page" wx:if="{{chapter}}">
+  <navigation-bar title="回望" background="#F6F3ED" color="#26312B"><button slot="right" class="share-nav" open-type="share"><image src="/assets/icons/share.svg" /></button></navigation-bar>
+  <view class="memory-paper">
+    <view class="memory-heading"><view><text class="memory-brand brand-serif">ongoing_</text><text class="memory-subtitle">生活的美好，值得被收藏。</text></view><view class="memory-stamp"><text class="stamp-status">{{chapter.status === 'ONGOING' ? '进行中' : chapter.statusText}}</text><text>CHAPTER</text></view></view>
+    <image class="memory-cover" src="{{chapter.cover}}" mode="aspectFill" />
+    <text class="memory-season">{{chapter.englishTitle}}</text><text class="memory-name">{{chapter.title}}</text><text class="memory-dates">{{chapter.startDate}} — {{chapter.endDate || '仍在继续'}}</text>
+    <view class="memory-stats"><view><text>{{chapter.dayTotal}}</text><text>天</text></view><view><text>{{moments.length}}</text><text>瞬间</text></view><view><text>{{places.length}}</text><text>足迹</text></view><view><text>{{chapter.goalsDone}}</text><text>完成目标</text></view></view>
+    <text class="memory-quote">“ {{chapter.ending || chapter.description}} ”</text>
+    <text class="memory-sign">— ongoing_</text>
+  </view>
+  <button class="memory-share primary-button" open-type="share">分享这段旅程</button>
+  <text class="memory-hint">往下翻，重温这一章的片刻</text>
+  <view class="review-section page-pad first-section" wx:if="{{firstMoment}}">
+    <text class="section-number brand-serif">01</text><text class="eyebrow">THE FIRST MOMENT</text><text class="story-title brand-serif">故事，从这里开始。</text>
+    <view class="first-moment surface"><image src="{{firstMoment.image}}" mode="aspectFill" /><view><text>{{firstMoment.dateLabel}}</text><text>{{firstMoment.content}}</text><text>{{firstMoment.location}}</text></view></view>
+  </view>
+  <view class="review-section dark-section">
+    <view class="page-pad"><text class="section-number brand-serif">02</text><text class="eyebrow">MOMENTS, COLLECTED</text><text class="story-title brand-serif">{{moments.length}} 个片刻，
+拼成这一章的样子。</text></view>
+    <scroll-view wx:if="{{photos.length}}" class="photo-ribbon" scroll-x enhanced show-scrollbar="{{false}}"><view class="photo-row"><image wx:for="{{photos}}" wx:key="id" src="{{item.image}}" mode="aspectFill" class="photo-item photo-{{index % 3}}" /></view></scroll-view>
+    <view wx:else class="review-empty page-pad"><text>这一章的画面，正在等待发生。</text></view>
+  </view>
+  <view class="review-section page-pad">
+    <text class="section-number brand-serif">03</text><text class="eyebrow">WHERE LIFE HAPPENED</text><text class="story-title brand-serif">脚步走过，故事留下。</text>
+    <view class="place-art"><view class="orbit orbit-one"></view><view class="orbit orbit-two"></view><view class="place-pin pin-one"></view><view class="place-pin pin-two"></view><view class="place-pin pin-three"></view><text class="place-number brand-serif">{{places.length}}</text><text class="place-copy">PLACES</text></view>
+    <view class="place-list"><text wx:for="{{places}}" wx:key="*this">{{index + 1 < 10 ? '0' : ''}}{{index + 1}} · {{item}}</text></view>
+  </view>
+  <view class="review-section oat-section page-pad">
+    <text class="section-number brand-serif">04</text><text class="eyebrow">WORDS & FEELINGS</text><text class="story-title brand-serif">这一章，有它自己的温度。</text>
+    <view class="tag-cloud"><view wx:for="{{topTags}}" wx:key="name" class="cloud-tag cloud-{{index % 4}}"><text>#{{item.name}}</text><text class="tag-count">{{item.count}}</text></view></view>
+    <view class="mood-chart"><view class="mood-bar" wx:for="{{moods}}" wx:key="name"><text>{{item.name}}</text><view><view class="mood-fill" style="width: {{item.percent}}%"></view></view><text>{{item.count}}</text></view></view>
+  </view>
+  <view class="review-section page-pad">
+    <text class="section-number brand-serif">05</text><text class="eyebrow">THINGS I DID</text><text class="story-title brand-serif">想做的事，慢慢有了答案。</text>
+    <block wx:if="{{chapter.goalsTotal}}"><view class="goal-score"><text class="brand-serif">{{chapter.goalsDone}}</text><text>/ {{chapter.goalsTotal}}</text><text>GOALS COMPLETED</text></view>
+    <view class="review-goals"><view wx:for="{{chapter.goals}}" wx:key="id" class="review-goal {{item.done ? 'done' : ''}}"><view><image wx:if="{{item.done}}" src="/assets/icons/check.svg" /></view><text>{{item.title}}</text></view></view></block>
+    <view wx:else class="simple-note surface"><text>这一章没有列愿望清单。</text><text>但认真走过的每一天，本身就是答案。</text></view>
+  </view>
+  <view class="closing-section">
+    <image src="/assets/images/moment-sunset.webp" mode="aspectFill" /><view class="closing-shade"></view>
+    <view class="closing-content page-pad"><text class="eyebrow">A NOTE TO THIS CHAPTER</text><text class="closing-title brand-serif">写给这一章的结尾</text>
+      <block wx:if="{{composing}}"><textarea value="{{ending}}" maxlength="300" auto-height focus bindinput="inputEnding" placeholder="最难忘的瞬间、遗憾，或想对这段经历说的话…" placeholder-class="ending-placeholder" /><button class="finish-button" bindtap="complete">保存结语 · 已成章</button></block>
+      <block wx:else><text class="ending-copy">{{chapter.ending || '故事还没有写下句点。也许真正重要的，并不是完成了多少，而是你曾认真地在这里生活过。'}}</text><button wx:if="{{chapter.status === 'ONGOING'}}" class="finish-button" bindtap="startEnding">为这一章写下结尾</button><button wx:else class="finish-button ghost" bindtap="startEnding">重新写一句结语</button></block>
+      <text class="completed">{{chapter.status === 'COMPLETED' ? 'COMPLETED · 已成章' : 'STILL ONGOING · 仍在继续'}}</text><text class="brand-bottom brand-serif">ongoing_</text>
+    </view>
+  </view>
+</view>

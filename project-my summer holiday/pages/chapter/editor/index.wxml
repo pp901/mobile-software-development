@@ -1,0 +1,54 @@
+<view class="page-shell safe-bottom">
+  <navigation-bar title="{{id ? '编辑 Chapter' : '开启新一章'}}" background="#F6F3ED" color="#26312B" />
+  <view class="editor page-pad">
+    <view class="editor-head">
+      <text class="eyebrow">{{id ? 'CONTINUE THE STORY' : 'A NEW CHAPTER'}}</text>
+      <text class="editor-title brand-serif">{{id ? '让这一章，更像现在的你。' : '接下来，想经历什么？'}}</text>
+      <text class="editor-lead">先定下一个名字和时间，其余内容以后都能慢慢补充。</text>
+    </view>
+
+    <button class="cover-picker pressable" bindtap="chooseCover">
+      <image src="{{cover}}" mode="aspectFill" />
+      <view class="cover-shade"></view>
+      <view class="cover-label"><text class="eyebrow">CHAPTER COVER</text><text>封面会成为这段故事的第一眼</text></view>
+      <view class="cover-action"><image src="/assets/icons/camera.svg" /><text>更换封面</text></view>
+    </button>
+
+    <view class="form-section surface">
+      <view class="form-heading"><text class="step">01</text><view><text class="form-title">这一章叫什么</text><text class="section-desc">一个简单、愿意再次读到的名字。</text></view></view>
+      <view class="field">
+        <text class="field-label">Chapter 名称 *</text>
+        <input class="text-input" value="{{title}}" maxlength="20" bindinput="inputTitle" placeholder="例如：我的大二暑假" placeholder-class="placeholder" />
+      </view>
+      <view class="field">
+        <text class="field-label">一句话说明</text>
+        <textarea class="text-area" value="{{description}}" maxlength="80" auto-height bindinput="inputDescription" placeholder="你希望在这一章里留下些什么？" placeholder-class="placeholder" />
+      </view>
+    </view>
+
+    <view class="form-section surface">
+      <view class="form-heading"><text class="step">02</text><view><text class="form-title">选择故事类型</text><text class="section-desc">它只帮你安排初始内容，之后仍可修改。</text></view></view>
+      <view class="template-grid"><button wx:for="{{templates}}" wx:key="key" class="template-card {{type === item.key ? 'active' : ''}} pressable" data-type="{{item.key}}" bindtap="chooseType"><text class="template-mark">{{item.mark}}</text><view><text class="template-name">{{item.key}}</text><text class="template-copy">{{item.copy}}</text></view><text wx:if="{{type === item.key}}" class="selected-mark">✓</text></button></view>
+    </view>
+
+    <view class="form-section surface">
+      <view class="form-heading"><text class="step">03</text><view><text class="form-title">时间边界</text><text class="section-desc">还不知道何时结束，也可以先留空。</text></view></view>
+      <view class="date-row">
+        <picker mode="date" value="{{startDate}}" bindchange="chooseStart"><view class="date-field"><text>开始日期</text><text>{{startDate || '请选择'}}</text></view></picker>
+        <view class="date-dash">→</view>
+        <picker mode="date" value="{{endDate}}" bindchange="chooseEnd"><view class="date-field"><text>结束日期</text><text>{{endDate || '以后再说'}}</text></view></picker>
+      </view>
+    </view>
+
+    <view class="form-section surface">
+      <view class="form-heading"><text class="step">04</text><view><text class="form-title">这一章里有什么</text><text class="section-desc">瞬间与回望会始终保留。</text></view></view>
+      <view class="module-row"><button wx:for="{{modules}}" wx:key="key" class="module-chip {{item.enabled ? 'active' : ''}} {{item.fixed ? 'fixed' : ''}}" data-key="{{item.key}}" bindtap="toggleModule"><view class="module-check"><image wx:if="{{item.enabled}}" src="/assets/icons/check.svg" /></view><text>{{item.key}}</text></button></view>
+    </view>
+
+    <view class="save-area">
+      <button class="primary-button save-button" disabled="{{saving}}" bindtap="save">{{saving ? '正在展开…' : (id ? '保存这一章' : '开启这一章')}}</button>
+      <text class="save-note">之后随时可以修改、延长，或为它写下结尾。</text>
+    </view>
+  </view>
+</view>
+

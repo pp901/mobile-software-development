@@ -1,0 +1,34 @@
+{
+  "pages": [
+    "pages/splash/index",
+    "pages/onboarding/index",
+    "pages/index/index",
+    "pages/history/index",
+    "pages/chapter/detail/index",
+    "pages/chapter/editor/index",
+    "pages/moment/editor/index",
+    "pages/moment/detail/index",
+    "pages/review/index",
+    "pages/search/index",
+    "pages/profile/index"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom",
+    "backgroundColor": "#FAF7F1",
+    "backgroundTextStyle": "dark"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于给你的 Moment 留下发生地点"
+    }
+  },
+  "requiredPrivateInfos": [
+    "chooseLocation"
+  ],
+  "style": "v2",
+  "renderer": "webview",
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

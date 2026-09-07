@@ -1,0 +1,15 @@
+const store = require('../../services/store')
+
+Page({
+  data: { keyword: '', chapters: [], moments: [], searched: false, noResults: false, suggestions: ['日落', '朋友', '学习', '青岛'] },
+  input(event) { const keyword = event.detail.value; this.setData({ keyword }); this.runSearch(keyword) },
+  clear() { this.setData({ keyword: '', chapters: [], moments: [], searched: false, noResults: false }) },
+  useSuggestion(event) { const keyword = event.currentTarget.dataset.value; this.setData({ keyword }); this.runSearch(keyword) },
+  runSearch(keyword) {
+    const result = store.search(keyword)
+    const searched = !!String(keyword).trim()
+    this.setData({ chapters: result.chapters, moments: result.moments, searched, noResults: searched && !result.chapters.length && !result.moments.length })
+  },
+  openChapter(event) { wx.navigateTo({ url: `/pages/chapter/detail/index?id=${event.detail.id}` }) },
+  openMoment(event) { wx.navigateTo({ url: `/pages/moment/detail/index?id=${event.detail.id}` }) }
+})

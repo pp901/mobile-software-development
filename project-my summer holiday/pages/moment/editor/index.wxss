@@ -1,0 +1,132 @@
+.moment-editor { padding-top: 18rpx; }
+.editor-head>.eyebrow { display:none; }
+.editor-title { display: block; margin-top: 11rpx; font-size: 38rpx; font-weight: 600; line-height: 1.3; letter-spacing: -2rpx; }
+.editor-lead { display: block; margin-top: 14rpx; color: #858b85; font-size: 22rpx; line-height: 1.6; }
+
+.type-scroll { margin:24rpx 0 0; white-space:nowrap; }
+.type-row { padding:0 0 12rpx; display:flex; gap:8rpx; }
+.type-item {
+  min-width: 0;
+  width:calc((100% - 32rpx)/5);
+  height: 110rpx;
+  padding: 0 13rpx;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9rpx;
+  border: 1rpx solid transparent;
+  border-radius: 22rpx;
+  background: #eceae4;
+  color: #858a84;
+  font-size: 21rpx;
+}
+.type-item>view { width: 46rpx; height: 46rpx; display: flex; align-items: center; justify-content: center; }
+.type-item image { width: 31rpx; height: 31rpx; opacity: .58; }
+.type-item.active { border-color: #bacabe; background: #e2ebe4; color: #385344; font-weight: 600; }
+.type-item.active image { opacity: .88; }
+
+.canvas { margin-top: 16rpx; overflow: hidden; box-shadow: 0 12rpx 36rpx rgba(55,64,58,.08); }
+.photo-area { position: relative; height: 490rpx; }
+.photo-area>image { width: 100%; height: 100%; }
+.remove-media {
+  position: absolute;
+  top: 17rpx;
+  right: 17rpx;
+  width: 60rpx;
+  height: 60rpx;
+  border: 1rpx solid rgba(255,255,255,.28);
+  border-radius: 18rpx;
+  background: rgba(29,34,31,.6);
+  color: #fff;
+  font-size: 36rpx;
+  line-height: 56rpx;
+}
+.photo-placeholder {
+  width: 100%;
+  height: 236rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #eef0e9;
+  color: #5f6f63;
+}
+.placeholder-icon {
+  width: 70rpx;
+  height: 70rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 21rpx;
+  background: rgba(255,255,255,.7);
+}
+.placeholder-icon image { width: 36rpx; height: 36rpx; opacity: .57; }
+.photo-placeholder>text:nth-child(2) { margin-top: 13rpx; font-size: 23rpx; font-weight: 600; }
+.photo-placeholder>text:last-child { margin-top: 6rpx; color: #929992; font-size: 18rpx; }
+.story-input { width: 100%; min-height: 188rpx; padding: 28rpx; font-family: Georgia, "Songti SC", serif; font-size: 28rpx; line-height: 1.72; }
+.placeholder { color: #aaaea9; }
+.canvas-tools {
+  min-height: 88rpx;
+  padding: 0 22rpx;
+  display: flex;
+  align-items: center;
+  border-top: 1rpx solid rgba(38,49,43,.07);
+}
+.canvas-tool {
+  height: 64rpx;
+  padding: 0 18rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  border-radius: 17rpx;
+  color: #717871;
+  font-size: 20rpx;
+}
+.canvas-tool image { width: 28rpx; height: 28rpx; opacity: .65; }
+.canvas-tool.recording { margin-left: auto; }
+.recording-tip { margin-top: 13rpx; padding: 18rpx 22rpx; display: flex; align-items: center; gap: 12rpx; border-radius: 18rpx; background: #f2e3de; color: #9a5948; font-size: 20rpx; }
+.recording-dot { width: 13rpx; height: 13rpx; border-radius: 50%; background: #c77c68; animation: pulse 1s ease infinite; }
+
+.attachment { margin-top: 13rpx; padding: 18rpx 20rpx; display: flex; align-items: center; gap: 15rpx; box-shadow: none; }
+.attachment-icon { width: 58rpx; height: 58rpx; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 17rpx; background: #e4ece6; }
+.attachment-icon image { width: 29rpx; height: 29rpx; }
+.attachment>view:nth-child(2) { min-width: 0; flex: 1; }
+.attachment-title, .attachment-copy { display: block; }
+.attachment-title { overflow: hidden; font-size: 23rpx; text-overflow: ellipsis; white-space: nowrap; }
+.attachment-copy { margin-top: 5rpx; color: #949993; font-size: 18rpx; }
+.attachment>button { width: 54rpx; height: 54rpx; color: #9ca09b; font-size: 34rpx; }
+.voice .attachment-icon { background: #f8ecd3; }
+
+.meta-section { margin-top:24rpx; padding:0 0 24rpx; background:transparent; border:0; border-bottom:1rpx solid #e9e9de; border-radius:0; box-shadow:none; }
+.meta-heading { display: flex; align-items: center; gap: 12rpx; margin-bottom: 20rpx; }
+.meta-index { display:none; }
+.meta-title { font-family: Georgia, "Songti SC", serif; font-size: 27rpx; font-weight: 600; }
+.chapter-select { min-height: 84rpx; padding: 0 20rpx; display: flex; align-items: center; justify-content: space-between; border-radius: 19rpx; background: #e6ede7; color: #385344; }
+.chapter-select>view { min-width: 0; display: flex; align-items: center; gap: 11rpx; }
+.chapter-select>view text:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chapter-select>text { flex: none; font-size: 20rpx; }
+.chapter-dot { width: 11rpx; height: 11rpx; flex: none; border-radius: 50%; background: #587362; }
+
+.mood-row { display:flex; flex-wrap:wrap; gap:10rpx; }.mood-item { width:calc((100% - 20rpx)/3); }
+.mood-item { min-width: 0; height: 64rpx; display: flex; align-items: center; justify-content: center; gap: 8rpx; border: 1rpx solid transparent; border-radius: 17rpx; background: #f0eee8; color: #707670; font-size: 21rpx; }
+.mood-item.active { border-color: #dab2a7; background: #f3e2dc; color: #9a5948; font-weight: 600; }
+.mood-symbol { font-size: 19rpx; }
+
+.tags-row { display: flex; flex-wrap: wrap; gap: 10rpx; }
+.tag-choice { min-height: 58rpx; padding: 0 17rpx; border: 1rpx solid rgba(38,49,43,.09); border-radius: 15rpx; color: #777d77; font-size: 20rpx; }
+.tag-choice.active { border-color: #aebfb2; background: #e4ece6; color: #385344; font-weight: 600; }
+
+.datetime-row { display: grid; grid-template-columns: 1fr 150rpx; gap: 11rpx; }
+.datetime-row picker { min-width: 0; }
+.datetime-field { height: 78rpx; padding: 0 18rpx; display: flex; align-items: center; gap: 11rpx; border-radius: 18rpx; background: #f2f0ea; font-size: 22rpx; }
+.datetime-field image { width: 28rpx; height: 28rpx; opacity: .58; }
+.time-field { justify-content: center; font-family: Georgia, serif; font-size: 24rpx; font-variant-numeric: tabular-nums; }
+
+.save-area { padding: 40rpx 0 12rpx; }
+.save-button { width: 100%; }
+.tag-choice { display:flex; align-items:center; justify-content:center; }
+.save-copy { display: block; margin-top: 16rpx; color: #979b96; font-size: 18rpx; text-align: center; }
+
+@keyframes pulse { 0%, 100% { opacity: .35; transform: scale(.8); } 50% { opacity: 1; transform: scale(1); } }

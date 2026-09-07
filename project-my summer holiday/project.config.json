@@ -1,0 +1,57 @@
+{
+  "setting": {
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "uglifyFileName": false,
+    "enhance": true,
+    "packNpmRelationList": [],
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "useCompilerPlugins": false
+  },
+  "compileType": "miniprogram",
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [
+      {
+        "type": "file",
+        "value": "assets/images/summer-friends.webp"
+      },
+      {
+        "type": "file",
+        "value": "assets/images/reading-window.webp"
+      },
+      {
+        "type": "file",
+        "value": "assets/images/quiet-reading.webp"
+      },
+      {
+        "type": "file",
+        "value": "assets/images/home-cooking.webp"
+      },
+      {
+        "type": "file",
+        "value": "assets/images/coastal-road.webp"
+      },
+      {
+        "type": "file",
+        "value": "assets/images/beach-walk.webp"
+      },
+      {
+        "type": "file",
+        "value": "assets/images/sunlit-book.webp"
+      },
+      {
+        "type": "file",
+        "value": "assets/images/island-road.webp"
+      }
+    ],
+    "include": []
+  },
+  "appid": "wxffe6de1a4a0ce453",
+  "editorSetting": {}
+}

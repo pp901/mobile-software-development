@@ -1,0 +1,13 @@
+<button class="chapter-card {{compact ? 'is-compact' : ''}}" hover-class="card-hover" bindtap="open">
+  <image class="chapter-cover" src="{{chapter.cover}}" mode="aspectFill" />
+  <view class="chapter-shade"></view>
+  <view wx:if="{{!compact}}" class="cover-note"><text>一些温柔的日常，
+正在让你成为更好的人。</text><text>Still Ongoing …</text></view>
+  <view class="chapter-content">
+    <view class="chapter-caption"><text class="chapter-season">{{chapter.englishTitle}}</text><text wx:if="{{compact}}" class="chapter-more">···</text></view>
+    <text class="chapter-title">{{chapter.title}}</text>
+    <view class="chapter-summary"><text class="chapter-day">第 {{chapter.dayCurrent}} / {{chapter.dayTotal}} 天</text><text wx:if="{{!compact}}" class="chapter-quote">“{{chapter.description}}”</text></view>
+    <view class="chapter-progress-row"><view class="progress-track"><view class="progress-fill" style="width: {{chapter.progress}}%"></view></view><text>{{chapter.progress}}%</text></view>
+    <text wx:if="{{compact}}" class="chapter-copy">“{{chapter.description}}”</text>
+  </view>
+</button>

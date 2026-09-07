@@ -1,0 +1,52 @@
+<view class="page-shell safe-bottom">
+  <navigation-bar title="{{id ? '编辑 Moment' : '留下 Moment'}}" background="#F6F3ED" color="#26312B" />
+  <view class="moment-editor page-pad">
+    <view class="editor-head">
+      <text class="eyebrow">RIGHT HERE, RIGHT NOW</text>
+      <text class="editor-title brand-serif">此刻，想留下什么？</text>
+      <text class="editor-lead">不用写得完整，一个画面或一句话就很好。</text>
+    </view>
+
+    <scroll-view class="type-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="type-row"><button wx:for="{{momentTypes}}" wx:key="key" class="type-item {{activeType === item.key ? 'active' : ''}}" data-type="{{item.key}}" bindtap="selectType"><view><image src="/assets/icons/{{item.icon}}.svg" /></view><text>{{item.title}}</text></button></view>
+    </scroll-view>
+
+    <view class="canvas surface">
+      <view class="photo-area" wx:if="{{image}}"><image src="{{image}}" mode="aspectFill" /><button class="remove-media" bindtap="removePhoto" aria-label="移除图片">×</button></view>
+      <button wx:else class="photo-placeholder pressable" bindtap="choosePhoto"><view class="placeholder-icon"><image src="/assets/icons/image.svg" /></view><text>放进一张照片</text><text>图片暂时空着也没关系</text></button>
+      <textarea class="story-input" value="{{content}}" focus="{{autoFocus}}" auto-height maxlength="1000" bindinput="inputContent" placeholder="写下此刻想到的事…" placeholder-class="placeholder" />
+      <view class="canvas-tools">
+        <button class="canvas-tool" bindtap="choosePhoto"><image src="/assets/icons/camera.svg" /><text>照片</text></button>
+        <button class="canvas-tool" bindtap="choosePlace"><image src="/assets/icons/pin.svg" /><text>地点</text></button>
+        <button class="canvas-tool recording" bindtouchstart="startRecord" bindtouchend="stopRecord"><image src="/assets/icons/mic.svg" /><text>{{isRecording ? '松开保存' : '按住说话'}}</text></button>
+      </view>
+    </view>
+
+    <view wx:if="{{isRecording}}" class="recording-tip"><view class="recording-dot"></view><text>正在记录声音，松开即可保存</text></view>
+    <view wx:if="{{location}}" class="attachment surface"><view class="attachment-icon"><image src="/assets/icons/pin.svg" /></view><view><text class="attachment-title">{{location}}</text><text class="attachment-copy">这个片刻发生在这里</text></view><button bindtap="removePlace" aria-label="移除地点">×</button></view>
+    <view wx:if="{{voicePath}}" class="attachment voice surface"><view class="attachment-icon"><image src="/assets/icons/mic.svg" /></view><view><text class="attachment-title">一段声音 · {{voiceDuration}} 秒</text><text class="attachment-copy">声音已经收好</text></view><button bindtap="removeVoice" aria-label="移除声音">×</button></view>
+
+    <view class="meta-section surface">
+      <view class="meta-heading"><text class="meta-index">01</text><text class="meta-title">收进哪一章</text></view>
+      <picker mode="selector" range="{{chapters}}" range-key="title" value="{{chapterIndex}}" bindchange="chooseChapter"><view class="chapter-select"><view><text class="chapter-dot"></text><text>{{selectedChapterTitle || '请先创建 Chapter'}}</text></view><text>更换 ›</text></view></picker>
+    </view>
+
+    <view class="meta-section surface">
+      <view class="meta-heading"><text class="meta-index">02</text><text class="meta-title">此刻的心情</text></view>
+      <view class="mood-row"><button wx:for="{{moods}}" wx:key="name" class="mood-item {{mood === item.name ? 'active' : ''}}" data-mood="{{item.name}}" bindtap="chooseMood"><text class="mood-symbol">{{item.emoji}}</text><text>{{item.name}}</text></button></view>
+    </view>
+
+    <view class="meta-section surface">
+      <view class="meta-heading"><text class="meta-index">03</text><text class="meta-title">给片刻一点线索</text></view>
+      <view class="tags-row"><button wx:for="{{availableTags}}" wx:key="name" class="tag-choice {{item.selected ? 'active' : ''}}" data-tag="{{item.name}}" bindtap="toggleTag">#{{item.name}}</button></view>
+    </view>
+
+    <view class="meta-section surface">
+      <view class="meta-heading"><text class="meta-index">04</text><text class="meta-title">发生的时间</text></view>
+      <view class="datetime-row"><picker mode="date" value="{{momentDate}}" bindchange="chooseDate"><view class="datetime-field"><image src="/assets/icons/calendar.svg" /><text>{{momentDate}}</text></view></picker><picker mode="time" value="{{momentTime}}" bindchange="chooseTime"><view class="datetime-field time-field"><text>{{momentTime}}</text></view></picker></view>
+    </view>
+
+    <view class="save-area"><button class="primary-button save-button" disabled="{{!canSave || saving}}" bindtap="save">{{saving ? '正在收藏…' : '留下这个 Moment'}}</button><text class="save-copy">一张图片、一句话、一个地点，都可以成为 Moment。</text></view>
+  </view>
+</view>
+

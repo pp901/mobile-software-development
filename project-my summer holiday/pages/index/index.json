@@ -1,0 +1,10 @@
+{
+  "usingComponents": {
+    "chapter-card": "/components/chapter-card/chapter-card",
+    "moment-card": "/components/moment-card/moment-card",
+    "app-tabbar": "/components/app-tabbar/app-tabbar",
+    "navigation-bar": "/components/navigation-bar/navigation-bar"
+  },
+  "disableScroll": false,
+  "enablePullDownRefresh": true
+}

@@ -1,0 +1,34 @@
+<view class="page-shell tabbar-space">
+  <navigation-bar back="{{false}}" title="" background="#FAF7F1" />
+  <view class="home-header page-pad">
+    <text class="brand brand-serif">ongoing_</text>
+    <view class="header-actions">
+      <button class="round-action" bindtap="openSearch" aria-label="搜索"><image src="/assets/icons/search.svg" /></button>
+      <button class="avatar-button" bindtap="openProfile" aria-label="我的"><image src="/assets/images/chapter-summer.webp" mode="aspectFill" /></button>
+    </view>
+  </view>
+  <view class="intro page-pad">
+    <text class="intro-hand">未完，
+是更大的可能。</text>
+    <text class="intro-note">每一个平凡的瞬间，
+都值得被认真记录。</text>
+  </view>
+  <view class="page-pad">
+    <chapter-card wx:if="{{chapter}}" chapter="{{chapter}}" bind:open="openChapter" />
+    <view wx:else class="empty-state surface"><text class="empty-mark">＋</text><text class="empty-title">开启你的第一章</text><text class="empty-copy">一段假期、一次旅行，都值得被收藏。</text><button class="primary-button empty-button" bindtap="createChapter">开启新一章</button></view>
+    <button wx:if="{{ongoingCount > 1}}" class="switch-link" bindtap="switchChapter">切换章节 · {{ongoingCount}} 个进行中 ›</button>
+  </view>
+  <view wx:if="{{chapter}}" class="page-pad">
+    <view class="section-head"><text class="section-title">今天，想记录什么？</text><text class="section-note">随手记一条 ›</text></view>
+    <view class="quick-grid">
+      <button class="quick-item quick-photo" data-type="photo" bindtap="quickRecord"><image src="/assets/icons/camera.svg" /><text>拍照记录</text></button>
+      <button class="quick-item quick-text" data-type="text" bindtap="quickRecord"><image src="/assets/icons/pencil.svg" /><text>写点想法</text></button>
+      <button class="quick-item quick-voice" data-type="voice" bindtap="quickRecord"><image src="/assets/icons/mic.svg" /><text>语音记录</text></button>
+      <button class="quick-item quick-place" data-type="place" bindtap="quickRecord"><image src="/assets/icons/pin.svg" /><text>标记地点</text></button>
+    </view>
+    <view class="section-head"><text class="section-title">最新时刻</text><button class="section-link" bindtap="openChapter">查看更多 ›</button></view>
+    <view class="moment-list"><moment-card wx:for="{{moments}}" wx:key="id" moment="{{item}}" bind:open="openMoment" /></view>
+    <view wx:if="{{!moments.length}}" class="empty-state"><text class="empty-copy">生活的小事，等你写下第一笔。</text></view>
+  </view>
+  <app-tabbar active="now" />
+</view>

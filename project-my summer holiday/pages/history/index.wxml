@@ -1,0 +1,19 @@
+<view class="page-shell tabbar-space">
+  <navigation-bar back="{{false}}" title="" background="#FAF7F1" /><view class="history-head page-pad">
+    <view class="history-topline">
+      <text class="gallery-brand brand-serif">ongoing_</text>
+      <button class="new-chapter pressable" bindtap="createChapter"><text>＋</text><text>新一章</text></button>
+    </view>
+    
+    <text class="history-copy">每一段经历，都是你故事的一部分。</text>
+  </view>
+
+  <scroll-view class="tabs" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="tab-list page-pad"><button wx:for="{{tabs}}" wx:key="key" class="history-tab {{active === item.key ? 'active' : ''}}" data-key="{{item.key}}" bindtap="changeTab">{{item.label}}</button></view>
+  </scroll-view>
+
+  <view class="gallery page-pad" wx:if="{{chapters.length}}"><chapter-card wx:for="{{chapters}}" wx:key="id" chapter="{{item}}" compact bind:open="openChapter" /></view>
+  <view wx:else class="empty-state"><text class="empty-mark">＋</text><text class="empty-title">这里还没有故事</text><text class="empty-copy">开始一段新经历，它会在结束之后来到这里。</text><button class="secondary-button empty-action" bindtap="createChapter">开启新一章</button></view>
+
+  <app-tabbar active="history" />
+</view>

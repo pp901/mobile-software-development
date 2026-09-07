@@ -1,0 +1,49 @@
+<view class="onboarding">
+  <view class="onboarding-top">
+    <text class="mini-brand brand-serif">ongoing_</text>
+    <button class="skip" bindtap="enter">跳过引导</button>
+  </view>
+
+  <swiper class="story-swiper" current="{{current}}" bindchange="onChange" duration="420">
+    <swiper-item>
+      <view class="slide">
+        <view class="visual visual-one">
+          <image class="visual-photo" src="/assets/images/chapter-summer.webp" mode="aspectFill" />
+          <view class="visual-shade"></view>
+          <view class="visual-caption"><text class="eyebrow">ONE CHAPTER</text><text class="visual-title">为正在发生的生活，留一页位置。</text></view>
+        </view>
+        <view class="slide-copy-wrap"><text class="slide-index">01 / 03</text><text class="slide-title brand-serif">生活不是零散的日子</text><text class="slide-copy">为一段假期、一次旅行或一个目标开启 Chapter，让每个片刻都有来处。</text></view>
+      </view>
+    </swiper-item>
+
+    <swiper-item>
+      <view class="slide">
+        <view class="visual visual-two">
+          <view class="mini-card"><image src="/assets/images/moment-sunset.webp" mode="aspectFill" /><text>海边的傍晚</text><text>7月14日 · 青岛</text></view>
+          <view class="mini-card offset"><image src="/assets/images/moment-study.webp" mode="aspectFill" /><text>没有安排的上午</text><text>7月12日 · 窗边</text></view>
+          <view class="moment-dot">＋</view>
+        </view>
+        <view class="slide-copy-wrap"><text class="slide-index">02 / 03</text><text class="slide-title brand-serif">几秒，也能留下此刻</text><text class="slide-copy">照片、文字、声音或地点都可以。记录应该轻盈，不必把生活写成表格。</text></view>
+      </view>
+    </swiper-item>
+
+    <swiper-item>
+      <view class="slide">
+        <view class="visual visual-three">
+          <text class="review-label">SUMMER REVIEW · 2026</text>
+          <text class="review-number brand-serif">62</text>
+          <text class="review-unit">天，16 个被收藏的片刻</text>
+          <view class="review-strip"><image src="/assets/images/moment-study.webp" mode="aspectFill" /><image src="/assets/images/chapter-summer.webp" mode="aspectFill" /><image src="/assets/images/moment-sunset.webp" mode="aspectFill" /></view>
+          <text class="review-finish">COMPLETED · 已成章</text>
+        </view>
+        <view class="slide-copy-wrap"><text class="slide-index">03 / 03</text><text class="slide-title brand-serif">最后，它会成为故事</text><text class="slide-copy">当一章结束，照片、足迹、心情与愿望会被整理成一份只属于你的回望。</text></view>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <view class="bottom-actions">
+    <view class="dots"><view wx:for="{{[0,1,2]}}" wx:key="*this" class="dot {{current === item ? 'active' : ''}}"></view></view>
+    <button class="primary-button" bindtap="next">{{current === 2 ? '开始记录' : '下一页'}}<text class="button-arrow">→</text></button>
+  </view>
+</view>
+

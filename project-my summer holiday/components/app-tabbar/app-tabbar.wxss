@@ -1,0 +1,14 @@
+.tabbar { position:fixed; z-index:80; bottom:0; left:0; right:0; height:calc(108rpx + env(safe-area-inset-bottom)); padding:8rpx 80rpx env(safe-area-inset-bottom); display:flex; align-items:center; justify-content:space-between; border-top:1rpx solid #efeee7; background:rgba(252,250,245,.98); }
+.tab-item { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5rpx; width:108rpx; height:88rpx; color:#777c70; font-size:21rpx; }
+.tab-item image { width:41rpx; height:41rpx; opacity:.65; }.tab-item.is-active { color:#283529; font-weight:600; }.is-active image { opacity:1; }
+.create-button { width:90rpx; height:90rpx; border-radius:50%; background:#71866d; color:#fff; display:flex; align-items:center; justify-content:center; }
+.create-button text { font-size:64rpx; font-weight:200; line-height:1; margin-top:-5rpx; }
+.record-mask { position:fixed; z-index:100; top:0; bottom:0; left:0; right:0; background:rgba(33,34,26,.66); }
+.sheet-close { position:absolute; top:calc(95rpx + env(safe-area-inset-top)); right:32rpx; color:white; font-size:42rpx; width:68rpx; height:68rpx; }
+.record-sheet { position:absolute; bottom:0; left:0; right:0; border-radius:34rpx 34rpx 0 0; background:#faf7f0; padding:20rpx 34rpx calc(44rpx + env(safe-area-inset-bottom)); animation:sheet-in 220ms ease-out; }
+.sheet-handle { width:62rpx; height:7rpx; border-radius:4rpx; background:#b9b8ae; margin:0 auto 34rpx; }
+.sheet-title,.sheet-copy,.sheet-footer { display:block; text-align:center; }.sheet-title { font-family:"Songti SC",serif; font-size:36rpx; font-weight:600; }.sheet-copy { margin-top:10rpx; color:#939487; font-size:23rpx; }
+.record-options { display:flex; flex-wrap:wrap; justify-content:center; margin-top:36rpx; gap:32rpx 0; }.record-option { width:33.33%; display:flex; align-items:center; flex-direction:column; padding:8rpx 0; }.record-option:nth-child(-n+2) { width:44%; }
+.option-icon { width:105rpx; height:105rpx; display:flex; align-items:center; justify-content:center; border-radius:50%; }.option-icon image { width:46rpx; height:46rpx; }.sage { background:#dce5d7; }.sand { background:#f3e4c9; }.rose { background:#f3dace; }
+.option-title { margin-top:14rpx; font-size:24rpx; }.option-copy { margin-top:6rpx; font-size:19rpx; color:#96988e; }.sheet-footer { color:#93968c; font-size:20rpx; margin-top:62rpx; }
+@keyframes sheet-in { from {transform:translateY(24rpx);opacity:.4;} to {transform:translateY(0);opacity:1;} }
