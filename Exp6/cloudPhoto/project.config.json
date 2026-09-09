@@ -1,0 +1,36 @@
+{
+  "description": "图片分享社区——小程序云开发综合实验（云数据库/云存储/云函数）",
+  "setting": {
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "uglifyFileName": false,
+    "enhance": true,
+    "packNpmRelationList": [],
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "useCompilerPlugins": false,
+    "compileWorklet": false,
+    "uploadWithSourceMap": true,
+    "packNpmManually": false,
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "condition": false
+  },
+  "compileType": "miniprogram",
+  "libVersion": "3.17.2",
+  "cloudfunctionRoot": "cloudfunctions/",
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "appid": "wxbda0de1c39652c2d",
+  "projectname": "cloudPhoto",
+  "editorSetting": {}
+}

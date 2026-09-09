@@ -1,0 +1,39 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/my/my",
+    "pages/homepage/homepage",
+    "pages/detail/detail",
+    "pages/add/add"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#0A5BA8",
+    "navigationBarTitleText": "图片分享社区",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F4F7FB",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#8A9AA9",
+    "selectedColor": "#0A5BA8",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/tabbar/home.png",
+        "selectedIconPath": "assets/tabbar/home-on.png"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "text": "我的",
+        "iconPath": "assets/tabbar/user.png",
+        "selectedIconPath": "assets/tabbar/user-on.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

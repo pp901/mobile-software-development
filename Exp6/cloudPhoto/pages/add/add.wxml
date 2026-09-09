@@ -1,0 +1,75 @@
+<view class="page">
+
+  <!-- 个人信息卡片（始终可见，随时可改） -->
+  <view class="panel">
+    <view class="panel-title">个人信息</view>
+
+    <view class="profile-row">
+      <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill" />
+        <view wx:else class="avatar-img avatar-empty">
+          <text>选头像</text>
+        </view>
+      </button>
+      <view class="profile-col">
+        <input class="nickname-input" type="nickname" placeholder="填写昵称" placeholder-class="nickname-placeholder"
+               value="{{nickName}}" bindinput="onNickInput" />
+        <picker mode="region" value="{{regionValue}}" bindchange="onRegionChange">
+          <view class="region-row" hover-class="region-hover">
+            <text class="region-value {{province ? '' : 'region-empty'}}">{{province ? province + ' · ' + country : '点击选择所在地区'}}</text>
+            <text class="region-arrow">›</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+    <text class="profile-tip">头像、昵称和地区将展示在你发布的图片下方</text>
+  </view>
+
+  <!-- 发布卡片 -->
+  <view class="panel">
+    <view class="panel-title">发布新分享</view>
+
+    <!-- 已选图片缩略图（可多选、逐张移除、继续追加） -->
+    <scroll-view class="pick-list" scroll-x="{{true}}" wx:if="{{tempPaths.length}}">
+      <view class="pick-thumb" wx:for="{{tempPaths}}" wx:key="*this">
+        <image class="thumb-img" src="{{item}}" mode="aspectFill" />
+        <view class="pick-remove" catchtap="removeOne" data-index="{{index}}">×</view>
+        <view class="pick-order">{{index + 1}}</view>
+      </view>
+      <view class="pick-add" wx:if="{{tempPaths.length < 9}}" bindtap="chooseImage">＋</view>
+    </scroll-view>
+
+    <!-- 空状态：点击选图 -->
+    <view class="pick-zone" wx:else bindtap="chooseImage">
+      <view class="pick-empty">
+        <view class="pick-plus">＋</view>
+        <text class="pick-text">点击选择图片（一次可选多张）</text>
+      </view>
+    </view>
+
+    <!-- 描述输入 -->
+    <input class="desc-input" placeholder="写点文案，配得上这张图（可选）" placeholder-class="desc-placeholder"
+           value="{{desc}}" bindinput="onDescInput" maxlength="60" />
+
+    <!-- 发布按钮 -->
+    <button class="grad-btn publish-btn" bindtap="publish">发布到社区</button>
+  </view>
+
+  <!-- 我的分享历史 -->
+  <view class="panel">
+    <view class="panel-title">我的分享（{{historyPhotos.length}}）</view>
+    <text class="history-tip">点击全屏预览 · 长按删除</text>
+
+    <view class="grid" wx:if="{{historyPhotos.length}}">
+      <image wx:for="{{historyPhotos}}" wx:key="_id" class="grid-item" src="{{item.photoUrl}}" mode="aspectFill" lazy-load
+             hover-class="grid-hover"
+             bindtap="previewHistory" data-url="{{item.photoUrl}}"
+             bindlongpress="deleteHistory" data-id="{{item._id}}"></image>
+    </view>
+
+    <view class="empty empty-small" wx:else>
+      <view class="empty-wave"></view>
+      <view class="empty-text">还没有发布过图片</view>
+    </view>
+  </view>
+</view>

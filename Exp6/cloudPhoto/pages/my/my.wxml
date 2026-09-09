@@ -1,0 +1,84 @@
+<view class="page">
+
+  <!-- 波浪头部（当前登录用户） -->
+  <view class="wave-header">
+    <view class="wave w1"></view>
+    <view class="wave w2"></view>
+    <view class="wave w3"></view>
+
+    <block wx:if="{{profile}}">
+      <image class="avatar" src="{{profile.avatarUrl}}" mode="aspectFill" />
+      <view class="nickName">{{profile.nickName}}</view>
+      <view class="badge">{{profile.province ? profile.province + ' ' + profile.country : '图片分享社区'}}</view>
+    </block>
+    <block wx:else>
+      <view class="avatar avatar-empty">
+        <text>未设置</text>
+      </view>
+      <view class="nickName">还没有个人资料</view>
+      <view class="badge" bindtap="goPublish">去设置头像和昵称 ›</view>
+    </block>
+  </view>
+
+  <!-- 数据统计 -->
+  <view class="stats">
+    <view class="stat">
+      <view class="stat-num">{{photoList.length}}</view>
+      <view class="stat-label">我的分享</view>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat">
+      <view class="stat-num">{{likeTotal}}</view>
+      <view class="stat-label">获赞</view>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat">
+      <view class="stat-num">{{commentTotal}}</view>
+      <view class="stat-label">发出的评论</view>
+    </view>
+  </view>
+
+  <!-- 我的分享网格 -->
+  <view class="grid-panel">
+    <view class="list-header">
+      <view class="list-header-line"></view>
+      <text class="list-header-text">我的分享</text>
+      <text class="list-header-note">长按可删除</text>
+    </view>
+
+    <view class="grid" wx:if="{{photoList.length}}">
+      <view class="grid-cell" wx:for="{{photoList}}" wx:key="_id" hover-class="grid-hover"
+            bindtap="goToDetail" data-id="{{item._id}}"
+            bindlongpress="deletePhoto" data-id="{{item._id}}">
+        <image class="grid-img" src="{{item.photoUrl}}" mode="aspectFill" lazy-load />
+        <view class="grid-mask" wx:if="{{item.desc}}">
+          <text class="grid-desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty" wx:else>
+      <view class="empty-wave"></view>
+      <view class="empty-text">还没有发布过图片，去首页发布第一张吧</view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-panel">
+    <view class="menu-item" hover-class="menu-hover" bindtap="goPublish">
+      <view class="menu-icon mi-publish"></view>
+      <text class="menu-text">去发布新分享</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" hover-class="menu-hover" bindtap="seedData">
+      <view class="menu-icon mi-seed"></view>
+      <text class="menu-text">一键生成演示数据</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" hover-class="menu-hover" bindtap="showAbout">
+      <view class="menu-icon mi-about"></view>
+      <text class="menu-text">关于图片分享社区</text>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+</view>

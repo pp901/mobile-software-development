@@ -1,0 +1,256 @@
+/* ===== 发布页样式 ===== */
+
+/* ---- 个人信息 ---- */
+.profile-row {
+  display: flex;
+  align-items: center;
+  margin-top: 26rpx;
+}
+
+.avatar-btn {
+  width: 128rpx;
+  height: 128rpx;
+  padding: 0;
+  margin: 0 28rpx 0 0;
+  border-radius: 50%;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar-btn::after {
+  border: none;
+}
+
+.avatar-img {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 50%;
+  background: #E8EEF5;
+}
+
+.avatar-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx dashed #B7C8DA;
+  box-sizing: border-box;
+  font-size: 24rpx;
+  color: #8A9AA9;
+}
+
+.profile-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.nickname-input {
+  height: 84rpx;
+  background: #F4F7FB;
+  border-radius: 42rpx;
+  padding: 0 32rpx;
+  font-size: 28rpx;
+  color: #17324D;
+}
+
+.nickname-placeholder {
+  color: #AEBACB;
+}
+
+/* 地区选择行 */
+.region-row {
+  display: flex;
+  align-items: center;
+  height: 64rpx;
+  margin-top: 14rpx;
+  padding: 0 32rpx;
+  background: #F4F7FB;
+  border-radius: 32rpx;
+}
+
+.region-hover {
+  opacity: 0.75;
+}
+
+.region-value {
+  flex: 1;
+  font-size: 25rpx;
+  color: #17324D;
+}
+
+.region-empty {
+  color: #AEBACB;
+}
+
+.region-arrow {
+  font-size: 30rpx;
+  color: #C9CED6;
+  margin-left: 12rpx;
+}
+
+.profile-tip {
+  display: block;
+  font-size: 22rpx;
+  color: #AEBACB;
+  margin-top: 22rpx;
+  line-height: 1.5;
+}
+
+/* ---- 已选图片缩略图列表 ---- */
+.pick-list {
+  white-space: nowrap;
+  margin-top: 26rpx;
+}
+
+.pick-thumb {
+  position: relative;
+  display: inline-block;
+  width: 200rpx;
+  height: 200rpx;
+  margin-right: 16rpx;
+}
+
+.thumb-img {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 16rpx;
+  background: #E8EEF5;
+}
+
+.pick-remove {
+  position: absolute;
+  right: -12rpx;
+  top: -12rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: rgba(7, 30, 56, 0.6);
+  color: #ffffff;
+  font-size: 30rpx;
+  line-height: 40rpx;
+  text-align: center;
+}
+
+.pick-order {
+  position: absolute;
+  left: 10rpx;
+  bottom: 10rpx;
+  min-width: 36rpx;
+  height: 36rpx;
+  padding: 0 8rpx;
+  border-radius: 18rpx;
+  background: rgba(7, 30, 56, 0.5);
+  color: #ffffff;
+  font-size: 20rpx;
+  text-align: center;
+  line-height: 36rpx;
+  box-sizing: border-box;
+}
+
+.pick-add {
+  display: inline-block;
+  vertical-align: top;
+  width: 200rpx;
+  height: 200rpx;
+  border: 3rpx dashed #B7C8DA;
+  border-radius: 16rpx;
+  background: #F7FAFD;
+  color: #0A5BA8;
+  font-size: 64rpx;
+  font-weight: 300;
+  text-align: center;
+  line-height: 190rpx;
+  box-sizing: border-box;
+}
+
+/* ---- 空状态选图区 ---- */
+.pick-zone {
+  height: 340rpx;
+  margin-top: 26rpx;
+}
+
+.pick-empty {
+  height: 340rpx;
+  border: 3rpx dashed #B7C8DA;
+  border-radius: 20rpx;
+  background: #F7FAFD;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.pick-plus {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 50%;
+  background: #EAF5FD;
+  color: #0A5BA8;
+  font-size: 56rpx;
+  line-height: 88rpx;
+  text-align: center;
+  font-weight: 600;
+}
+
+.pick-text {
+  font-size: 25rpx;
+  color: #8A9AA9;
+  margin-top: 20rpx;
+}
+
+/* ---- 描述输入 ---- */
+.desc-input {
+  height: 84rpx;
+  background: #F4F7FB;
+  border-radius: 42rpx;
+  padding: 0 32rpx;
+  font-size: 27rpx;
+  color: #17324D;
+  margin-top: 22rpx;
+}
+
+.desc-placeholder {
+  color: #AEBACB;
+}
+
+/* ---- 发布按钮 ---- */
+.publish-btn {
+  margin-top: 28rpx;
+}
+
+/* ---- 我的分享历史 ---- */
+.history-tip {
+  display: block;
+  font-size: 22rpx;
+  color: #AEBACB;
+  margin-top: 12rpx;
+}
+
+.grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 22rpx;
+}
+
+.grid-item {
+  width: 202rpx;
+  height: 202rpx;
+  border-radius: 14rpx;
+  background: #E8EEF5;
+  margin: 0 11rpx 11rpx 0;
+}
+
+.grid-hover {
+  opacity: 0.75;
+  transform: scale(0.96);
+}
+
+.empty-small {
+  padding: 40rpx 0 20rpx;
+}

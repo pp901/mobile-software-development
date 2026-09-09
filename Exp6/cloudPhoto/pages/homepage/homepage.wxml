@@ -1,0 +1,55 @@
+<view class="page">
+
+  <!-- 波浪头部 -->
+  <view class="wave-header">
+    <view class="wave w1"></view>
+    <view class="wave w2"></view>
+    <view class="wave w3"></view>
+
+    <block wx:if="{{author}}">
+      <image class="avatar" src="{{author.avatarUrl}}" mode="aspectFill" />
+      <view class="nickName">{{author.nickName}}</view>
+      <view class="badge">{{author.province ? author.province + ' ' + author.country : '神秘星球'}}</view>
+    </block>
+    <block wx:else>
+      <view class="nickName">这位朋友</view>
+      <view class="badge">还没有留下足迹</view>
+    </block>
+  </view>
+
+  <!-- 数据统计 -->
+  <view class="stats">
+    <view class="stat">
+      <view class="stat-num">{{photoList.length}}</view>
+      <view class="stat-label">分享</view>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat">
+      <view class="stat-num">{{likeTotal}}</view>
+      <view class="stat-label">获赞</view>
+    </view>
+  </view>
+
+  <!-- 图片网格 -->
+  <view class="grid-panel">
+    <view class="list-header">
+      <view class="list-header-line"></view>
+      <text class="list-header-text">TA 的分享</text>
+    </view>
+
+    <view class="grid" wx:if="{{photoList.length}}">
+      <view class="grid-cell" wx:for="{{photoList}}" wx:key="_id" hover-class="grid-hover"
+            bindtap="goToDetail" data-id="{{item._id}}">
+        <image class="grid-img" src="{{item.photoUrl}}" mode="aspectFill" lazy-load />
+        <view class="grid-mask" wx:if="{{item.desc}}">
+          <text class="grid-desc">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty" wx:else>
+      <view class="empty-wave"></view>
+      <view class="empty-text">该用户还没有分享过图片</view>
+    </view>
+  </view>
+</view>

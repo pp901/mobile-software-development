@@ -1,0 +1,253 @@
+/* ===== 首页样式 ===== */
+
+/* ---- 搜索栏 ---- */
+.search-bar {
+  margin-bottom: 24rpx;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  height: 76rpx;
+  background: #ffffff;
+  border-radius: 38rpx;
+  padding: 0 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(10, 60, 120, 0.06);
+}
+
+/* CSS 放大镜 */
+.search-icon {
+  width: 22rpx;
+  height: 22rpx;
+  border: 4rpx solid #8A9AA9;
+  border-radius: 50%;
+  position: relative;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.search-icon::after {
+  content: '';
+  position: absolute;
+  right: -10rpx;
+  bottom: -8rpx;
+  width: 12rpx;
+  height: 4rpx;
+  background: #8A9AA9;
+  border-radius: 2rpx;
+  transform: rotate(45deg);
+}
+
+.search-input {
+  flex: 1;
+  height: 60rpx;
+  font-size: 27rpx;
+  color: #17324D;
+}
+
+.search-placeholder {
+  color: #AEBACB;
+}
+
+.search-clear {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: #E3EAF3;
+  color: #8A9AA9;
+  font-size: 30rpx;
+  text-align: center;
+  line-height: 36rpx;
+  flex-shrink: 0;
+}
+
+/* ---- 发布引导横幅 ---- */
+.cta-banner {
+  display: flex;
+  align-items: center;
+  border-radius: 24rpx;
+  padding: 30rpx 32rpx;
+  margin-bottom: 24rpx;
+  background: linear-gradient(120deg, #0A5BA8, #3AA6DC 55%, #5BC8E8);
+  box-shadow: 0 10rpx 30rpx rgba(10, 91, 168, 0.28);
+}
+
+.cta-hover {
+  opacity: 0.88;
+  transform: scale(0.99);
+}
+
+.cta-texts {
+  flex: 1;
+  min-width: 0;
+}
+
+.cta-title {
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 700;
+  letter-spacing: 1rpx;
+}
+
+.cta-sub {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 23rpx;
+  margin-top: 8rpx;
+}
+
+.cta-go {
+  flex-shrink: 0;
+  margin-left: 20rpx;
+  padding: 12rpx 26rpx;
+  border-radius: 30rpx;
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  font-size: 25rpx;
+  font-weight: 600;
+}
+
+/* ---- 精选轮播 ---- */
+.swiper-wrap {
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 10rpx 30rpx rgba(10, 91, 168, 0.18);
+}
+
+.swiper {
+  height: 360rpx;
+  width: 100%;
+}
+
+.slide {
+  position: relative;
+  height: 360rpx;
+}
+
+.slide-img {
+  width: 750rpx;
+  height: 360rpx;
+}
+
+.slide-mask {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 200rpx;
+  background: linear-gradient(to top, rgba(7, 30, 56, 0.78), rgba(7, 30, 56, 0));
+}
+
+.slide-caption {
+  position: absolute;
+  left: 24rpx;
+  right: 24rpx;
+  bottom: 20rpx;
+}
+
+.slide-title {
+  color: #ffffff;
+  font-size: 30rpx;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 10rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* ---- 骨架屏 ---- */
+.sk-card {
+  pointer-events: none;
+}
+
+.sk-head {
+  height: 136rpx;
+  border-radius: 0;
+}
+
+.sk-photo {
+  height: 380rpx;
+  border-radius: 0;
+}
+
+/* ---- 悬浮发布按钮（CSS 相机图标） ---- */
+.fab {
+  position: fixed;
+  right: 36rpx;
+  bottom: 90rpx;
+  z-index: 100;
+}
+
+.fab button {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  line-height: 1;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0A5BA8, #3AA6DC);
+  box-shadow: 0 12rpx 32rpx rgba(10, 91, 168, 0.38);
+}
+
+.fab button::after {
+  border: none;
+}
+
+.fab button:active {
+  transform: scale(0.94);
+  transition: transform 0.1s ease;
+}
+
+.fab-cam {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 相机机身 */
+.cam-body {
+  position: relative;
+  width: 58rpx;
+  height: 42rpx;
+  border: 5rpx solid #ffffff;
+  border-radius: 10rpx;
+  box-sizing: border-box;
+  margin-top: 4rpx;
+}
+
+/* 相机顶部取景器凸起 */
+.cam-bump {
+  position: absolute;
+  top: -12rpx;
+  left: 50%;
+  margin-left: -13rpx;
+  width: 26rpx;
+  height: 12rpx;
+  background: #ffffff;
+  border-radius: 6rpx 6rpx 0 0;
+}
+
+/* 相机镜头 */
+.cam-lens {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16rpx;
+  height: 16rpx;
+  border: 5rpx solid #ffffff;
+  border-radius: 50%;
+  margin: -13rpx 0 0 -13rpx;
+  box-sizing: border-box;
+}
+
+.fab-label {
+  font-size: 22rpx;
+  font-weight: 500;
+  margin-top: 8rpx;
+  letter-spacing: 2rpx;
+}

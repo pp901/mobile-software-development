@@ -1,0 +1,106 @@
+<view class="page">
+
+  <!-- 头部浅蓝渐变衬底 + 完整图片卡片（点击全屏预览） -->
+  <view class="hero-backdrop">
+    <view class="photo-wrap">
+      <!-- 多图：轮播浏览（按图片实际比例动态调整高度） -->
+      <swiper wx:if="{{photo.photoUrls.length > 1}}" class="photo-swiper"
+              style="height: {{swiperHeight}}px"
+              indicator-dots="{{true}}" indicator-color="rgba(255,255,255,0.4)"
+              indicator-active-color="#ffffff" circular="{{true}}"
+              bindchange="onSlideChange">
+        <swiper-item wx:for="{{photo.photoUrls}}" wx:key="*this">
+          <image class="full-photo" src="{{item}}" mode="widthFix"
+                 bindtap="previewPhoto" data-index="{{index}}"
+                 bindload="onImgLoad" data-index="{{index}}" />
+        </swiper-item>
+      </swiper>
+      <!-- 单图：完整显示 -->
+      <image wx:else class="full-photo" src="{{photo.photoUrl}}" mode="widthFix" bindtap="previewPhoto" />
+      <view class="photo-date" wx:if="{{photo}}">{{photo.addDate}}</view>
+    </view>
+  </view>
+
+  <!-- 正文卡片 -->
+  <view class="panel body-panel" wx:if="{{photo}}">
+    <!-- 作者信息 -->
+    <view class="author-row" bindtap="goToHomepage">
+      <image class="author-avatar" src="{{photo.avatarUrl}}" mode="aspectFill" />
+      <view class="author-info">
+        <view class="author-name">{{photo.nickName}}</view>
+        <view class="author-region" wx:if="{{photo.province}}">{{photo.province + ', ' + photo.country}}</view>
+      </view>
+      <view class="author-arrow">主页 ›</view>
+    </view>
+
+    <view class="divider"></view>
+
+    <!-- 图片文案 -->
+    <view class="desc-block" wx:if="{{photo.desc}}">
+      <text class="desc"><text class="qm">「 </text>{{photo.desc}}<text class="qm"> 」</text></text>
+      <view class="desc-wave"></view>
+    </view>
+    <view class="desc-empty" wx:else>TA 没有留下文案</view>
+
+    <!-- 作者专属操作 -->
+    <view class="own-actions" wx:if="{{isMine}}">
+      <view class="own-btn" hover-class="own-hover" bindtap="editDesc">✎ 编辑描述</view>
+      <view class="own-btn own-danger" hover-class="own-hover" bindtap="deletePhoto">✕ 删除图片</view>
+    </view>
+  </view>
+
+  <!-- 评论区 -->
+  <view class="panel comment-panel" id="commentSection">
+    <view class="panel-title">评论（{{comments.length}}）</view>
+
+    <!-- 评论列表（长按删除自己的评论） -->
+    <view class="comment-item" wx:for="{{comments}}" wx:key="_id"
+          bindlongpress="deleteComment" data-id="{{item._id}}" data-openid="{{item._openid}}">
+      <image wx:if="{{item.avatarUrl}}" class="comment-avatar" src="{{item.avatarUrl}}" mode="aspectFill" />
+      <view wx:else class="comment-avatar comment-avatar-empty"></view>
+      <view class="comment-main">
+        <view class="comment-head">
+          <text class="comment-nick">{{item.nickName}}</text>
+          <text class="comment-date">{{item.addDate}}</text>
+        </view>
+        <text class="comment-content">{{item.content}}</text>
+      </view>
+    </view>
+
+    <view class="empty empty-small" wx:if="{{!comments.length}}">
+      <view class="empty-wave"></view>
+      <view class="empty-text">还没有评论，来抢沙发吧</view>
+    </view>
+
+    <!-- 评论输入 -->
+    <view class="comment-input-box">
+      <input class="comment-input" placeholder="友善评论..." placeholder-class="comment-placeholder"
+             value="{{commentContent}}" bindinput="onCommentInput" confirm-type="send" bindconfirm="submitComment" />
+      <button class="comment-send" size="mini" bindtap="submitComment">发送</button>
+    </view>
+  </view>
+
+  <!-- 底部操作栏：点赞 / 下载 / 分享（CSS 线性图标） -->
+  <view class="action-bar">
+    <view class="action-btn {{liked ? 'like-on' : ''}} {{likePopping ? 'popping' : ''}}" hover-class="action-hover" bindtap="likeTap">
+      <view class="i-heart"></view>
+      <text class="action-label {{liked ? 'label-on' : ''}}">{{likeCount ? likeCount : '点赞'}}</text>
+    </view>
+    <view class="action-btn" hover-class="action-hover" bindtap="downloadPhoto">
+      <view class="i-download">
+        <view class="dl-line"></view>
+        <view class="dl-head"></view>
+        <view class="dl-tray"></view>
+      </view>
+      <text class="action-label">下载</text>
+    </view>
+    <button class="action-btn action-share" open-type="share" hover-class="action-hover">
+      <view class="i-share">
+        <view class="sh-box"></view>
+        <view class="sh-arrow"></view>
+        <view class="sh-head"></view>
+      </view>
+      <text class="action-label">分享</text>
+    </button>
+  </view>
+</view>

@@ -1,0 +1,177 @@
+/* ===== 个人主页样式 ===== */
+.page {
+  padding: 0 24rpx 40rpx;
+}
+
+/* ---- 波浪头部 ---- */
+.wave-header {
+  position: relative;
+  height: 430rpx;
+  margin: 0 -24rpx 0;
+  background: linear-gradient(160deg, #0A5BA8, #3AA6DC);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* 为底部悬浮统计卡预留空间，避免徽章被遮挡 */
+  padding-bottom: 60rpx;
+  box-sizing: border-box;
+}
+
+/* CSS 波浪装饰 */
+.wave {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.10);
+}
+
+.wave.w1 {
+  width: 420rpx;
+  height: 420rpx;
+  left: -120rpx;
+  bottom: -260rpx;
+}
+
+.wave.w2 {
+  width: 520rpx;
+  height: 520rpx;
+  right: -180rpx;
+  bottom: -340rpx;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.wave.w3 {
+  width: 240rpx;
+  height: 240rpx;
+  left: 200rpx;
+  bottom: -200rpx;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.wave-header .avatar {
+  width: 176rpx;
+  height: 176rpx;
+  border-radius: 50%;
+  border: 10rpx solid rgba(255, 255, 255, 0.9);
+  background: #E8EEF5;
+  box-shadow: 0 10rpx 30rpx rgba(7, 30, 56, 0.25);
+  position: relative;
+  z-index: 2;
+}
+
+.wave-header .nickName {
+  position: relative;
+  z-index: 2;
+  margin-top: 24rpx;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 2rpx;
+}
+
+.wave-header .badge {
+  position: relative;
+  z-index: 2;
+  margin-top: 12rpx;
+  padding: 4rpx 24rpx;
+  border-radius: 26rpx;
+  background: rgba(255, 255, 255, 0.20);
+  color: #ffffff;
+  font-size: 22rpx;
+  letter-spacing: 1rpx;
+}
+
+/* ---- 数据统计 ---- */
+.stats {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 24rpx;
+  margin-top: -34rpx;
+  position: relative;
+  z-index: 3;
+  padding: 26rpx 0;
+  box-shadow: 0 8rpx 30rpx rgba(10, 60, 120, 0.10);
+}
+
+.stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-num {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #0A5BA8;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #8A9AA9;
+  margin-top: 6rpx;
+}
+
+.stat-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: #EEF3F9;
+}
+
+/* ---- 图片网格 ---- */
+.grid-panel {
+  background: #ffffff;
+  border-radius: 28rpx;
+  margin-top: 24rpx;
+  padding: 24rpx 24rpx 28rpx;
+  box-sizing: border-box;
+  box-shadow: 0 8rpx 30rpx rgba(10, 60, 120, 0.10);
+}
+
+.grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.grid-cell {
+  position: relative;
+  width: 210rpx;
+  height: 210rpx;
+  border-radius: 14rpx;
+  overflow: hidden;
+  margin: 0 12rpx 12rpx 0;
+  background: #E8EEF5;
+}
+
+.grid-hover {
+  opacity: 0.78;
+  transform: scale(0.96);
+}
+
+.grid-img {
+  width: 100%;
+  height: 100%;
+}
+
+/* 底部渐变描述浮层 */
+.grid-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 30rpx 12rpx 10rpx;
+  background: linear-gradient(to top, rgba(7, 30, 56, 0.65), rgba(7, 30, 56, 0));
+}
+
+.grid-desc {
+  color: #ffffff;
+  font-size: 20rpx;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}

@@ -1,0 +1,128 @@
+<view class="page">
+
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-box">
+      <view class="search-icon"></view>
+      <input class="search-input" placeholder="搜索图片描述、分享者昵称" placeholder-class="search-placeholder"
+             value="{{searchKeyword}}" confirm-type="search" bindinput="onSearchInput" bindconfirm="doSearch" />
+      <view class="search-clear" wx:if="{{searchKeyword}}" bindtap="clearSearch">×</view>
+    </view>
+  </view>
+
+  <!-- 搜索结果视图 -->
+  <block wx:if="{{inSearch}}">
+    <view class="list-header">
+      <view class="list-header-line"></view>
+      <text class="list-header-text">找到 {{searchResults.length}} 条分享</text>
+      <text class="list-header-note" bindtap="clearSearch">返回社区</text>
+    </view>
+
+    <view class="photo-card" hover-class="card-hover" wx:for="{{searchResults}}" wx:key="_id"
+          bindtap="goToDetail" data-id="{{item._id}}">
+      <view class="card-head">
+        <image class="avatar" src="{{item.avatarUrl}}" mode="aspectFill" lazy-load />
+        <view class="who">
+          <view class="name">{{item.nickName}}</view>
+          <view class="region" wx:if="{{item.province}}">{{item.province + ', ' + item.country}}</view>
+        </view>
+        <text class="date">{{item.addDate}}</text>
+      </view>
+      <view class="card-photo-wrap">
+        <image class="card-photo" src="{{item.photoUrl}}" mode="widthFix" lazy-load />
+        <view class="photo-count" wx:if="{{item.photoUrls && item.photoUrls.length > 1}}">{{item.photoUrls.length}} 图</view>
+      </view>
+      <view class="card-desc" wx:if="{{item.desc}}"><text class="qm">「</text>{{item.desc}}<text class="qm">」</text></view>
+    </view>
+
+    <view class="empty" wx:if="{{!searchResults.length && !loading}}">
+      <view class="empty-wave"></view>
+      <view class="empty-text">未找到相关分享，换个关键词试试</view>
+    </view>
+  </block>
+
+  <!-- 社区常规视图 -->
+  <block wx:else>
+
+    <!-- 发布引导横幅 -->
+    <view class="cta-banner" hover-class="cta-hover" bindtap="goToPublish">
+      <view class="cta-texts">
+        <view class="cta-title">把美好瞬间分享给全世界</view>
+        <view class="cta-sub">拍一张照片，让更多人看到你的世界</view>
+      </view>
+      <view class="cta-go">去发布 ›</view>
+    </view>
+
+    <!-- 精选轮播（最新 3 条） -->
+    <view class="swiper-wrap" wx:if="{{swiperList.length}}">
+      <swiper class="swiper" indicator-dots="{{true}}" indicator-color="rgba(255,255,255,0.4)"
+              indicator-active-color="#ffffff" autoplay="{{true}}" interval="4500" duration="500" circular="{{true}}">
+        <swiper-item wx:for="{{swiperList}}" wx:key="_id">
+          <view class="slide" bindtap="goToDetail" data-id="{{item._id}}">
+            <image class="slide-img" src="{{item.photoUrl}}" mode="aspectFill" />
+            <view class="slide-mask"></view>
+            <view class="slide-caption">
+              <text class="tag tag-photo">{{item.nickName}} 的分享</text>
+              <view class="slide-title">{{item.desc || '看看这张图片'}}</view>
+            </view>
+          </view>
+        </swiper-item>
+      </swiper>
+    </view>
+
+    <!-- 列表标题 -->
+    <view class="list-header">
+      <view class="list-header-line"></view>
+      <text class="list-header-text">最新分享</text>
+      <text class="list-header-note">下拉可刷新</text>
+    </view>
+
+    <!-- 骨架屏 -->
+    <block wx:if="{{loading}}">
+      <view class="photo-card sk-card" wx:for="{{[1, 2]}}" wx:key="*this">
+        <view class="sk sk-head"></view>
+        <view class="sk sk-photo"></view>
+      </view>
+    </block>
+
+    <!-- 分享卡片流 -->
+    <block wx:else>
+      <view class="photo-card" hover-class="card-hover" wx:for="{{photoList}}" wx:key="_id"
+            bindtap="goToDetail" data-id="{{item._id}}">
+        <view class="card-head" catchtap="goToHomepage" data-openid="{{item._openid}}">
+          <image class="avatar" src="{{item.avatarUrl}}" mode="aspectFill" lazy-load />
+          <view class="who">
+            <view class="name">{{item.nickName}}</view>
+            <view class="region" wx:if="{{item.province}}">{{item.province + ', ' + item.country}}</view>
+          </view>
+          <text class="date">{{item.addDate}}</text>
+        </view>
+        <view class="card-photo-wrap">
+          <image class="card-photo" src="{{item.photoUrl}}" mode="widthFix" lazy-load />
+          <view class="photo-count" wx:if="{{item.photoUrls && item.photoUrls.length > 1}}">{{item.photoUrls.length}} 图</view>
+        </view>
+        <view class="card-desc" wx:if="{{item.desc}}"><text class="qm">「</text>{{item.desc}}<text class="qm">」</text></view>
+      </view>
+
+      <view class="empty" wx:if="{{!photoList.length}}">
+        <view class="empty-wave"></view>
+        <view class="empty-text">社区还没有内容，点击右下角发布第一张图片吧</view>
+      </view>
+
+      <view class="list-end" wx:if="{{photoList.length}}">— 已经到底啦 · 图片分享社区 —</view>
+    </block>
+
+    <!-- 悬浮发布按钮（CSS 相机图标） -->
+    <view class="fab">
+      <button open-type="getUserInfo" bindgetuserinfo="getUserInfo">
+        <view class="fab-cam">
+          <view class="cam-body">
+            <view class="cam-bump"></view>
+            <view class="cam-lens"></view>
+          </view>
+          <text class="fab-label">发布</text>
+        </view>
+      </button>
+    </view>
+  </block>
+</view>

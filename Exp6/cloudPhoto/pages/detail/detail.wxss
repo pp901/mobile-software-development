@@ -1,0 +1,459 @@
+/* ===== 图片详情页样式 ===== */
+.page {
+  padding: 0 24rpx 220rpx;
+}
+
+/* ---- 头部：浅蓝渐变衬底 + 完整图片卡片 ---- */
+.hero-backdrop {
+  margin: 0 -24rpx;
+  padding: 24rpx 24rpx 10rpx;
+  background: linear-gradient(180deg, #E3F0FB 0%, #F4F7FB 100%);
+}
+
+.photo-wrap {
+  position: relative;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 12rpx;
+  box-shadow: 0 10rpx 34rpx rgba(10, 60, 120, 0.14);
+}
+
+.full-photo {
+  width: 100%;
+  display: block;
+  border-radius: 16rpx;
+  background: #E8EEF5;
+}
+
+/* 多图轮播 */
+.photo-swiper {
+  width: 100%;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.photo-date {
+  position: absolute;
+  right: 26rpx;
+  bottom: 26rpx;
+  padding: 4rpx 20rpx;
+  border-radius: 24rpx;
+  background: rgba(7, 30, 56, 0.5);
+  color: #ffffff;
+  font-size: 22rpx;
+  letter-spacing: 1rpx;
+}
+
+/* ---- 正文卡片 ---- */
+.body-panel {
+  margin-top: 24rpx;
+}
+
+.author-row {
+  display: flex;
+  align-items: center;
+}
+
+.author-avatar {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 50%;
+  background: #E8EEF5;
+  border: 1rpx solid rgba(10, 60, 120, 0.08);
+  flex-shrink: 0;
+}
+
+.author-info {
+  margin-left: 20rpx;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.author-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #17324D;
+}
+
+.author-region {
+  font-size: 22rpx;
+  color: #8A9AA9;
+  margin-top: 4rpx;
+}
+
+.author-arrow {
+  margin-left: auto;
+  font-size: 23rpx;
+  color: #0A5BA8;
+  background: #EAF5FD;
+  padding: 8rpx 20rpx;
+  border-radius: 26rpx;
+  flex-shrink: 0;
+}
+
+.divider {
+  height: 2rpx;
+  background: #EEF3F9;
+  margin: 24rpx 0;
+}
+
+/* 图片文案：居中引号体 + 波浪分隔线 */
+.desc-block {
+  text-align: center;
+  padding: 6rpx 20rpx 0;
+}
+
+.desc {
+  font-size: 30rpx;
+  color: #3D4F63;
+  line-height: 1.9;
+  letter-spacing: 1rpx;
+}
+
+.qm {
+  color: #3AA6DC;
+  font-weight: 600;
+}
+
+.desc-wave {
+  width: 90rpx;
+  height: 26rpx;
+  border-radius: 26rpx;
+  background: #DCE9F6;
+  margin: 22rpx auto 4rpx;
+}
+
+.desc-empty {
+  text-align: center;
+  font-size: 25rpx;
+  color: #AEBACB;
+  padding: 12rpx 0;
+}
+
+/* ---- 作者专属操作 ---- */
+.own-actions {
+  display: flex;
+  margin-top: 26rpx;
+}
+
+.own-btn {
+  flex: 1;
+  height: 72rpx;
+  line-height: 72rpx;
+  text-align: center;
+  border-radius: 36rpx;
+  background: #F4F7FB;
+  color: #51606F;
+  font-size: 25rpx;
+}
+
+.own-btn.own-danger {
+  margin-left: 20rpx;
+  background: #FFF3F1;
+  color: #FF6B6B;
+}
+
+.own-hover {
+  opacity: 0.75;
+}
+
+/* ---- 评论区 ---- */
+.comment-panel {
+  margin-top: 24rpx;
+}
+
+.comment-item {
+  display: flex;
+  padding: 24rpx 0;
+  border-bottom: 2rpx solid #F2F3F5;
+}
+
+.comment-item:last-of-type {
+  border-bottom: none;
+}
+
+.comment-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  margin-right: 22rpx;
+  background: #E8EEF5;
+  flex-shrink: 0;
+}
+
+.comment-avatar-empty {
+  border: 1rpx dashed #B7C8DA;
+  box-sizing: border-box;
+}
+
+.comment-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.comment-nick {
+  font-size: 26rpx;
+  color: #0A5BA8;
+  font-weight: 600;
+}
+
+.comment-date {
+  font-size: 22rpx;
+  color: #C9CED6;
+}
+
+.comment-content {
+  font-size: 28rpx;
+  color: #2B3E52;
+  margin-top: 10rpx;
+  line-height: 1.55;
+}
+
+.empty-small {
+  padding: 36rpx 0 20rpx;
+}
+
+/* ---- 评论输入 ---- */
+.comment-input-box {
+  display: flex;
+  align-items: center;
+  margin-top: 26rpx;
+}
+
+.comment-input {
+  flex: 1;
+  height: 78rpx;
+  background: #F4F7FB;
+  border-radius: 39rpx;
+  padding: 0 32rpx;
+  font-size: 27rpx;
+  color: #17324D;
+}
+
+.comment-placeholder {
+  color: #AEBACB;
+}
+
+.comment-send {
+  margin-left: 20rpx;
+  height: 78rpx;
+  line-height: 78rpx;
+  padding: 0 36rpx;
+  border-radius: 39rpx;
+  font-size: 27rpx;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0A5BA8, #3AA6DC);
+}
+
+.comment-send::after {
+  border: none;
+}
+
+/* ---- 底部操作栏 ---- */
+.action-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 -6rpx 24rpx rgba(10, 60, 120, 0.08);
+  padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom));
+  z-index: 10;
+}
+
+.action-btn {
+  flex: 1;
+  height: 112rpx;
+  margin: 0 8rpx;
+  padding: 0;
+  border: none;
+  line-height: 1;
+  background: #F4F7FB;
+  border-radius: 22rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.action-btn:first-child {
+  margin-left: 0;
+}
+
+.action-btn:last-child {
+  margin-right: 0;
+}
+
+.action-hover {
+  opacity: 0.85;
+  transform: scale(0.97);
+}
+
+.action-label {
+  font-size: 22rpx;
+  color: #7A8CA0;
+  margin-top: 12rpx;
+}
+
+/* ---- CSS 线性图标：点赞（实心爱心） ---- */
+.i-heart {
+  position: relative;
+  width: 44rpx;
+  height: 38rpx;
+}
+
+.i-heart::before,
+.i-heart::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 22rpx;
+  height: 34rpx;
+  background: #7A8CA0;
+  border-radius: 22rpx 22rpx 0 0;
+}
+
+.i-heart::before {
+  left: 22rpx;
+  transform: rotate(-45deg);
+  transform-origin: 0 100%;
+}
+
+.i-heart::after {
+  left: 0;
+  transform: rotate(45deg);
+  transform-origin: 100% 100%;
+}
+
+/* 已点赞状态 */
+.action-btn.like-on {
+  background: #FFF3F1;
+  box-shadow: 0 6rpx 20rpx rgba(255, 106, 106, 0.22);
+}
+
+.action-btn.like-on .i-heart::before,
+.action-btn.like-on .i-heart::after {
+  background: #FF6B6B;
+}
+
+.action-btn.like-on .action-label,
+.action-btn .label-on {
+  color: #FF6B6B;
+  font-weight: 600;
+}
+
+/* 点赞心跳动画 */
+.action-btn.popping {
+  animation: heartBeat 0.5s ease;
+}
+
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.12); }
+  55% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+/* ---- CSS 线性图标：下载（竖线 + 下箭头 + 托盘） ---- */
+.i-download {
+  position: relative;
+  width: 44rpx;
+  height: 44rpx;
+}
+
+.dl-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 5rpx;
+  height: 24rpx;
+  margin-left: -2.5rpx;
+  background: #7A8CA0;
+  border-radius: 3rpx;
+}
+
+.dl-head {
+  position: absolute;
+  left: 50%;
+  top: 14rpx;
+  width: 16rpx;
+  height: 16rpx;
+  margin-left: -8rpx;
+  border-left: 5rpx solid #7A8CA0;
+  border-bottom: 5rpx solid #7A8CA0;
+  transform: rotate(-45deg);
+  box-sizing: border-box;
+}
+
+.dl-tray {
+  position: absolute;
+  left: 2rpx;
+  right: 2rpx;
+  bottom: 0;
+  height: 24rpx;
+  border-left: 5rpx solid #7A8CA0;
+  border-right: 5rpx solid #7A8CA0;
+  border-bottom: 5rpx solid #7A8CA0;
+  border-radius: 0 0 8rpx 8rpx;
+  box-sizing: border-box;
+}
+
+/* ---- CSS 线性图标：分享（开口方框 + 右上斜箭头） ---- */
+.i-share {
+  position: relative;
+  width: 44rpx;
+  height: 44rpx;
+}
+
+.sh-box {
+  position: absolute;
+  left: 5rpx;
+  top: 16rpx;
+  width: 34rpx;
+  height: 23rpx;
+  border-left: 5rpx solid #7A8CA0;
+  border-right: 5rpx solid #7A8CA0;
+  border-bottom: 5rpx solid #7A8CA0;
+  border-radius: 0 0 8rpx 8rpx;
+  box-sizing: border-box;
+}
+
+.sh-arrow {
+  position: absolute;
+  left: 12rpx;
+  top: 17rpx;
+  width: 25rpx;
+  height: 5rpx;
+  background: #7A8CA0;
+  border-radius: 3rpx;
+  transform: rotate(-45deg);
+  transform-origin: 0 50%;
+}
+
+.sh-head {
+  position: absolute;
+  left: 21rpx;
+  top: -3rpx;
+  width: 14rpx;
+  height: 14rpx;
+  border-top: 5rpx solid #7A8CA0;
+  border-right: 5rpx solid #7A8CA0;
+  box-sizing: border-box;
+}

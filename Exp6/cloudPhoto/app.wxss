@@ -1,0 +1,259 @@
+/* ===== 图片分享社区 · 全局样式（海洋蓝设计语言） ===== */
+
+page {
+  background: #F4F7FB;
+  color: #17324D;
+  font-size: 28rpx;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+}
+
+/* ---- 页面容器 ---- */
+.page {
+  padding: 24rpx 24rpx 40rpx;
+  box-sizing: border-box;
+}
+
+/* ---- 图片分享卡片（首页 / 搜索结果复用） ---- */
+.photo-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  margin-bottom: 24rpx;
+  box-shadow: 0 6rpx 24rpx rgba(10, 60, 120, 0.08);
+}
+
+/* 卡片页眉：头像 + 昵称 + 地区 */
+.photo-card .card-head {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 28rpx;
+}
+
+.photo-card .avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background: #E8EEF5;
+  border: 1rpx solid rgba(10, 60, 120, 0.08);
+  flex-shrink: 0;
+}
+
+.photo-card .who {
+  margin-left: 20rpx;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.photo-card .name {
+  font-size: 29rpx;
+  font-weight: 600;
+  color: #17324D;
+  letter-spacing: 1rpx;
+}
+
+.photo-card .region {
+  font-size: 22rpx;
+  color: #8A9AA9;
+  margin-top: 4rpx;
+  letter-spacing: 1rpx;
+}
+
+.photo-card .date {
+  margin-left: auto;
+  font-size: 22rpx;
+  color: #AEBACB;
+  flex-shrink: 0;
+}
+
+/* 卡片主体：图片（多图时右下角显示数量角标） */
+.card-photo-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.photo-card .card-photo {
+  width: 100%;
+  display: block;
+  background: #E8EEF5;
+}
+
+.photo-count {
+  position: absolute;
+  right: 18rpx;
+  bottom: 18rpx;
+  padding: 4rpx 18rpx;
+  border-radius: 24rpx;
+  background: rgba(7, 30, 56, 0.5);
+  color: #ffffff;
+  font-size: 22rpx;
+  letter-spacing: 1rpx;
+}
+
+/* 卡片文案：引号体 */
+.photo-card .card-desc {
+  margin: 22rpx 28rpx 26rpx;
+  font-size: 27rpx;
+  color: #4A5D72;
+  line-height: 1.8;
+  letter-spacing: 1rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* 引号装饰色 */
+.qm {
+  color: #3AA6DC;
+  font-weight: 600;
+}
+
+/* ---- 分类标签 ---- */
+.tag {
+  display: inline-block;
+  padding: 2rpx 14rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  line-height: 32rpx;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.tag-photo { background: #0A5BA8; }
+.tag-mine  { background: #FF6B6B; }
+
+/* ---- 列表标题（渐变竖条 + 粗体） ---- */
+.list-header {
+  display: flex;
+  align-items: center;
+  margin: 26rpx 4rpx 22rpx;
+}
+
+.list-header-line {
+  width: 8rpx;
+  height: 30rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(180deg, #0A5BA8, #3AA6DC);
+  margin-right: 14rpx;
+}
+
+.list-header-text {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #17324D;
+}
+
+.list-header-note {
+  margin-left: auto;
+  font-size: 22rpx;
+  color: #AEBACB;
+}
+
+/* ---- 列表结尾 ---- */
+.list-end {
+  text-align: center;
+  color: #AEBACB;
+  font-size: 24rpx;
+  padding: 20rpx 0 10rpx;
+}
+
+/* ---- 按压反馈 ---- */
+.card-hover {
+  opacity: 0.78;
+  transform: scale(0.985);
+}
+
+/* ---- 空状态（CSS 波浪） ---- */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 90rpx 0;
+}
+
+.empty .empty-wave {
+  width: 160rpx;
+  height: 60rpx;
+  border-radius: 60rpx;
+  background: #D8E6F5;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 24rpx;
+}
+
+.empty .empty-wave::after {
+  content: '';
+  position: absolute;
+  left: 30rpx;
+  top: 14rpx;
+  width: 100rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: #B7D2EC;
+}
+
+.empty .empty-text {
+  color: #8A9AA9;
+  font-size: 26rpx;
+}
+
+/* ---- 骨架屏 ---- */
+.sk {
+  background: #E9EFF6;
+  border-radius: 12rpx;
+  animation: skBlink 1.2s ease-in-out infinite;
+}
+
+@keyframes skBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ---- 白色分区卡片（发布页 / 主页 / 详情页通用） ---- */
+.panel {
+  background: #ffffff;
+  border-radius: 28rpx;
+  margin-bottom: 24rpx;
+  padding: 28rpx 30rpx;
+  box-sizing: border-box;
+  box-shadow: 0 8rpx 30rpx rgba(10, 60, 120, 0.10);
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #17324D;
+}
+
+.panel-title::before {
+  content: '';
+  width: 8rpx;
+  height: 30rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(180deg, #0A5BA8, #3AA6DC);
+  margin-right: 14rpx;
+}
+
+/* ---- 渐变主按钮 ---- */
+.grad-btn {
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0A5BA8, #3AA6DC);
+  box-shadow: 0 8rpx 24rpx rgba(10, 91, 168, 0.30);
+}
+
+.grad-btn::after {
+  border: none;
+}
+
+.grad-btn:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
