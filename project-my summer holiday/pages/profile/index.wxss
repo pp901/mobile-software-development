@@ -15,9 +15,11 @@
   border-radius: 50%;
   box-shadow: 0 8rpx 24rpx rgba(55, 70, 60, .12);
 }
+.avatar-picker{position:relative;width:126rpx;height:126rpx;flex:none;overflow:visible}.avatar-picker>text{position:absolute;right:-5rpx;bottom:-4rpx;padding:6rpx 10rpx;border-radius:10rpx;background:#f2bd42;color:#4b3608;font-size:16rpx;font-weight:700}.avatar-picker .avatar{display:block}
 .profile-copy { min-width: 0; flex: 1; }
 .name { display: block; font-family: Georgia, "Songti SC", serif; font-size: 36rpx; font-weight: 600; }
 .bio { display: block; margin-top: 11rpx; color: #69746c; font-size: 21rpx; line-height: 1.6; }
+.edit-hint{display:block;margin-top:6rpx;color:#9aa099;font-size:17rpx}
 
 .stats {
   margin-top: 38rpx;
@@ -31,7 +33,7 @@
 .divider { width: 1rpx; height: 54rpx; background: rgba(38, 49, 43, .11); }
 .settings { margin-top: 48rpx; }
 .group-title { display: block; margin: 38rpx 4rpx 16rpx; color: #7e8981; }
-.setting-group { overflow: hidden; padding: 0 26rpx; box-shadow: none; }
+.setting-group { overflow: hidden; padding: 0 26rpx; box-shadow:0 7rpx 0 rgba(43,72,54,.07),0 16rpx 28rpx rgba(43,72,54,.05); }
 .setting-row {
   width: 100%;
   min-height: 116rpx;
@@ -46,6 +48,7 @@
 .setting-name { font-size: 26rpx; font-weight: 500; }
 .setting-desc { margin-top: 7rpx; color: #929791; font-size: 21rpx; }
 .arrow { color: #a6aaa5; font-size: 38rpx; }
+.sync-dot{width:22rpx;height:22rpx;border-radius:50%;background:#f2bd42;box-shadow:0 0 0 8rpx #fff0b8}.sync-dot.online{background:#3f7055;box-shadow:0 0 0 8rpx #dcecdf}
 .danger-text { color: #ae6653; }
 .signature {
   padding: 82rpx 0 28rpx;

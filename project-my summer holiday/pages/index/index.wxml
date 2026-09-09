@@ -4,14 +4,14 @@
     <text class="brand brand-serif">ongoing_</text>
     <view class="header-actions">
       <button class="round-action" bindtap="openSearch" aria-label="搜索"><image src="/assets/icons/search.svg" /></button>
-      <button class="avatar-button" bindtap="openProfile" aria-label="我的"><image src="/assets/images/chapter-summer.webp" mode="aspectFill" /></button>
+      <button class="avatar-button" bindtap="openProfile" aria-label="我的"><image src="{{currentUser.avatar}}" mode="aspectFill" /></button>
     </view>
   </view>
   <view class="intro page-pad">
-    <text class="intro-hand">未完，
-是更大的可能。</text>
-    <text class="intro-note">每一个平凡的瞬间，
-都值得被认真记录。</text>
+    <text class="intro-hand">{{greeting}}，
+故事还在继续。</text>
+    <text class="intro-note">拍一张、写一句、说一段，
+3 秒也能留下此刻。</text>
   </view>
   <view class="page-pad">
     <chapter-card wx:if="{{chapter}}" chapter="{{chapter}}" bind:open="openChapter" />
@@ -24,11 +24,11 @@
       <button class="quick-item quick-photo" data-type="photo" bindtap="quickRecord"><image src="/assets/icons/camera.svg" /><text>拍照记录</text></button>
       <button class="quick-item quick-text" data-type="text" bindtap="quickRecord"><image src="/assets/icons/pencil.svg" /><text>写点想法</text></button>
       <button class="quick-item quick-voice" data-type="voice" bindtap="quickRecord"><image src="/assets/icons/mic.svg" /><text>语音记录</text></button>
-      <button class="quick-item quick-place" data-type="place" bindtap="quickRecord"><image src="/assets/icons/pin.svg" /><text>标记地点</text></button>
     </view>
     <view class="section-head"><text class="section-title">最新时刻</text><button class="section-link" bindtap="openChapter">查看更多 ›</button></view>
     <view class="moment-list"><moment-card wx:for="{{moments}}" wx:key="id" moment="{{item}}" bind:open="openMoment" /></view>
     <view wx:if="{{!moments.length}}" class="empty-state"><text class="empty-copy">生活的小事，等你写下第一笔。</text></view>
+    <button wx:if="{{echo}}" class="echo-card" bindtap="openMoment" data-id="{{echo.id}}"><image src="{{echo.image}}" mode="aspectFill"/><view><text class="eyebrow">MEMORY ECHO</text><text>过去的一刻，今天又想起。</text><text>{{echo.content}}</text></view></button>
   </view>
   <app-tabbar active="now" />
 </view>

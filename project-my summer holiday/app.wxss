@@ -2,21 +2,23 @@ page {
   --ink: #26312b;
   --ink-soft: #4f5852;
   --muted: #858a84;
-  --paper: #faf7f1;
+  --paper: #f7f3ea;
   --paper-deep: #eee9df;
   --white: #fffdf8;
-  --olive: #587362;
-  --olive-deep: #385344;
-  --olive-pale: #e4ece6;
+  --olive: #3f7055;
+  --olive-deep: #173f2d;
+  --olive-pale: #dcecdf;
   --oat: #e9dccb;
   --oat-pale: #f4eadc;
-  --sun: #e7bc72;
-  --sun-soft: #f8ecd3;
-  --coral: #c77c68;
-  --coral-soft: #f3e2dc;
+  --sun: #f2bd42;
+  --sun-soft: #fff0b8;
+  --coral: #ec765f;
+  --coral-soft: #ffe0d7;
+  --sky: #73a9d8;
+  --sky-soft: #dcebf6;
   --line: rgba(38, 49, 43, 0.09);
-  --shadow-soft: 0 10rpx 34rpx rgba(60, 67, 60, 0.07);
-  --shadow-float: 0 18rpx 48rpx rgba(49, 64, 55, 0.15);
+  --shadow-soft: 0 10rpx 0 rgba(23, 63, 45, .06), 0 22rpx 42rpx rgba(34, 57, 43, .08);
+  --shadow-float: 0 12rpx 0 rgba(20, 54, 39, .16), 0 26rpx 52rpx rgba(30, 54, 40, .18);
   min-height: 100%;
   background: var(--paper);
   color: var(--ink);
@@ -104,7 +106,7 @@ button::after { border: 0; }
 .primary-button {
   background: var(--olive-deep);
   color: #fff;
-  box-shadow: 0 12rpx 28rpx rgba(56, 83, 68, .18);
+  box-shadow: 0 8rpx 0 #0d2d20, 0 16rpx 28rpx rgba(23, 63, 45, .18);
 }
 
 .primary-button[disabled] {
@@ -113,14 +115,14 @@ button::after { border: 0; }
   color: rgba(255, 255, 255, .88);
 }
 
-.secondary-button { background: var(--olive-pale); color: var(--olive-deep); }
+.secondary-button { background: var(--sun-soft); color: #5b4310; box-shadow:0 6rpx 0 #e4cf88; }
 .danger-button { background: var(--coral-soft); color: #925340; }
 
 .surface {
   background: var(--white);
   border: 1rpx solid rgba(38, 49, 43, 0.055);
   border-radius: 26rpx;
-  box-shadow: none;
+  box-shadow: var(--shadow-soft);
 }
 
 .tag {

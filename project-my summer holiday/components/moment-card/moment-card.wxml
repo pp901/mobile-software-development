@@ -2,6 +2,8 @@
   <view class="photo-wrap">
     <image wx:if="{{moment.image}}" class="moment-photo" src="{{moment.image}}" mode="aspectFill" />
     <view wx:else class="moment-photo-placeholder"><text class="brand-serif">“</text><text>文字片刻</text></view>
+    <text wx:if="{{moment.imageCount > 1}}" class="photo-count">{{moment.imageCount}}</text>
+    <text wx:if="{{moment.status === 'DRAFT'}}" class="draft-badge">待补完</text>
   </view>
   <view class="moment-body">
     <view class="moment-meta">
@@ -10,6 +12,6 @@
     </view>
     <text class="moment-copy">{{moment.content || '画面已经替此刻说完了一切。'}}</text>
     <view class="moment-place" wx:if="{{moment.location}}"><text class="pin">⌖</text>{{moment.location}}</view>
-    <view class="moment-tags" wx:if="{{moment.tags.length}}"><text wx:for="{{moment.tags}}" wx:key="*this" class="mini-tag">#{{item}}</text></view>
+    <view class="moment-footer"><view class="creator"><image src="{{moment.creator.avatar}}" mode="aspectFill"/><text>{{moment.creator.nickname}}</text></view><text wx:if="{{moment.contributionCount}}" class="together">＋{{moment.contributionCount}} 补完</text></view>
   </view>
 </button>

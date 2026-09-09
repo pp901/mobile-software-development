@@ -1,0 +1,7 @@
+<view class="members-page" wx:if="{{chapter}}"><navigation-bar title="共同记录" background="#F7F3EA"/>
+  <view class="page-pad"><view class="members-hero"><view class="avatar-stack"><image wx:for="{{memberPreview}}" wx:key="id" src="{{item.avatar}}" mode="aspectFill"/></view><text class="hero-count">{{members.length}} 人在这一章</text><text class="hero-copy">每个人看到的风景，都能成为共同记忆的一部分。</text><button wx:if="{{chapter.isOwner}}" class="invite-button" open-type="share" disabled="{{!invite}}">{{invite ? '微信邀请朋友加入' : '正在准备邀请…'}}</button></view>
+  <view class="section-head"><text class="section-title">Chapter 成员</text><text class="member-limit">{{members.length}} 人</text></view>
+  <view class="member-list"><view class="member-row" wx:for="{{members}}" wx:key="id"><image src="{{item.avatar}}" mode="aspectFill"/><view><text>{{item.nickname}} {{item.isMe ? '· 我' : ''}}</text><text>{{item.isOwner ? '创建者 · ' : ''}}{{item.momentCount}} 个 Moment</text></view><button wx:if="{{chapter.isOwner && !item.isOwner}}" data-id="{{item.id}}" bindtap="removeMember">管理</button><text wx:else class="role">{{item.isOwner ? 'OWNER' : 'MEMBER'}}</text></view></view>
+  <view class="rule-card"><text>共同记录规则</text><text>成员只能编辑自己的 Moment；创建者管理成员并结束 Chapter。退出后，已经发布的 Moment 会保留。</text></view>
+  <button wx:if="{{!chapter.isOwner}}" class="leave-button" bindtap="leave">退出这一章</button></view>
+</view>

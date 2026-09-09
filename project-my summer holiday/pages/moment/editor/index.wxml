@@ -1,52 +1,70 @@
-<view class="page-shell safe-bottom">
-  <navigation-bar title="{{id ? '编辑 Moment' : '留下 Moment'}}" background="#F6F3ED" color="#26312B" />
-  <view class="moment-editor page-pad">
-    <view class="editor-head">
-      <text class="eyebrow">RIGHT HERE, RIGHT NOW</text>
-      <text class="editor-title brand-serif">此刻，想留下什么？</text>
-      <text class="editor-lead">不用写得完整，一个画面或一句话就很好。</text>
+<view class="quick-page">
+  <navigation-bar title="{{id ? '补完 Moment' : '快速记录'}}" background="#F4F1E9" color="#253029" />
+
+  <view wx:if="{{chapter}}" class="quick-editor page-pad">
+    <view class="context-line">
+      <image src="{{chapter.cover}}" mode="aspectFill" />
+      <view><text>自动收进</text><text>{{chapter.title}}</text></view>
+      <text class="creator-name">{{currentUser.nickname}} 记录</text>
     </view>
 
-    <scroll-view class="type-scroll" scroll-x enhanced show-scrollbar="{{false}}">
-      <view class="type-row"><button wx:for="{{momentTypes}}" wx:key="key" class="type-item {{activeType === item.key ? 'active' : ''}}" data-type="{{item.key}}" bindtap="selectType"><view><image src="/assets/icons/{{item.icon}}.svg" /></view><text>{{item.title}}</text></button></view>
-    </scroll-view>
+    <view class="quick-heading">
+      <text class="quick-title">{{id ? '把这个瞬间补完整' : '3 秒，留住现在'}}</text>
+      <text class="quick-copy">地点、心情和标签都可以以后再补。</text>
+    </view>
 
-    <view class="canvas surface">
-      <view class="photo-area" wx:if="{{image}}"><image src="{{image}}" mode="aspectFill" /><button class="remove-media" bindtap="removePhoto" aria-label="移除图片">×</button></view>
-      <button wx:else class="photo-placeholder pressable" bindtap="choosePhoto"><view class="placeholder-icon"><image src="/assets/icons/image.svg" /></view><text>放进一张照片</text><text>图片暂时空着也没关系</text></button>
-      <textarea class="story-input" value="{{content}}" focus="{{autoFocus}}" auto-height maxlength="1000" bindinput="inputContent" placeholder="写下此刻想到的事…" placeholder-class="placeholder" />
-      <view class="canvas-tools">
-        <button class="canvas-tool" bindtap="choosePhoto"><image src="/assets/icons/camera.svg" /><text>照片</text></button>
-        <button class="canvas-tool" bindtap="choosePlace"><image src="/assets/icons/pin.svg" /><text>地点</text></button>
-        <button class="canvas-tool recording" bindtouchstart="startRecord" bindtouchend="stopRecord"><image src="/assets/icons/mic.svg" /><text>{{isRecording ? '松开保存' : '按住说话'}}</text></button>
+    <view class="type-grid">
+      <button wx:for="{{types}}" wx:key="key" class="type-card type-{{item.key}} {{type === item.key ? 'active' : ''}}" data-type="{{item.key}}" bindtap="selectType">
+        <view><image src="/assets/icons/{{item.icon}}.svg" /></view><text>{{item.title}}</text><text>{{item.copy}}</text>
+      </button>
+    </view>
+
+    <view class="capture-surface type-surface-{{type}}">
+      <block wx:if="{{type === 'photo'}}">
+        <view wx:if="{{media.length}}" class="media-grid">
+          <view wx:for="{{media}}" wx:key="id" class="media-item"><image src="{{item.path}}" mode="aspectFill" /><button data-index="{{index}}" bindtap="removePhoto" aria-label="移除照片">×</button></view>
+          <button wx:if="{{media.length < 6}}" class="media-add" bindtap="choosePhoto"><image src="/assets/icons/plus.svg" /><text>再加一张</text></button>
+        </view>
+        <button wx:else class="capture-empty" bindtap="choosePhoto"><image src="/assets/icons/camera.svg" /><text>拍下眼前</text><text>也可以从相册选择</text></button>
+        <textarea class="quick-textarea photo-caption" value="{{content}}" auto-height maxlength="500" bindinput="inputContent" placeholder="为照片写一句话（可选）" placeholder-class="placeholder" />
+      </block>
+
+      <block wx:elif="{{type === 'text'}}">
+        <textarea class="quick-textarea main-copy" value="{{content}}" focus="{{autoFocus}}" auto-height maxlength="1000" bindinput="inputContent" placeholder="此刻，你想记住什么？" placeholder-class="placeholder" />
+      </block>
+
+      <block wx:else>
+        <button class="voice-capture {{isRecording ? 'recording' : ''}}" bindtouchstart="startRecord" bindtouchend="stopRecord">
+          <view class="voice-orbit"><image src="/assets/icons/mic.svg" /></view>
+          <text>{{isRecording ? '松开保存声音' : (voicePath ? '重新按住录音' : '按住说话')}}</text>
+          <text>{{voicePath ? voiceDuration + ' 秒声音已保存' : '最长 60 秒'}}</text>
+        </button>
+        <button wx:if="{{voicePath}}" class="remove-voice" bindtap="removeVoice">移除这段声音</button>
+        <textarea class="quick-textarea voice-caption" value="{{content}}" auto-height maxlength="500" bindinput="inputContent" placeholder="补一句说明（可选）" placeholder-class="placeholder" />
+      </block>
+    </view>
+
+    <button class="details-toggle" bindtap="toggleDetails"><text>补充地点、心情和标签</text><text>{{showDetails ? '收起' : '展开'}}</text></button>
+
+    <view wx:if="{{showDetails}}" class="details-panel">
+      <view class="detail-block">
+        <view class="detail-head"><text>地点</text><text>可选</text></view>
+        <button wx:if="{{!location}}" class="detail-action" bindtap="choosePlace"><image src="/assets/icons/pin.svg" /><text>选择发生地点</text></button>
+        <view wx:else class="selected-place"><image src="/assets/icons/pin.svg" /><text>{{location}}</text><button bindtap="removePlace">移除</button></view>
+      </view>
+      <view class="detail-block">
+        <view class="detail-head"><text>此刻心情</text><text>可选</text></view>
+        <view class="mood-grid"><button wx:for="{{moods}}" wx:key="*this" class="mood-chip {{mood === item ? 'active' : ''}}" data-mood="{{item}}" bindtap="chooseMood">{{item}}</button></view>
+      </view>
+      <view class="detail-block">
+        <view class="detail-head"><text>标签</text><text>可选</text></view>
+        <view class="tag-grid"><button wx:for="{{availableTags}}" wx:key="name" class="tag-chip {{item.selected ? 'active' : ''}}" data-tag="{{item.name}}" bindtap="toggleTag">#{{item.name}}</button></view>
       </view>
     </view>
+  </view>
 
-    <view wx:if="{{isRecording}}" class="recording-tip"><view class="recording-dot"></view><text>正在记录声音，松开即可保存</text></view>
-    <view wx:if="{{location}}" class="attachment surface"><view class="attachment-icon"><image src="/assets/icons/pin.svg" /></view><view><text class="attachment-title">{{location}}</text><text class="attachment-copy">这个片刻发生在这里</text></view><button bindtap="removePlace" aria-label="移除地点">×</button></view>
-    <view wx:if="{{voicePath}}" class="attachment voice surface"><view class="attachment-icon"><image src="/assets/icons/mic.svg" /></view><view><text class="attachment-title">一段声音 · {{voiceDuration}} 秒</text><text class="attachment-copy">声音已经收好</text></view><button bindtap="removeVoice" aria-label="移除声音">×</button></view>
-
-    <view class="meta-section surface">
-      <view class="meta-heading"><text class="meta-index">01</text><text class="meta-title">收进哪一章</text></view>
-      <picker mode="selector" range="{{chapters}}" range-key="title" value="{{chapterIndex}}" bindchange="chooseChapter"><view class="chapter-select"><view><text class="chapter-dot"></text><text>{{selectedChapterTitle || '请先创建 Chapter'}}</text></view><text>更换 ›</text></view></picker>
-    </view>
-
-    <view class="meta-section surface">
-      <view class="meta-heading"><text class="meta-index">02</text><text class="meta-title">此刻的心情</text></view>
-      <view class="mood-row"><button wx:for="{{moods}}" wx:key="name" class="mood-item {{mood === item.name ? 'active' : ''}}" data-mood="{{item.name}}" bindtap="chooseMood"><text class="mood-symbol">{{item.emoji}}</text><text>{{item.name}}</text></button></view>
-    </view>
-
-    <view class="meta-section surface">
-      <view class="meta-heading"><text class="meta-index">03</text><text class="meta-title">给片刻一点线索</text></view>
-      <view class="tags-row"><button wx:for="{{availableTags}}" wx:key="name" class="tag-choice {{item.selected ? 'active' : ''}}" data-tag="{{item.name}}" bindtap="toggleTag">#{{item.name}}</button></view>
-    </view>
-
-    <view class="meta-section surface">
-      <view class="meta-heading"><text class="meta-index">04</text><text class="meta-title">发生的时间</text></view>
-      <view class="datetime-row"><picker mode="date" value="{{momentDate}}" bindchange="chooseDate"><view class="datetime-field"><image src="/assets/icons/calendar.svg" /><text>{{momentDate}}</text></view></picker><picker mode="time" value="{{momentTime}}" bindchange="chooseTime"><view class="datetime-field time-field"><text>{{momentTime}}</text></view></picker></view>
-    </view>
-
-    <view class="save-area"><button class="primary-button save-button" disabled="{{!canSave || saving}}" bindtap="save">{{saving ? '正在收藏…' : '留下这个 Moment'}}</button><text class="save-copy">一张图片、一句话、一个地点，都可以成为 Moment。</text></view>
+  <view wx:if="{{chapter}}" class="quick-save-bar">
+    <button class="draft-button" disabled="{{saving}}" bindtap="saveDraft">存为待补完</button>
+    <button class="publish-button" disabled="{{saving || !canSave}}" bindtap="savePublished">{{saving ? '保存中' : (id ? '保存修改' : '保存 Moment')}}</button>
   </view>
 </view>
-

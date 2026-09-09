@@ -7,7 +7,7 @@
   border: 1rpx solid rgba(38, 49, 43, .055);
   border-radius: 26rpx;
   background: #fffefa;
-  box-shadow: none;
+  box-shadow: 0 7rpx 0 rgba(43,72,54,.07), 0 16rpx 30rpx rgba(43,72,54,.06);
   text-align: left;
 }
 
@@ -48,6 +48,7 @@
   line-height: 40rpx;
   text-align: center;
 }
+.draft-badge { position:absolute; left:10rpx; top:10rpx; padding:8rpx 12rpx; border-radius:10rpx; background:#f2bd42; color:#44320b; font-size:18rpx; font-weight:700; }
 .moment-body { min-width: 0; flex: 1; padding: 5rpx 3rpx 2rpx 0; }
 .moment-meta {
   display: flex;
@@ -86,6 +87,11 @@
   color: #7b7d78;
   font-size: 19rpx;
 }
+.moment-footer { margin-top:16rpx; display:flex; align-items:center; justify-content:space-between; gap:12rpx; }
+.creator { min-width:0; display:flex; align-items:center; gap:9rpx; color:#707970; font-size:19rpx; }
+.creator image { width:34rpx; height:34rpx; flex:none; border-radius:50%; background:#dcecdf; }
+.creator text { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.together { flex:none; padding:7rpx 10rpx; border-radius:9rpx; background:#ffe0d7; color:#9b4131; font-size:17rpx; font-weight:600; }
 .moment-card.is-stack { display: block; padding: 0; overflow: hidden; }
 .is-stack .photo-wrap { width: 100%; height: 300rpx; border-radius: 0; }
 .is-stack .moment-body { padding: 24rpx; }

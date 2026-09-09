@@ -6,8 +6,11 @@
     "pages/history/index",
     "pages/chapter/detail/index",
     "pages/chapter/editor/index",
+    "pages/chapter/members/index",
+    "pages/chapter/join/index",
     "pages/moment/editor/index",
     "pages/moment/detail/index",
+    "pages/moment/contribute/index",
     "pages/review/index",
     "pages/search/index",
     "pages/profile/index"

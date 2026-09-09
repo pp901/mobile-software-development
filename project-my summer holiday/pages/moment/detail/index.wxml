@@ -1,17 +1,14 @@
-<view class="page-shell tabbar-space" wx:if="{{moment}}">
-  <navigation-bar title="Moment" background="#F6F3ED" color="#26312B"><view slot="right" class="nav-more" bindtap="more"><image src="/assets/icons/more.svg" /></view></navigation-bar>
-  <view class="moment-detail">
-
-    <button wx:if="{{moment.image}}" class="main-photo pressable" bindtap="preview"><image src="{{moment.image}}" mode="aspectFill" /></button>
-    <view wx:else class="text-only-mark"><text class="brand-serif">“</text></view>
-    <view class="date-block page-pad"><text class="time">{{moment.dateLabel}} · {{moment.time}}</text><text class="time" wx:if="{{moment.location}}">⌖ {{moment.location}}</text></view>
-    <view class="story page-pad"><text class="story-copy">{{moment.content || '这个片刻没有文字，画面已经说完了一切。'}}</text>
-      <view wx:if="{{moment.voicePath}}" class="voice-card surface" bindtap="playVoice"><view class="play">{{playing ? 'Ⅱ' : '▶'}}</view><view class="wave"><view wx:for="{{[1,2,3,4,5,6,7,8,9,10,11,12]}}" wx:key="*this" class="bar bar-{{index % 4}}"></view></view><text>{{moment.voiceDuration}}″</text></view>
-      <view class="tags-row"><text wx:if="{{moment.mood}}" class="tag mood-tag">● {{moment.mood}}</text><text wx:for="{{moment.tags}}" wx:key="*this" class="tag"># {{item}}</text></view>
-      <view class="related-section"><text class="related-title">相关片段</text><view class="related-row"><button wx:for="{{related}}" wx:key="id" class="related-photo" data-id="{{item.id}}" bindtap="openRelated"><image src="{{item.image}}" mode="aspectFill" /></button><button class="related-add" bindtap="addRelated" aria-label="继续记录">＋</button></view></view>
-      <button class="chapter-link surface pressable" bindtap="openChapter"><image src="{{chapter.cover}}" mode="aspectFill" /><view><text class="chapter-label">收录于 Chapter</text><text class="chapter-title">{{chapter.title}}</text></view><text class="arrow">›</text></button>
-      <view class="action-row"><button class="round-button {{moment.favorite ? 'active' : ''}}" bindtap="toggleFavorite"><view><image src="/assets/icons/heart.svg" /></view><text>{{moment.favorite ? '已收藏' : '收藏'}}</text></button><button class="round-button" open-type="share"><view><image src="/assets/icons/share.svg" /></view><text>分享</text></button><button class="round-button" bindtap="more"><view><image src="/assets/icons/more.svg" /></view><text>更多</text></button></view>
-      <view class="ending"><view></view><text>Small moments, a kinder you.</text></view>
-    </view>
-  </view><app-tabbar active="" />
+<view class="detail-page" wx:if="{{moment}}"><navigation-bar title="Moment" background="#F7F3EA"><button slot="right" class="nav-more" bindtap="more"><image src="/assets/icons/more.svg"/></button></navigation-bar>
+  <swiper wx:if="{{moment.image}}" class="photo-swiper" indicator-dots="{{moment.imageCount > 1}}"><swiper-item wx:for="{{moment.media}}" wx:key="id"><image src="{{item.path}}" mode="aspectFill" data-src="{{item.path}}" bindtap="preview"/></swiper-item></swiper><view wx:else class="text-mark">“</view>
+  <view class="page-pad detail-body"><view class="moment-top"><view class="creator"><image src="{{moment.creator.avatar}}"/><view><text>{{moment.creator.nickname}} 记录</text><text>{{moment.dateLabel}} · {{moment.time}}</text></view></view><text wx:if="{{moment.status === 'DRAFT'}}" class="draft">待补完</text></view>
+  <text class="story-copy">{{moment.content || '画面和声音，已经替这一刻说完。'}}</text>
+  <button wx:if="{{moment.voicePath}}" class="voice-card" data-path="{{moment.voicePath}}" bindtap="play"><text>{{playingPath === moment.voicePath ? 'Ⅱ' : '▶'}}</text><view></view><text>{{moment.voiceDuration}}″</text></button>
+  <view class="meta-row"><text wx:if="{{moment.location}}">⌖ {{moment.location}}</text><text wx:if="{{moment.mood}}">● {{moment.mood}}</text><text wx:for="{{moment.tags}}" wx:key="*this">#{{item}}</text></view>
+  <view class="contribution-head"><view><text class="eyebrow">TOGETHER</text><text class="section-title">{{contributorCount}} 人共同补完</text></view><button bindtap="prepareInvite">邀请补完</button></view>
+  <view wx:if="{{moment.contributions.length}}" class="contribution-list"><view class="contribution" wx:for="{{moment.contributions}}" wx:key="id"><view class="contributor"><image src="{{item.creator.avatar}}"/><view><text>{{item.creator.nickname}} 补充</text><text>{{item.dateLabel}}</text></view></view><text wx:if="{{item.content}}" class="contribution-copy">{{item.content}}</text><image wx:if="{{item.image}}" class="contribution-photo" src="{{item.image}}" mode="aspectFill" data-id="{{item.id}}" bindtap="previewContribution"/><button wx:if="{{item.voicePath}}" class="mini-voice" data-path="{{item.voicePath}}" bindtap="play">{{playingPath === item.voicePath ? '暂停' : '播放'}} · {{item.voiceDuration}} 秒</button></view></view>
+  <view wx:else class="contribution-empty"><text>同一时刻，可以有不同人的记忆。</text><button wx:if="{{moment.creatorId !== current.id}}" bindtap="contribute">补充我记得的</button></view>
+  <button class="chapter-link" bindtap="openChapter"><image src="{{chapter.cover}}"/><view><text>收录于 Chapter</text><text>{{chapter.title}}</text></view><text>›</text></button>
+  <view class="related"><text>同一章里的片刻</text><view><button wx:for="{{related}}" wx:key="id" data-id="{{item.id}}" bindtap="openRelated"><image src="{{item.image}}" mode="aspectFill"/></button></view></view>
+  <view class="actions"><button class="{{moment.favorite ? 'active' : ''}}" bindtap="toggleFavorite">{{moment.favorite ? '♥ 已收藏' : '♡ 收藏'}}</button><button open-type="share">分享</button><button wx:if="{{moment.creatorId !== current.id && chapter.status === 'ONGOING'}}" bindtap="contribute">我来补完</button></view></view>
+  <view wx:if="{{sharePanel}}" class="share-mask" bindtap="closeSharePanel"><view class="share-sheet" catchtap="noop"><image src="{{inviteTarget.avatar}}"/><text>邀请 {{inviteTarget.nickname}} 补完</text><text>微信分享时选择对方，打开后会直接进入补充页面。</text><button class="primary-button" open-type="share">发送补完卡片</button><button bindtap="closeSharePanel">取消</button></view></view>
 </view>

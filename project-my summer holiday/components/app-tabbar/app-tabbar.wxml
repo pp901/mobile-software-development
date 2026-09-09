@@ -6,8 +6,8 @@
 <view wx:if="{{choosing}}" class="record-mask" bindtap="closeCreate" catchtouchmove="noop">
   <button class="sheet-close" aria-label="关闭" bindtap="closeCreate">×</button>
   <view class="record-sheet" catchtap="noop">
-    <view class="sheet-handle"></view><text class="sheet-title">记录一个瞬间</text><text class="sheet-copy">选择你想记录的方式</text>
+    <view class="sheet-handle"></view><text class="sheet-title">快速记录</text><text class="sheet-copy">先留下，细节以后再补</text>
     <view class="record-options"><button wx:for="{{choices}}" wx:key="key" data-type="{{item.key}}" bindtap="choose" class="record-option"><view class="option-icon {{item.tone}}"><image src="/assets/icons/{{item.icon}}.svg" /></view><text class="option-title">{{item.title}}</text><text class="option-copy">{{item.copy}}</text></button></view>
-    <text class="sheet-footer">生活的每一面，都值得被记录。</text>
+    <text class="sheet-footer">自动收进当前 Chapter</text>
   </view>
 </view>

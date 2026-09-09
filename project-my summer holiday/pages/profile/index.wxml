@@ -1,8 +1,8 @@
 <view class="page-shell safe-bottom">
   <navigation-bar title="我的" background="#F6F3ED" color="#26312B" />
   <view class="profile-head page-pad">
-    <image class="avatar" src="{{profile.avatar}}" mode="aspectFill" />
-    <view class="profile-copy"><text class="name">{{profile.nickname}}</text><text class="bio">{{profile.bio}}</text></view>
+    <button class="avatar-picker" open-type="chooseAvatar" bindchooseavatar="chooseAvatar"><image class="avatar" src="{{profile.avatar}}" mode="aspectFill" /><text>更换</text></button>
+    <view class="profile-copy"><input class="name" type="nickname" value="{{profile.nickname}}" bindblur="saveNickname"/><text class="bio">{{profile.bio}}</text><text class="edit-hint">点击头像或昵称可修改</text></view>
   </view>
 
   <view class="stats page-pad">
@@ -14,14 +14,12 @@
   <view class="settings page-pad">
     <text class="group-title eyebrow">记录偏好</text>
     <view class="setting-group surface">
-      <view class="setting-row"><view><text class="setting-name">私密记录</text><text class="setting-desc">新内容默认只对自己可见</text></view><switch checked="{{privateMode}}" color="#587362" bindchange="togglePrivate" /></view>
       <view class="setting-row"><view><text class="setting-name">保留原图</text><text class="setting-desc">保存 Moment 中的高清图片</text></view><switch checked="{{saveOriginal}}" color="#587362" bindchange="toggleSave" /></view>
     </view>
 
     <text class="group-title eyebrow">内容与数据</text>
     <view class="setting-group surface">
-      <button class="setting-row pressable" bindtap="notReady"><view><text class="setting-name">个性化主题</text><text class="setting-desc">季节色与 Chapter 封面样式</text></view><text class="arrow">›</text></button>
-      <button class="setting-row pressable" bindtap="notReady"><view><text class="setting-name">数据与备份</text><text class="setting-desc">管理云同步与本地记录</text></view><text class="arrow">›</text></button>
+      <view class="setting-row"><view><text class="setting-name">{{cloudEnabled ? '云端共同记录已连接' : '本地演示模式'}}</text><text class="setting-desc">{{cloudEnabled ? '邀请、成员和共同 Moment 会自动同步' : '部署 collaboration 云函数后可跨设备同步'}}</text></view><text class="sync-dot {{cloudEnabled ? 'online' : ''}}"></text></view>
     </view>
 
     <text class="group-title eyebrow">关于 ongoing_</text>
@@ -32,4 +30,3 @@
     <view class="signature"><text class="brand-serif">ongoing_</text><text>生活未完，故事仍在继续。</text></view>
   </view>
 </view>
-

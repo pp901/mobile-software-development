@@ -1,5 +1,6 @@
 const store = require('../../../services/store')
 const date = require('../../../utils/date')
+const collaboration = require('../../../services/collaboration')
 
 Page({
   data: {
@@ -30,7 +31,7 @@ Page({
     this.setData({ modules: this.data.modules.map(item => item.key === key && !item.fixed ? Object.assign(item, { enabled: !item.enabled }) : item) })
   },
   chooseCover() {
-    wx.chooseMedia({ count: 1, mediaType: ['image'], sourceType: ['album', 'camera'], success: res => {
+    wx.chooseMedia({ count: 1, mediaType: ['image'], sourceType: ['album', 'camera'], sizeType: store.getSettings().saveOriginal ? ['original'] : ['compressed'], success: res => {
       const tempPath = res.tempFiles[0].tempFilePath
       wx.saveFile({ tempFilePath: tempPath, success: saved => this.setData({ cover: saved.savedFilePath }), fail: () => this.setData({ cover: tempPath }) })
     } })
@@ -38,14 +39,19 @@ Page({
   save() {
     if (!this.data.title.trim()) return wx.showToast({ title: '先为这一章取个名字', icon: 'none' })
     const start = this.data.startDate
-    const end = this.data.endDate || start
-    const total = Math.max(1, Math.round((new Date(end) - new Date(start)) / 86400000) + 1)
+    if (!start) return wx.showToast({ title: '请选择开始日期', icon: 'none' })
+    if (this.data.endDate && this.data.endDate < start) return wx.showToast({ title: '结束日期不能早于开始日期', icon: 'none' })
     this.setData({ saving: true })
     const chapter = store.saveChapter({
       id: this.data.id || undefined, title: this.data.title.trim(), englishTitle: `${new Date(start).getFullYear()} · ${this.data.type.toUpperCase()}`,
       type: this.data.type, startDate: start, endDate: this.data.endDate, dateRange: `${date.displayDate(start)} — ${this.data.endDate ? date.displayDate(this.data.endDate) : '未定'}`,
-      dayTotal: total, description: this.data.description.trim() || '这一章的故事，正在慢慢展开。', cover: this.data.cover,
+      description: this.data.description.trim() || '这一章的故事，正在慢慢展开。', cover: this.data.cover,
       modules: this.data.modules.filter(item => item.enabled).map(item => item.key)
+    })
+    if (!chapter) { this.setData({ saving: false }); return wx.showToast({ title: '只有创建者可以编辑', icon: 'none' }) }
+    collaboration.upload(chapter.cover, 'image').then(cover => {
+      if (cover && cover !== chapter.cover) store.saveChapter({ id: chapter.id, cover })
+      collaboration.publishChapter(chapter.id)
     })
     wx.showToast({ title: this.data.id ? '这一章已更新' : '新的一章开始了', icon: 'none' })
     setTimeout(() => wx.redirectTo({ url: `/pages/chapter/detail/index?id=${chapter.id}` }), 500)

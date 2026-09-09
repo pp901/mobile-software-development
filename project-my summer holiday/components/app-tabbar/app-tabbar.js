@@ -2,22 +2,20 @@ const store = require('../../services/store')
 Component({
   properties: { active: { type: String, value: 'now' } },
   data: { choosing: false, choices: [
-    { key:'photo', icon:'camera', title:'拍一张照片', copy:'定格此刻', tone:'sage' },
-    { key:'text', icon:'pencil', title:'写点文字', copy:'记录心情', tone:'sand' },
-    { key:'voice', icon:'mic', title:'语音记录', copy:'用声音留存', tone:'rose' },
-    { key:'place', icon:'pin', title:'标记地点', copy:'让足迹有迹可循', tone:'sage' },
-    { key:'progress', icon:'check', title:'记录进展', copy:'靠近一个目标', tone:'sand' }
+    { key:'photo', icon:'camera', title:'拍照', copy:'定格眼前', tone:'forest' },
+    { key:'text', icon:'pencil', title:'写一句', copy:'记下念头', tone:'coral' },
+    { key:'voice', icon:'mic', title:'语音', copy:'留住声音', tone:'sun' }
   ] },
   methods: {
     openNow() { if (this.data.active !== 'now') wx.redirectTo({ url:'/pages/index/index' }) },
     openHistory() { if (this.data.active !== 'history') wx.redirectTo({ url:'/pages/history/index' }) },
-    openCreate() { this.setData({choosing:true}) },
+    openCreate() { if (wx.vibrateShort) wx.vibrateShort({ type: 'light' }); this.setData({choosing:true}) },
     closeCreate() { this.setData({choosing:false}) },
     noop() {},
     choose(event) {
       this.closeCreate()
       const type=event.currentTarget.dataset.type
-      wx.navigateTo({url:store.getActiveChapter() ? '/pages/moment/editor/index?type='+type : '/pages/chapter/editor/index'})
+      wx.navigateTo({url:store.getActiveChapter() ? '/pages/moment/editor/index?quick=1&type='+type : '/pages/chapter/editor/index'})
     }
   }
 })

@@ -18,7 +18,7 @@
   margin-top: 34rpx;
   overflow: hidden;
   border-radius: 22rpx;
-  box-shadow: 0 16rpx 38rpx rgba(45,54,48,.12);
+  box-shadow: 0 9rpx 0 rgba(23,63,45,.13),0 20rpx 38rpx rgba(45,54,48,.13);
   text-align: left;
 }
 .cover-picker>image, .cover-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,7 +42,7 @@
 }
 .cover-action image { width: 29rpx; height: 29rpx; opacity: .72; }
 
-.form-section { margin-top:30rpx; padding:0 0 24rpx; border:0; border-bottom:1rpx solid #e9e9de; border-radius:0; background:transparent; box-shadow:none; }
+.form-section { margin-top:24rpx; padding:26rpx; border:0; border-radius:23rpx; background:#fffdf8; box-shadow:0 7rpx 0 rgba(43,72,54,.07); }
 .form-heading { padding-bottom:8rpx; }
 .step { display:none; }
 .form-title, .section-desc { display: block; }
@@ -82,7 +82,7 @@
   background: #f8f6f1;
   text-align: left;
 }
-.template-card.active { border-color: #8da293; background: #e8eee9; }
+.template-card.active { border-color: #3f7055; background: #dcecdf; box-shadow:0 5rpx 0 #bdd2c1; }
 .template-mark {
   width: 49rpx;
   height: 49rpx;

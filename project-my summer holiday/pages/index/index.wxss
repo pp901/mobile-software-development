@@ -8,11 +8,12 @@
 .intro { display:flex; align-items:center; justify-content:space-between; padding-top:28rpx; padding-bottom:26rpx; }
 .intro-hand { font-family:"STKaiti","KaiTi","Songti SC",serif; font-size:30rpx; line-height:1.5; color:#73776e; white-space:pre-line; letter-spacing:3rpx; }
 .intro-note { text-align:right; font-size:21rpx; line-height:1.7; color:#92928b; white-space:pre-line; }
-.quick-grid { display:flex; gap:14rpx; }
-.quick-item { flex:1; min-width:0; height:150rpx; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:15rpx; border-radius:24rpx; font-size:23rpx; color:#3d433b; }
+.quick-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14rpx; }
+.quick-item { min-width:0; height:170rpx; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:15rpx; border-radius:24rpx; font-size:22rpx; font-weight:700; color:#3d433b; box-shadow:0 8rpx 0 rgba(53,56,41,.14),0 17rpx 28rpx rgba(53,56,41,.08); }
 .quick-item image { width:48rpx; height:48rpx; }
-.quick-photo { background:#e3e9dd; }.quick-text { background:#f8e9d9; }.quick-voice { background:#faedd3; }.quick-place { background:#f9e6dd; }
+.quick-photo { background:#73a9d8;color:#173a52; }.quick-text { background:#f2bd42;color:#513a08; }.quick-voice { background:#ec765f;color:#fff; }
 .moment-list { display:flex; flex-direction:column; gap:16rpx; }
 .section-note { color:#91918a; font-size:21rpx; }
 .switch-link { color:#6d7d69; text-align:right; width:100%; padding-top:14rpx; font-size:21rpx; }
 .empty-button { margin-top:24rpx; }
+.echo-card{width:100%;margin-top:36rpx;padding:0;display:flex;overflow:hidden;border-radius:25rpx;background:#173f2d;color:#fff;box-shadow:0 9rpx 0 #0d2d20;text-align:left}.echo-card>image{width:220rpx;height:220rpx;flex:none}.echo-card>view{min-width:0;padding:24rpx}.echo-card .eyebrow{display:block;color:#f2bd42}.echo-card text:nth-child(2){display:block;margin-top:23rpx;font-size:25rpx;font-weight:700}.echo-card text:last-child{display:-webkit-box;margin-top:10rpx;overflow:hidden;color:#bcd0c2;font-size:19rpx;line-height:1.5;-webkit-box-orient:vertical;-webkit-line-clamp:2}
