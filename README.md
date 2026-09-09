@@ -23,7 +23,7 @@
 | Stage | Content | Status |
 | :---: | --- | :---: |
 | 01 | 开发环境与小程序基础 | In progress |
-| 02 | 课程实验归档 | [EXP1](#exp1) · [EXP2](#exp2) · [EXP3](#exp3) · [EXP4](#exp4) 已完成 |
+| 02 | 课程实验归档 | [EXP1](#exp1) · [EXP2](#exp2) · [EXP3](#exp3) · [EXP4](#exp4) · [EXP6](#exp6) 已完成 |
 | 03 | 个人项目实践 | [Project](#project) V1 框架完成 |
 | 04 | 课程总结与作品展示 | Coming soon |
 
@@ -105,6 +105,26 @@
 
 </div>
 
+### EXP6　图片分享社区：小程序云开发 <a id="exp6"></a>
+
+一个基于微信小程序云开发的图片分享社区：云数据库、云存储与云函数协同支撑发布、浏览、搜索、点赞、评论、下载与转发分享的完整社区闭环，并提供可重复执行的一键演示数据。
+
+| Focus | Implementation |
+| --- | --- |
+| 页面 | 首页 / 发布 / 图片详情 / 我的 · `tabBar` 切换 |
+| 云数据库 | `photo` / `comments` / `likes` 三集合 · 所有用户可读、仅创建者可写 |
+| 云存储 | `wx.cloud.uploadFile` 多图上传 · `fileID` 直显 · 删除联动清理文件与记录 |
+| 云函数 | `getOpenid` 身份预取与缓存 · `initData` mock 前缀隔离、可重复执行的演示数据 |
+| 交互 | 精选轮播 · 骨架屏 · 下拉刷新 · 正则全文搜索 · 点赞操作锁与心跳动画 · 多图轮播自适应高度 |
+
+**核心体验：** `云环境开通 → 集合与权限设计 → 发布闭环 → 互动闭环 → 演示数据`
+
+<div align="right">
+
+[查看 EXP6 源码 →](./Exp6/cloudPhoto/)
+
+</div>
+
 ### Project　ongoing_ · 未完：生活片段记录框架 <a id="project"></a>
 
 一个围绕 `Chapter → Moment → Review` 组织生活片段的个人项目：当下页聚焦当前章节与快速记录，回望页以 Gallery 归档正在发生 / 已成章 / 已归档的片段，章节详情以时间线、足迹与 Goal 进度呈现叙事。当前版本为可直接运行的 V1 交互骨架，全部数据走本地缓存，数据层与方法边界已为接入云开发或自有 API 预留。
@@ -132,6 +152,7 @@
 ├── Exp2/                        # 实验 2：个人名片小程序
 ├── Exp3/                        # 实验 3：高校新闻网小程序
 ├── Exp4/                        # 实验 4：推箱子游戏小程序
+├── Exp6/cloudPhoto/             # 实验 6：图片分享社区（云开发）
 ├── project-my summer holiday/   # 个人项目：ongoing_ · 未完
 ├── README.md                    # 课程总览
 └── .gitignore
@@ -143,7 +164,7 @@
 
 - 开发工具：微信开发者工具 · DevEco Studio
 - 当前项目：原生微信小程序
-- 实验记录：[EXP1 博客](https://blog.csdn.net/ppxl01/article/details/164024454) · [EXP2 博客](https://blog.csdn.net/ppxl01/article/details/164054481) · [EXP3 博客](https://blog.csdn.net/ppxl01/article/details/164219398) · [EXP4 博客](https://blog.csdn.net/ppxl01/article/details/164256841) · [实验5 博客](https://blog.csdn.net/ppxl01/article/details/164485373)
+- 实验记录：[EXP1 博客](https://blog.csdn.net/ppxl01/article/details/164024454) · [EXP2 博客](https://blog.csdn.net/ppxl01/article/details/164054481) · [EXP3 博客](https://blog.csdn.net/ppxl01/article/details/164219398) · [EXP4 博客](https://blog.csdn.net/ppxl01/article/details/164256841) · [实验5 博客](https://blog.csdn.net/ppxl01/article/details/164485373) · [EXP6 博客](https://blog.csdn.net/ppxl01/article/details/164754460)
 - 个人项目：[ongoing_ · 未完](./project-my%20summer%20holiday/)（V1 交互框架，数据层为云开发预留边界）
 
 ---
