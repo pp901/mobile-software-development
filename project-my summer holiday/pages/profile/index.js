@@ -1,31 +1,4 @@
-const store = require('../../services/store')
-const collaboration = require('../../services/collaboration')
-
-Page({
-  data: { profile: {}, chapterCount: 0, momentCount: 0, privateMode: true, saveOriginal: true, cloudEnabled: false },
-  onShow() {
-    const state = store.getState()
-    const settings = store.getSettings()
-    const chapters = store.getChapters()
-    const chapterIds = chapters.map(item => item.id)
-    this.setData({ profile: store.getCurrentUser(), chapterCount: chapters.length, momentCount: state.moments.filter(item => chapterIds.includes(item.chapterId)).length, privateMode: settings.privateMode, saveOriginal: settings.saveOriginal, cloudEnabled: collaboration.enabled() })
-  },
-  toggleSave(event) { this.setData({ saveOriginal: event.detail.value }); store.updateSettings({ saveOriginal: event.detail.value }) },
-  chooseAvatar(event) {
-    const tempPath = event.detail.avatarUrl
-    wx.saveFile({ tempFilePath: tempPath, success: res => this.persistAvatar(res.savedFilePath), fail: () => this.persistAvatar(tempPath) })
-  },
-  persistAvatar(path) {
-    store.saveProfile({ avatar: path }); this.onShow()
-    collaboration.upload(path, 'image').then(avatar => { if (avatar && avatar !== path) store.saveProfile({ avatar }); collaboration.bootstrap() })
-  },
-  saveNickname(event) {
-    const nickname = String(event.detail.value || '').trim()
-    if (!nickname || nickname === this.data.profile.nickname) return
-    store.saveProfile({ nickname }); collaboration.bootstrap(); this.onShow()
-  },
-  replayGuide() { wx.removeStorageSync('ongoing:onboarding:seen'); wx.redirectTo({ url: '/pages/onboarding/index' }) },
-  resetDemo() {
-    wx.showModal({ title: '重置示例内容？', content: '你的本地改动会被示例故事替换。', confirmText: '重新开始', confirmColor: '#D9907A', success: res => { if (res.confirm) { store.reset(); wx.showToast({ title: '故事已重新展开', icon: 'none' }); this.onShow() } } })
-  }
-})
+const store=require('../../services/store')
+const cloud=require('../../services/collaboration')
+const media=require('../../services/media')
+Page({data:{profile:{},pending:0,syncing:false,error:'',drafts:[]},onShow(){this.load()},load(){this.setData({profile:store.getCurrentUser(),pending:store.getPendingOps().length,drafts:store.getDrafts(),issues:store.getSyncIssues().filter(issue=>issue.code==='CONFLICT'),cloudEnabled:cloud.enabled(),error:cloud.getLastError()})},async chooseAvatar(e){try{const avatar=await media.persist(e.detail.avatarUrl);if(!store.saveProfile({avatar}))throw new Error(store.getLastError());this.load();await cloud.updateProfile();this.load()}catch(error){this.setData({error:error.message})}},saveNickname(e){const nickname=String(e.detail.value||'').trim();if(!nickname)return;if(!store.saveProfile({nickname}))return this.setData({error:store.getLastError()});this.load();cloud.updateProfile().then(()=>this.load())},async sync(){if(this.data.syncing)return;this.setData({syncing:true,error:''});await cloud.refreshAll();this.setData({syncing:false});this.load()},async inspectConflict(e){try{this.conflict=await cloud.readConflict(e.currentTarget.dataset.key);const c=this.conflict;this.setData({conflictPanel:true,localVersion:c.local.content||c.local.title,remoteVersion:c.remote.content||c.remote.title})}catch(error){this.setData({error:error.message})}},closeConflict(){this.setData({conflictPanel:false})},noop(){},async keepLocal(){await this.applyConflict(true)},async keepRemote(){await this.applyConflict(false)},async applyConflict(useLocal){try{await cloud.resolveConflict(this.conflict,useLocal);this.setData({conflictPanel:false});this.load()}catch(e){this.setData({error:e.message})}},openDraft(e){wx.navigateTo({url:'/pages/moment/editor/index?id='+e.currentTarget.dataset.id})},replayGuide(){wx.navigateTo({url:'/pages/onboarding/index'})}})

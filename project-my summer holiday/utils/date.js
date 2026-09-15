@@ -1,20 +1,83 @@
 function pad(value) { return String(value).padStart(2, '0') }
 
+function parseDateKey(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ''))
+  if (!match) return null
+  const year = Number(match[1])
+  const month = Number(match[2])
+  const day = Number(match[3])
+  const parsed = new Date(year, month - 1, day)
+  if (parsed.getFullYear() !== year || parsed.getMonth() !== month - 1 || parsed.getDate() !== day) return null
+  return parsed
+}
+
+function isDateKey(value) { return !!parseDateKey(value) }
+
 function localDate(value) {
-  if (!value) return new Date()
-  if (value instanceof Date) return value
-  const source = String(value)
-  if (source.includes('T')) return new Date(source)
-  const datePart = source.slice(0, 10)
-  const parts = datePart.split('-').map(Number)
-  if (parts.length !== 3 || parts.some(Number.isNaN)) return new Date(value)
-  return new Date(parts[0], parts[1] - 1, parts[2])
+  if (value instanceof Date) return new Date(value.getTime())
+  if (value === undefined || value === null || value === '') return new Date(NaN)
+  const source = String(value).trim()
+  const naturalDay = parseDateKey(source)
+  return naturalDay || new Date(value)
 }
 
 function dateKey(value) {
+  if (isDateKey(value)) return String(value)
   const parsed = localDate(value)
   if (Number.isNaN(parsed.getTime())) return ''
   return `${parsed.getFullYear()}-${pad(parsed.getMonth() + 1)}-${pad(parsed.getDate())}`
+}
+
+// New Moments persist localDateKey at creation time. Older data falls back to
+// converting createdAt into the current device's local natural day.
+function momentDateKey(moment) {
+  if (!moment) return ''
+  if (isDateKey(moment.localDateKey)) return moment.localDateKey
+  return dateKey(moment.createdAt)
+}
+
+function monthKey(value) {
+  const key = isDateKey(value) ? String(value) : dateKey(value)
+  return key ? key.slice(0, 7) : ''
+}
+
+function isMonthKey(value) {
+  const match = /^(\d{4})-(\d{2})$/.exec(String(value || ''))
+  if (!match) return false
+  const month = Number(match[2])
+  return month >= 1 && month <= 12
+}
+
+function shiftMonth(value, amount) {
+  if (!isMonthKey(value)) return ''
+  const [year, month] = value.split('-').map(Number)
+  const parsed = new Date(year, month - 1 + Number(amount || 0), 1)
+  return `${parsed.getFullYear()}-${pad(parsed.getMonth() + 1)}`
+}
+
+function monthDays(value) {
+  if (!isMonthKey(value)) return []
+  const [year, month] = value.split('-').map(Number)
+  const first = new Date(year, month - 1, 1, 12)
+  const leading = (first.getDay() + 6) % 7
+  const count = new Date(year, month, 0).getDate()
+  const cellCount = Math.ceil((leading + count) / 7) * 7
+  return Array.from({ length: cellCount }, (_, index) => {
+    const parsed = new Date(year, month - 1, 1 - leading + index, 12)
+    const key = dateKey(parsed)
+    return { key, day: parsed.getDate(), monthKey: key.slice(0, 7), inMonth: parsed.getMonth() === month - 1 }
+  })
+}
+
+function displayMonth(value) {
+  if (!isMonthKey(value)) return ''
+  const [year, month] = value.split('-').map(Number)
+  return `${year}年${month}月`
+}
+
+function timestamp(value) {
+  const parsed = localDate(value)
+  return Number.isNaN(parsed.getTime()) ? null : parsed.getTime()
 }
 
 function displayTime(value) {
@@ -46,14 +109,16 @@ function daysBetween(start, end) {
   const first = localDate(start)
   const last = localDate(end)
   if (Number.isNaN(first.getTime()) || Number.isNaN(last.getTime())) return 1
-  return Math.max(1, Math.floor((last - first) / 86400000) + 1)
+  return Math.max(1, Math.round((last - first) / 86400000) + 1)
 }
 
 function chapterTiming(chapter) {
   const current = localDate(today())
-  const start = localDate(chapter.startDate || today())
-  const hasEnd = !!chapter.endDate
-  const end = localDate(chapter.endDate || today())
+  const parsedStart = localDate(chapter.startDate)
+  const start = Number.isNaN(parsedStart.getTime()) ? current : parsedStart
+  const parsedEnd = localDate(chapter.endDate)
+  const hasEnd = !!chapter.endDate && !Number.isNaN(parsedEnd.getTime())
+  const end = hasEnd ? parsedEnd : current
   const dayTotal = hasEnd ? daysBetween(start, end) : daysBetween(start, current)
   const elapsedEnd = current < start ? start : (hasEnd && current > end ? end : current)
   const dayCurrent = daysBetween(start, elapsedEnd)
@@ -69,4 +134,7 @@ function greeting() {
   return '晚上好，记下今天'
 }
 
-module.exports = { today, timeNow, localDate, dateKey, displayTime, displayDate, daysBetween, chapterTiming, greeting }
+module.exports = {
+  today, timeNow, localDate, parseDateKey, isDateKey, dateKey, momentDateKey, monthKey, isMonthKey,
+  shiftMonth, monthDays, displayMonth, timestamp, displayTime, displayDate, daysBetween, chapterTiming, greeting
+}

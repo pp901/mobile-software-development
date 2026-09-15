@@ -1,197 +1,65 @@
 const store = require('../../../services/store')
-const collaboration = require('../../../services/collaboration')
-
-function saveLocalFile(tempPath) {
-  return new Promise(resolve => {
-    wx.saveFile({ tempFilePath: tempPath, success: res => resolve(res.savedFilePath), fail: () => resolve(tempPath) })
-  })
-}
-
+const cloud = require('../../../services/collaboration')
+const media = require('../../../services/media')
+const date = require('../../../utils/date')
+const audioFocus = require('../../../services/audio-focus')
 Page({
-  data: {
-    id: '', quick: false, type: 'text', chapterId: '', chapter: null, content: '', media: [], location: '', latitude: 0, longitude: 0,
-    mood: '', tags: [], voicePath: '', voiceDuration: 0, isRecording: false, showDetails: false, saving: false, canSave: false,
-    autoFocus: false, status: 'PUBLISHED', currentUser: null,
-    types: [
-      { key: 'photo', title: '照片', icon: 'camera', copy: '定格眼前' },
-      { key: 'text', title: '一句话', icon: 'pencil', copy: '记下念头' },
-      { key: 'voice', title: '语音', icon: 'mic', copy: '留住声音' }
-    ],
-    moods: ['开心', '平静', '兴奋', '疲惫', '期待', '放松'],
-    availableTags: ['朋友', '日落', '学习', '旅行', '美食', '独处', '夏天', '里程碑'].map(name => ({ name, selected: false }))
-  },
-
-  onLoad(options) {
-    this.setupRecorder()
-    const currentUser = store.getCurrentUser()
-    const active = store.getActiveChapter()
-    let chapterId = options.chapterId || (active && active.id) || ''
-    let chapter = chapterId ? store.getChapter(chapterId) : null
-    const quick = options.quick === '1'
-    const type = ['photo', 'text', 'voice'].includes(options.type) ? options.type : 'text'
-    const next = { quick, type, chapterId, chapter, currentUser, autoFocus: type === 'text' }
-
-    if (options.id) {
-      const moment = store.getMoment(options.id)
-      if (!moment) return this.showMissing()
-      chapterId = moment.chapterId
-      chapter = store.getChapter(chapterId)
-      Object.assign(next, {
-        id: moment.id, quick: false, type: moment.type || 'text', chapterId, chapter, content: moment.content || '',
-        media: moment.media || [], location: moment.location || '', latitude: moment.latitude || 0, longitude: moment.longitude || 0,
-        mood: moment.mood || '', tags: moment.tags || [], voicePath: moment.voicePath || '', voiceDuration: moment.voiceDuration || 0,
-        showDetails: true, autoFocus: false, status: moment.status || 'PUBLISHED',
-        availableTags: this.data.availableTags.map(item => Object.assign({}, item, { selected: (moment.tags || []).includes(item.name) }))
-      })
-    }
-
-    this.setData(next, () => this.validate())
-    if (!chapter) {
-      wx.showModal({ title: '先开启一个 Chapter', content: 'Moment 需要有一个正在发生的章节。', confirmText: '去创建', success: res => { if (res.confirm) wx.redirectTo({ url: '/pages/chapter/editor/index' }); else wx.navigateBack() } })
-      return
-    }
-    if (!options.id && chapter.status !== 'ONGOING') {
-      wx.showToast({ title: '这一章已经结束', icon: 'none' })
-      return
-    }
-    if (!options.id && quick && type === 'photo') setTimeout(() => this.choosePhoto(), 260)
-  },
-
-  onUnload() {
-    if (this.data.isRecording && this.recorder) this.recorder.stop()
-    if (this.recorder && this.recorder.offStop) this.recorder.offStop(this.handleStop)
-    if (this.recorder && this.recorder.offError) this.recorder.offError(this.handleRecordError)
-  },
-
-  showMissing() {
-    wx.showModal({ title: 'Moment 不见了', content: '这条记录可能已经被删除。', showCancel: false, success: () => wx.navigateBack() })
-  },
-
-  setupRecorder() {
-    this.recorder = wx.getRecorderManager()
-    this.handleStop = res => {
-      saveLocalFile(res.tempFilePath).then(path => {
-        this.setData({ voicePath: path, isRecording: false, voiceDuration: Math.max(1, Math.round(res.duration / 1000)) }, () => this.validate())
-      })
-    }
-    this.handleRecordError = () => {
-      this.setData({ isRecording: false })
-      wx.showToast({ title: '没有录到声音，请重试', icon: 'none' })
-    }
-    this.recorder.onStop(this.handleStop)
-    this.recorder.onError(this.handleRecordError)
-  },
-
-  selectType(event) {
-    const type = event.currentTarget.dataset.type
-    this.setData({ type, autoFocus: type === 'text' }, () => this.validate())
-    if (type === 'photo' && !this.data.media.length) this.choosePhoto()
-  },
-
-  inputContent(event) { this.setData({ content: event.detail.value }, () => this.validate()) },
-  toggleDetails() { this.setData({ showDetails: !this.data.showDetails }) },
-
-  choosePhoto() {
-    const remain = Math.max(1, 6 - this.data.media.length)
-    wx.chooseMedia({ count: remain, mediaType: ['image'], sourceType: ['album', 'camera'], sizeType: store.getSettings().saveOriginal ? ['original'] : ['compressed'], success: res => {
-      Promise.all(res.tempFiles.map(item => saveLocalFile(item.tempFilePath))).then(paths => {
-        const media = this.data.media.concat(paths.map(path => ({ id: `media-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, type: 'image', path }))).slice(0, 6)
-        this.setData({ media }, () => this.validate())
-      })
-    } })
-  },
-
-  removePhoto(event) {
-    const index = Number(event.currentTarget.dataset.index)
-    this.setData({ media: this.data.media.filter((item, itemIndex) => itemIndex !== index) }, () => this.validate())
-  },
-
-  choosePlace() {
-    wx.chooseLocation({
-      success: res => this.setData({ location: res.name || res.address, latitude: res.latitude, longitude: res.longitude }, () => this.validate()),
-      fail: error => { if (!error.errMsg || error.errMsg.indexOf('cancel') < 0) wx.showToast({ title: '请在设置中允许位置权限', icon: 'none' }) }
-    })
-  },
-  removePlace() { this.setData({ location: '', latitude: 0, longitude: 0 }, () => this.validate()) },
-
-  startRecord() {
-    if (this.data.isRecording) return
-    this.setData({ isRecording: true })
-    if (wx.vibrateShort) wx.vibrateShort({ type: 'light' })
-    this.recorder.start({ duration: 60000, format: 'mp3' })
-  },
-  stopRecord() {
-    if (!this.data.isRecording) return
-    if (wx.vibrateShort) wx.vibrateShort({ type: 'light' })
-    this.recorder.stop()
-  },
-  removeVoice() { this.setData({ voicePath: '', voiceDuration: 0 }, () => this.validate()) },
-
-  chooseMood(event) {
-    const mood = event.currentTarget.dataset.mood
-    this.setData({ mood: this.data.mood === mood ? '' : mood })
-  },
-  toggleTag(event) {
-    const tag = event.currentTarget.dataset.tag
-    const availableTags = this.data.availableTags.map(item => item.name === tag ? Object.assign({}, item, { selected: !item.selected }) : item)
-    this.setData({ availableTags, tags: availableTags.filter(item => item.selected).map(item => item.name) })
-  },
-
-  validate() {
-    const valid = this.data.type === 'photo' ? this.data.media.length > 0 : (this.data.type === 'voice' ? !!this.data.voicePath : !!this.data.content.trim())
-    this.setData({ canSave: valid })
-  },
-
-  saveDraft() { this.saveRecord('DRAFT') },
-  savePublished() {
-    if (!this.data.canSave) return wx.showToast({ title: '先留下这一刻的主要内容', icon: 'none' })
-    this.saveRecord('PUBLISHED')
-  },
-
-  saveRecord(status) {
-    if (this.data.saving) return
-    if (!this.data.chapterId) return wx.showToast({ title: '请先开启 Chapter', icon: 'none' })
-    this.setData({ saving: true })
-    const original = this.data.id ? store.getMoment(this.data.id) : null
-    const payload = {
-      id: this.data.id || undefined,
-      chapterId: this.data.chapterId,
-      type: this.data.type,
-      status,
-      content: this.data.content.trim(),
-      media: this.data.media,
-      location: this.data.location,
-      latitude: this.data.latitude,
-      longitude: this.data.longitude,
-      mood: this.data.mood,
-      tags: this.data.tags,
-      voicePath: this.data.voicePath,
-      voiceDuration: this.data.voiceDuration,
-      createdAt: original ? original.createdAt : new Date().toISOString()
-    }
-    const moment = store.saveMoment(payload)
-    if (!moment) {
-      this.setData({ saving: false })
-      return wx.showToast({ title: '当前身份不能修改这条记录', icon: 'none' })
-    }
-    this.syncMoment(moment)
-    wx.showToast({ title: status === 'DRAFT' ? '已存为待补完' : 'Moment 已保存', icon: 'none', duration: 900 })
-    setTimeout(() => wx.navigateBack({ fail: () => wx.redirectTo({ url: '/pages/index/index' }) }), 420)
-  },
-
-  syncMoment(moment) {
-    if (!collaboration.enabled()) return
-    const imageUploads = (moment.media || []).map(item => collaboration.upload(item.path, 'image').then(path => Object.assign({}, item, { path })))
-    const voiceUpload = collaboration.upload(moment.voicePath, 'voice')
-    Promise.all([Promise.all(imageUploads), voiceUpload]).then(([media, voicePath]) => {
-      const remote = {
-        id: moment.id, chapterId: moment.chapterId, type: moment.type, status: moment.status, content: moment.content,
-        media, location: moment.location, latitude: moment.latitude, longitude: moment.longitude, mood: moment.mood,
-        tags: moment.tags, voicePath, voiceDuration: moment.voiceDuration, favorite: moment.favorite,
-        createdAt: moment.createdAt, updatedAt: moment.updatedAt, goalId: moment.goalId
-      }
-      store.saveMoment(remote)
-      collaboration.pushMoment(remote)
-    })
+ data:{id:'',momentId:'',contributionId:'',content:'',media:[],voicePath:'',voiceDuration:0,location:'',latitude:0,longitude:0,localDateKey:'',chapterId:'',chapter:null,chapters:[],isRecording:false,recordSeconds:0,saving:false,adding:false,canSave:false,keyboardHeight:0,error:'',recovered:false,showChapters:false,playing:false},
+ onLoad(options){
+  this.draftKey=store.getCurrentUser().id+':'+(options.contributionId?'perspective:'+options.contributionId:options.momentId?'perspective-new:'+options.momentId:options.id?'moment:'+options.id:'new')
+  let existing=options.id?store.getMoment(options.id):null
+  if(options.momentId){const parent=store.getMoment(options.momentId);if(!parent||!parent.canContribute)return this.blocked('这条记录暂时无法共同编辑');existing=options.contributionId?(parent.contributions||[]).find(x=>x.id===options.contributionId):null;if(options.contributionId&&(!existing||existing.creatorId!==store.getCurrentUser().id))return this.blocked('只能编辑自己的视角');this.setData({momentId:parent.id,contributionId:options.contributionId||'',chapterId:parent.chapterId,parentLabel:parent.content||parent.dateLabel})}
+  else if(options.id&&(!existing||!existing.canEdit))return this.blocked('无法编辑这条记录')
+  const draft=store.getEditorDraft(this.draftKey)
+  const chapterId=existing?existing.chapterId:options.chapterId||this.data.chapterId||''
+  const values=existing?{id:options.id||'',content:existing.content||'',media:existing.media||[],voicePath:existing.voicePath||'',displayVoicePath:existing.displayVoicePath||'',voiceDuration:existing.voiceDuration||0,location:existing.location||'',latitude:existing.latitude||0,longitude:existing.longitude||0,localDateKey:existing.localDateKey||date.dateKey(existing.createdAt)}:{}
+  this.setData(Object.assign({chapterId,localDateKey:date.today()},values,draft||{},{recovered:!!draft}),()=>{this.refreshChapters();this.validate()})
+  this.recorder=wx.getRecorderManager()
+  this.onStop=async result=>{
+   clearInterval(this.recordTimer);const values=this.snapshot();if(!this.disposed)this.setData({isRecording:false,adding:true})
+   try{const path=await media.persist(result.tempFilePath);const clip={voicePath:path,displayVoicePath:path,voiceDuration:Math.max(1,Math.round(result.duration/1000))};if(!this.disposed)this.setData(clip,()=>this.changed());else{const key=store.getCurrentUser().id+this.draftKey.slice(this.draftKey.indexOf(':'));store.saveEditorDraft(key,Object.assign(values,clip))}}
+   catch(error){if(!this.disposed)this.setData({error:error.message})}
+   finally{if(!this.disposed)this.setData({adding:false});else if(this.recorder&&typeof this.recorder.offStop==='function')this.recorder.offStop(this.onStop)}
   }
+  this.onRecordError=()=>{clearInterval(this.recordTimer);this.setData({isRecording:false,error:'录音未成功，请检查麦克风权限后重试'})}
+  this.recorder.onStop(this.onStop);this.recorder.onError(this.onRecordError)
+  this.onKeyboard=e=>this.setData({keyboardHeight:e.height||0});if(wx.onKeyboardHeightChange)wx.onKeyboardHeightChange(this.onKeyboard)
+  this.audio=wx.createInnerAudioContext();this.audio.onPause(()=>this.setData({playing:false}));this.audio.onEnded(()=>this.setData({playing:false}));this.audio.onError(()=>this.setData({playing:false,error:'声音暂时无法播放'}))
+ },
+ onShow(){if(this.draftKey)this.refreshChapters()},
+ onHide(){if(this.data.isRecording)this.recorder.stop();if(this.audio)this.audio.pause();this.setData({playing:false});this.flushDraft()},
+ onUnload(){this.flushDraft();this.disposed=true;if(this.data.isRecording&&this.recorder)this.recorder.stop();clearTimeout(this.draftTimer);clearInterval(this.recordTimer);if(this.recorder){if(!this.data.isRecording&&!this.data.adding&&typeof this.recorder.offStop==='function')this.recorder.offStop(this.onStop);if(typeof this.recorder.offError==='function')this.recorder.offError(this.onRecordError)}if(this.audio){audioFocus.release(this.audio);this.audio.destroy()};if(wx.offKeyboardHeightChange)wx.offKeyboardHeightChange(this.onKeyboard)},
+ blocked(message){this.setData({error:message,blocked:true})},
+ refreshChapters(){const chapters=store.getChapters().filter(x=>x.status!=='ARCHIVED');const chapter=this.data.chapterId?store.getChapter(this.data.chapterId):null;this.setData({chapters,chapter,audience:this.data.momentId?'这条 Moment 的共同记录者可见':chapter&&chapter.memberCount>1?chapter.memberCount+' 位 Chapter 成员可见':this.data.id&&store.getMoment(this.data.id)&&(store.getMoment(this.data.id).participantIds||[]).length?'这条 Moment 的受邀记录者可见':'仅自己可见'})},
+ input(e){this.setData({content:e.detail.value});this.changed()},
+ changed(){this.validate();clearTimeout(this.draftTimer);this.draftTimer=setTimeout(()=>this.flushDraft(),300)},
+ validate(){this.setData({canSave:store.hasContent(this.data)})},
+ snapshot(){const d=this.data;return {content:d.content,media:d.media,voicePath:d.voicePath,voiceDuration:d.voiceDuration,location:d.location,latitude:d.latitude,longitude:d.longitude,localDateKey:d.localDateKey,chapterId:d.chapterId}},
+ flushDraft(){if(this.committed||!this.draftKey||this.data.blocked)return true;this.draftKey=store.getCurrentUser().id+this.draftKey.slice(this.draftKey.indexOf(':'));const value=this.snapshot();const ok=store.saveEditorDraft(this.draftKey,store.hasContent(value)?value:null);if(!ok&&!this.disposed)this.setData({error:store.getLastError()});return !!ok},
+ async addPhotos(){if(this.data.adding||this.data.media.length>=12)return;this.setData({adding:true,error:''});try{const files=await media.chooseImages(Math.min(9,12-this.data.media.length));this.setData({media:this.data.media.concat(files)},()=>this.changed())}catch(error){this.setData({error:error.message})}finally{this.setData({adding:false})}},
+ removePhoto(e){this.setData({media:this.data.media.filter((x,i)=>i!==Number(e.currentTarget.dataset.index))},()=>this.changed())},
+ preview(e){wx.previewImage({urls:this.data.media.map(x=>x.displayPath||x.path),current:e.currentTarget.dataset.src})},
+ record(){if(this.data.isRecording){this.recorder.stop();return}const start=()=>{this.setData({isRecording:true,recordSeconds:0,error:''});this.recordTimer=setInterval(()=>this.setData({recordSeconds:this.data.recordSeconds+1}),1000);this.recorder.start({duration:60000,format:'mp3'})};if(this.data.voicePath)wx.showModal({title:'替换这段录音？',content:'新录音完成后会替换当前声音。',success:r=>{if(r.confirm)start()}});else start()},
+ play(){if(this.data.playing){this.audio.pause();this.setData({playing:false})}else{if(this.audio.src!==(this.data.displayVoicePath||this.data.voicePath))this.audio.src=this.data.displayVoicePath||this.data.voicePath;audioFocus.claim(this.audio);this.audio.play();this.setData({playing:true})}},
+ removeVoice(){this.audio.stop();this.setData({voicePath:'',voiceDuration:0,playing:false},()=>this.changed())},
+ choosePlace(){wx.chooseLocation({success:r=>this.setData({location:r.name||r.address,latitude:r.latitude,longitude:r.longitude},()=>this.changed()),fail:e=>{if(!String(e.errMsg).includes('cancel'))this.setData({error:'无法获取地点，其他内容仍可保存'})}})},
+ removePlace(){this.setData({location:'',latitude:0,longitude:0},()=>this.changed())},
+ changeDate(e){this.setData({localDateKey:e.detail.value},()=>this.changed())},
+ openChapters(){if(this.data.momentId)return;wx.hideKeyboard();this.setData({showChapters:true})},closeChapters(){this.setData({showChapters:false})},noop(){},
+ chooseChapter(e){const id=e.currentTarget.dataset.id||'';const chapter=store.getChapter(id);const choose=()=>{this.setData({chapterId:id,showChapters:false});this.refreshChapters();this.changed()};if(chapter&&chapter.memberCount>1&&id!==this.data.chapterId)wx.showModal({title:'放入共同 Chapter？',content:chapter.memberCount+' 位成员将能看到保存后的内容。草稿仍仅你可见。',confirmText:'放入',success:r=>{if(r.confirm)choose()}});else choose()},
+ createChapter(){this.setData({showChapters:false});wx.navigateTo({url:'/pages/chapter/editor/index?returnToComposer=1',events:{chapterCreated:chapter=>{this.setData({chapterId:chapter.id});this.refreshChapters();this.changed()}}})},
+ handleBack(){if(this.data.saving||this.data.adding)return;if(this.data.isRecording){this.recorder.stop();return}if(this.flushDraft())wx.navigateBack({fail:()=>wx.redirectTo({url:'/pages/index/index'})})},
+ save(){
+  if(this.data.saving||this.data.adding||this.data.isRecording||!this.data.canSave||this.data.blocked)return
+  this.setData({saving:true,error:''})
+  const payload=Object.assign(this.snapshot(),{status:'PUBLISHED'})
+  let result
+  if(this.data.momentId){payload.momentId=this.data.momentId;if(this.data.contributionId)payload.id=this.data.contributionId;result=store.saveContribution(payload)}
+  else{if(this.data.id)payload.id=this.data.id;else payload.createdAt=new Date().toISOString();result=store.saveMoment(payload)}
+  if(!result){this.setData({saving:false,error:store.getLastError()||'无法保存，请确认内容归属和编辑权限'});return}
+  this.committed=true;this.draftKey=store.getCurrentUser().id+this.draftKey.slice(this.draftKey.indexOf(':'));store.saveEditorDraft(this.draftKey,null)
+  if(cloud.flush)cloud.flush()
+  wx.showToast({title:'已保存',icon:'success'})
+  wx.navigateBack({fail:()=>wx.redirectTo({url:'/pages/index/index'})})
+ }
 })

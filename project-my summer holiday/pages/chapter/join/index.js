@@ -1,15 +1,2 @@
-const collaboration = require('../../../services/collaboration')
-
-Page({
-  data: { code: '', joining: false, error: '' },
-  onLoad(options) { this.setData({ code: options.code || '' }) },
-  join() {
-    if (!this.data.code || this.data.joining) return
-    this.setData({ joining: true, error: '' })
-    collaboration.joinInvite(this.data.code).then(chapter => {
-      if (!chapter) return this.setData({ joining: false, error: '邀请已失效，或这份邀请不在当前设备中。请让创建者重新分享。' })
-      wx.showToast({ title: '已经加入这一章', icon: 'success' })
-      setTimeout(() => wx.redirectTo({ url: `/pages/chapter/detail/index?id=${chapter.id}` }), 500)
-    })
-  }
-})
+const cloud=require('../../../services/collaboration')
+Page({data:{code:'',invitation:null,loading:true,joining:false,error:''},onLoad(o){this.setData({code:o.code||''});this.load()},async load(){this.setData({loading:true,error:''});try{this.setData({invitation:await cloud.peekInvite(this.data.code)})}catch(e){this.setData({error:e.message})}finally{this.setData({loading:false})}},async join(){if(this.data.joining||!this.data.invitation)return;this.setData({joining:true,error:''});try{const target=await cloud.joinInvite(this.data.code);wx.redirectTo({url:target.scope==='moment'?'/pages/moment/detail/index?id='+target.id:'/pages/chapter/detail/index?id='+target.id})}catch(e){this.setData({joining:false,error:e.message})}},goHome(){wx.redirectTo({url:'/pages/index/index'})}})

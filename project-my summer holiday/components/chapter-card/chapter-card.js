@@ -1,4 +1,11 @@
 Component({
   properties: { chapter: { type: Object, value: {} }, compact: { type: Boolean, value: false } },
-  methods: { open() { this.triggerEvent('open', { id: this.data.chapter.id }) } }
+  data: { imageFailed: false },
+  observers: {
+    'chapter.cover': function () { this.setData({ imageFailed: false }) }
+  },
+  methods: {
+    open() { this.triggerEvent('open', { id: this.data.chapter.id }) },
+    imageError() { this.setData({ imageFailed: true }) }
+  }
 })

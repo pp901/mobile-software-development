@@ -1,3 +1,5 @@
+const product = require('../constants/product')
+
 const users = [
   { id: 'user-owner', nickname: '夏天的记录者', avatar: '/assets/images/chapter-summer.webp', bio: '把平凡的日子，过成值得收藏的章节。' },
   { id: 'user-lin', nickname: '林一', avatar: '/assets/images/summer-friends.webp', bio: '喜欢海风，也喜欢把快乐拍下来。' },
@@ -8,7 +10,7 @@ const chapters = [
   {
     id: 'summer-2026', title: '大二暑假', englishTitle: 'SUMMER 2026', type: '假期', status: 'ONGOING', statusText: '正在发生',
     startDate: '2026-07-01', endDate: '2026-09-20', description: '在出发与停留之间，长成更喜欢的样子。',
-    cover: '/assets/images/chapter-summer.webp', theme: '#476354', modules: ['瞬间', '足迹', '目标', '回望'],
+    cover: '/assets/images/chapter-summer.webp', theme: '#476354', modules: product.getChapterModules(),
     ownerId: 'user-owner', memberIds: ['user-owner', 'user-lin', 'user-chen'], createdAt: '2026-07-01T09:00:00', endedAt: '',
     goals: [
       { id: 'goal-sunset', title: '看一次海边日落', done: true, createdBy: 'user-owner', completedAt: '2026-07-14T18:42:00' },
@@ -23,14 +25,14 @@ const chapters = [
   {
     id: 'qingdao-trip', title: '青岛三日', englishTitle: 'A SHORT ESCAPE', type: '旅行', status: 'COMPLETED', statusText: '已成章',
     startDate: '2026-05-02', endDate: '2026-05-04', description: '三天很短，海风记得我们走过的路。',
-    cover: '/assets/images/island-road.webp', theme: '#C75E45', modules: ['瞬间', '足迹', '目标', '回望'],
+    cover: '/assets/images/island-road.webp', theme: '#C75E45', modules: product.getChapterModules(),
     ownerId: 'user-owner', memberIds: ['user-owner', 'user-lin'], createdAt: '2026-05-01T20:00:00', endedAt: '2026-05-04T22:10:00',
     ending: '这一章，写完了。海风会替我们记得。', goals: []
   },
   {
     id: 'photo-practice', title: '胶片练习', englishTitle: 'LIGHT STUDIES', type: '目标', status: 'ARCHIVED', statusText: '已归档',
     startDate: '2026-03-01', endDate: '2026-04-15', description: '慢一点看光，也慢一点看生活。',
-    cover: '/assets/images/reading-window.webp', theme: '#D5A33B', modules: ['瞬间', '足迹', '目标', '回望'],
+    cover: '/assets/images/reading-window.webp', theme: '#D5A33B', modules: product.getChapterModules(),
     ownerId: 'user-owner', memberIds: ['user-owner'], createdAt: '2026-03-01T08:00:00', endedAt: '', goals: []
   }
 ]

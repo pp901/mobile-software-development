@@ -1,95 +1,41 @@
 const store = require('../../services/store')
-const collaboration = require('../../services/collaboration')
-
+const cloud = require('../../services/collaboration')
 Page({
-  data: {
-    id: '', chapter: null, moments: [], photos: [], allPhotos: [], selectedPhotoIds: [], firstMoment: null,
-    lastMoment: null, topTags: [], moods: [], places: [], busiestDay: null, sharedMoments: [], members: [],
-    ending: '', composing: false, photoPanel: false, posterPath: '', generating: false
-  },
-  onLoad(options) {
-    const active = store.getActiveChapter()
-    this.setData({ id: options.id || (active && active.id) || '', composing: options.finish === '1' })
-    if (this.data.id) this.load()
-  },
-  onShow() { if (this.data.id) this.load() },
-  load() {
-    const review = store.getReviewData(this.data.id)
-    if (!review) return
-    const maxMood = Math.max(1, ...review.moods.map(item => item.count))
-    const selectedPhotoIds = review.photos.map(item => item.id)
-    this.setData(Object.assign({}, review, {
-      ending: review.chapter.ending || this.data.ending,
-      selectedPhotoIds,
-      allPhotos: review.allPhotos.map(item => Object.assign({}, item, { selected: selectedPhotoIds.includes(item.id) })),
-      moods: review.moods.map(item => Object.assign({}, item, { percent: Math.round(item.count / maxMood * 100) }))
-    }))
-  },
-  startEnding() { this.setData({ composing: true }) },
-  inputEnding(event) { this.setData({ ending: event.detail.value }) },
-  complete() {
-    const chapter = this.data.chapter
-    if (!chapter.isOwner) return wx.showToast({ title: '只有创建者可以结束 Chapter', icon: 'none' })
-    const pending = chapter.pendingCount
-    const isUpdate = chapter.status === 'COMPLETED'
-    wx.showModal({
-      title: isUpdate ? '更新这一章的结语？' : '结束这一章？',
-      content: isUpdate ? '完成时间会保留，只更新回望中的结语。' : `${pending ? `仍有 ${pending} 个待补完 Moment。` : '所有 Moment 都已整理。'}结束后将停止新增记录，并生成完整回望。`,
-      confirmText: isUpdate ? '保存结语' : '确认结束', confirmColor: '#173F2D',
-      success: res => {
-        if (!res.confirm) return
-        const completed = store.completeChapter(this.data.id, this.data.ending)
-        if (!completed) return wx.showToast({ title: '当前身份不能结束', icon: 'none' })
-        collaboration.finishChapter(this.data.id, this.data.ending)
-        this.setData({ composing: false }); this.load()
-        wx.showToast({ title: '这一章，写完了。', icon: 'none', duration: 1800 })
-      }
-    })
-  },
-  openPhotoPanel() { this.setData({ photoPanel: true }) },
-  closePhotoPanel() { this.setData({ photoPanel: false }) },
-  noop() {},
-  togglePosterPhoto(event) {
-    const id = event.currentTarget.dataset.id
-    let selected = this.data.selectedPhotoIds.slice()
-    if (selected.includes(id)) selected = selected.filter(item => item !== id)
-    else if (selected.length < 3) selected.push(id)
-    else return wx.showToast({ title: '海报最多选择 3 张照片', icon: 'none' })
-    this.setData({ selectedPhotoIds: selected, allPhotos: this.data.allPhotos.map(item => Object.assign({}, item, { selected: selected.includes(item.id) })) })
-  },
-  confirmPhotos() {
-    if (!this.data.selectedPhotoIds.length) return wx.showToast({ title: '至少选择一张照片', icon: 'none' })
-    store.setReviewPhotos(this.data.id, this.data.selectedPhotoIds)
-    const photos = this.data.selectedPhotoIds.map(id => this.data.allPhotos.find(item => item.id === id)).filter(Boolean)
-    this.setData({ photoPanel: false, photos }, () => this.generatePoster())
-  },
-  imageInfo(src) { return new Promise(resolve => wx.getImageInfo({ src, success: res => resolve(res.path), fail: () => resolve('') })) },
-  generatePoster() {
-    if (this.data.generating) return
-    this.setData({ generating: true })
-    const selected = this.data.photos.slice(0, 3)
-    Promise.all(selected.map(item => this.imageInfo(item.image))).then(paths => {
-      const ctx = wx.createCanvasContext('reviewPoster', this)
-      const chapter = this.data.chapter
-      ctx.setFillStyle('#F7F3EA'); ctx.fillRect(0, 0, 750, 1060)
-      ctx.setFillStyle('#173F2D'); ctx.fillRect(0, 0, 750, 230)
-      ctx.setFillStyle('#F2BD42'); ctx.fillRect(54, 52, 92, 12)
-      ctx.setFillStyle('#FFFFFF'); ctx.setFontSize(28); ctx.fillText('ongoing_ · CHAPTER REVIEW', 54, 112)
-      ctx.setFontSize(48); ctx.fillText(chapter.title.slice(0, 12), 54, 180)
-      const valid = paths.filter(Boolean)
-      if (valid[0]) ctx.drawImage(valid[0], 54, 270, 642, valid.length > 1 ? 330 : 460)
-      if (valid[1]) ctx.drawImage(valid[1], 54, 615, 313, 220)
-      if (valid[2]) ctx.drawImage(valid[2], 383, 615, 313, 220)
-      ctx.setFillStyle('#26312B'); ctx.setFontSize(25); ctx.fillText(`${chapter.dayTotal} 天 · ${chapter.momentCount} 个瞬间 · ${chapter.memberCount} 人`, 54, 895)
-      ctx.setFontSize(34); ctx.fillText('这一章，写完了。', 54, 958)
-      ctx.setFillStyle('#EC765F'); ctx.fillRect(54, 993, 120, 9)
-      ctx.draw(false, () => setTimeout(() => wx.canvasToTempFilePath({ canvasId: 'reviewPoster', width: 750, height: 1060, destWidth: 1125, destHeight: 1590, success: res => { this.setData({ posterPath: res.tempFilePath, generating: false }); wx.previewImage({ urls: [res.tempFilePath] }) }, fail: () => { this.setData({ generating: false }); wx.showToast({ title: '海报生成失败，请重试', icon: 'none' }) } }, this), 180))
-    })
-  },
-  savePoster() {
-    if (!this.data.posterPath) return this.openPhotoPanel()
-    wx.saveImageToPhotosAlbum({ filePath: this.data.posterPath, success: () => wx.showToast({ title: '海报已保存', icon: 'success' }), fail: () => wx.showToast({ title: '请允许保存到相册', icon: 'none' }) })
-  },
-  openMoment(event) { wx.navigateTo({ url: `/pages/moment/detail/index?id=${event.currentTarget.dataset.id}` }) },
-  onShareAppMessage() { return { title: `${this.data.chapter.title}｜${this.data.chapter.dayTotal} 天的共同故事`, path: `/pages/review/index?id=${this.data.id}`, imageUrl: this.data.posterPath || this.data.chapter.cover } }
+ data:{id:'',chapter:null,entries:[],limit:8,hasMore:false,missing:false,composing:false,ending:'',generating:false,posterPath:'',error:''},
+ onLoad(options){this.setData({id:options.id||'',composing:options.finish==='1'});this.load();cloud.pullChapter(this.data.id).then(()=>this.load())},
+ onShow(){if(this.data.id)this.load()},
+ load(){const review=store.getReviewData(this.data.id);if(!review)return this.setData({chapter:null,missing:true});const entries=review.moments.slice().sort((a,b)=>a.localDateKey.localeCompare(b.localDateKey)||a.createdAt.localeCompare(b.createdAt)).slice(0,this.data.limit).map((moment,index,array)=>({id:moment.id,moment,month:moment.localDateKey.slice(0,7).replace('-',' / '),startMonth:index===0||moment.localDateKey.slice(0,7)!==array[index-1].localDateKey.slice(0,7),perspectives:store.getPerspectives(moment.id)}));this.setData({chapter:review.chapter,entries,hasMore:review.moments.length>entries.length,missing:false,total:review.moments.length,ending:this.data.composing?this.data.ending:review.chapter.ending||''})},
+ onReachBottom(){if(this.data.hasMore){this.setData({limit:this.data.limit+8});this.load()}},
+ startEnding(){this.setData({composing:true,ending:this.data.chapter.ending||''})},
+ closeEnding(){this.setData({composing:false})},
+ inputEnding(e){this.setData({ending:e.detail.value})},
+ complete(){if(!this.data.chapter.isOwner)return;const chapter=store.completeChapter(this.data.id,this.data.ending);if(!chapter)return this.setData({error:store.getLastError()||'无法保存'});cloud.flush();this.setData({composing:false});this.load();wx.showToast({title:'已保存',icon:'success'})},
+ openMoment(e){wx.navigateTo({url:'/pages/moment/detail/index?id='+e.currentTarget.dataset.id})},
+ goBack(){wx.navigateBack({fail:()=>wx.redirectTo({url:'/pages/history/index'})})},noop(){},
+ imageInfo(src){return new Promise(resolve=>{if(!src)return resolve(null);wx.getImageInfo({src,success:resolve,fail:()=>resolve(null)})})},
+ async generatePoster(){
+  if(this.data.generating)return
+  this.setData({generating:true,error:''})
+  try{
+   const review=store.getReviewData(this.data.id);const chapter=review.chapter
+   const photo=review.moments.reduce((all,m)=>all.concat(m.media||[]),[])[0]
+   const info=await this.imageInfo(photo&&(photo.displayPath||photo.path))
+   if(photo&&!info)throw new Error('照片暂时无法读取，请稍后重试')
+   const ctx=wx.createCanvasContext('reviewPoster',this)
+   ctx.setFillStyle('#f8f9fb');ctx.fillRect(0,0,750,1100);ctx.setFillStyle('#202124')
+   const wrap=(text,x,y,width,size,lineHeight,maxLines)=>{ctx.setFontSize(size);let line='',lines=0;const chars=Array.from(text||'');for(let i=0;i<chars.length;i++){const char=chars[i];if(char==='\n'||ctx.measureText(line+char).width>width){if(lines===maxLines-1){ctx.fillText(line.slice(0,-1)+'…',x,y);return y+lineHeight}ctx.fillText(line,x,y);y+=lineHeight;line=char==='\n'?'':char;lines++}else line+=char}if(line){ctx.fillText(line,x,y);y+=lineHeight}return y}
+   ctx.setFontSize(24);ctx.fillText('ongoing_',48,60)
+   let y=wrap(chapter.title,48,128,654,46,58,3)
+   ctx.setFillStyle('#60646c');ctx.setFontSize(23);ctx.fillText(chapter.startDate+' — '+(chapter.status==='ONGOING'?'进行中':chapter.endDate||'已结束'),48,y+12);y+=52
+   if(info){const width=654,height=Math.min(480,width*info.height/info.width);const scale=Math.min(width/info.width,height/info.height);const w=info.width*scale,h=info.height*scale;ctx.drawImage(info.path,48+(width-w)/2,y,w,h);y+=height+40}
+   ctx.setFillStyle('#202124')
+   const written=review.moments.find(m=>m.content.trim());const excerpt=chapter.ending||(written&&written.content)||chapter.description||''
+   wrap(excerpt,48,y+12,654,30,46,Math.max(1,Math.floor((1000-y)/46)))
+   ctx.setFillStyle('#60646c');ctx.setFontSize(21);ctx.fillText(chapter.status==='ONGOING'?'进行中':'已结束',48,1052)
+   await new Promise(resolve=>ctx.draw(false,resolve))
+   const result=await new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvasId:'reviewPoster',width:750,height:1100,destWidth:1125,destHeight:1650,success:resolve,fail:reject},this))
+   this.setData({posterPath:result.tempFilePath});wx.previewImage({urls:[result.tempFilePath]})
+  }catch(e){this.setData({error:e.message||'导出未完成，请重试'})}finally{this.setData({generating:false})}
+ },
+ savePoster(){wx.saveImageToPhotosAlbum({filePath:this.data.posterPath,success:()=>wx.showToast({title:'已保存到相册'}),fail:()=>this.setData({error:'未保存到相册，请检查相册权限后重试'})})}
 })

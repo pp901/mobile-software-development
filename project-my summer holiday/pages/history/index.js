@@ -1,13 +1,2 @@
-const store = require('../../services/store')
-
-Page({
-  data: {
-    active: 'ONGOING', chapters: [],
-    tabs: [{ key: 'ONGOING', label: '正在发生' }, { key: 'COMPLETED', label: '已成章' }, { key: 'ARCHIVED', label: '已归档' }]
-  },
-  onShow() { this.load() },
-  load() { this.setData({ chapters: store.getChapters(this.data.active) }) },
-  changeTab(event) { this.setData({ active: event.currentTarget.dataset.key }, () => this.load()) },
-  openChapter(event) { wx.navigateTo({ url: `/pages/chapter/detail/index?id=${event.detail.id}` }) },
-  createChapter() { wx.navigateTo({ url: '/pages/chapter/editor/index' }) }
-})
+const store=require('../../services/store')
+Page({data:{active:'all',chapters:[],tabs:[{key:'all',label:'全部'},{key:'ONGOING',label:'进行中'},{key:'COMPLETED',label:'已结束'}]},onShow(){this.load()},load(){let chapters=store.getChapters();if(this.data.active!=='all')chapters=chapters.filter(x=>this.data.active==='COMPLETED'?x.status!=='ONGOING':x.status==='ONGOING');this.setData({chapters})},changeTab(e){this.setData({active:e.currentTarget.dataset.key});this.load()},openChapter(e){wx.navigateTo({url:'/pages/chapter/detail/index?id='+e.detail.id})},createChapter(){wx.navigateTo({url:'/pages/chapter/editor/index'})}})
