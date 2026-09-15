@@ -7,7 +7,8 @@ App({
     let cloudEnabled = false
     if (wx.cloud) {
       try {
-        wx.cloud.init({ traceUser: true })
+        // 使用已验证的云环境；当前小程序 AppID 仍以 project.config.json 为准。
+        wx.cloud.init({ env: 'cloud1-d3gkyt79x24b49e66', traceUser: true })
         cloudEnabled = true
       } catch (error) { cloudEnabled = false }
     }

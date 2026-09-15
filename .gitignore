@@ -7,7 +7,7 @@
 /others
 /project
 /ui-review
-/Exp5
+/ongoing-design-reference-backup
 # Exp6 根目录下的模板工程不入库，仅保留 cloudPhoto
 /Exp6/*
 !/Exp6/cloudPhoto/
