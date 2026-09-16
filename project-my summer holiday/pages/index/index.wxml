@@ -1,34 +1,23 @@
-<view class="page-shell tabbar-space">
-  <navigation-bar back="{{false}}" title="" background="#FAF7F1" />
-  <view class="home-header page-pad">
-    <text class="brand brand-serif">ongoing_</text>
-    <view class="header-actions">
-      <button class="round-action" bindtap="openSearch" aria-label="搜索"><image src="/assets/icons/search.svg" /></button>
-      <button class="avatar-button" bindtap="openProfile" aria-label="我的"><image src="{{currentUser.avatar}}" mode="aspectFill" /></button>
-    </view>
-  </view>
-  <view class="intro page-pad">
-    <text class="intro-hand">{{greeting}}，
-故事还在继续。</text>
-    <text class="intro-note">拍一张、写一句、说一段，
-3 秒也能留下此刻。</text>
-  </view>
-  <view class="page-pad">
-    <chapter-card wx:if="{{chapter}}" chapter="{{chapter}}" bind:open="openChapter" />
-    <view wx:else class="empty-state surface"><text class="empty-mark">＋</text><text class="empty-title">开启你的第一章</text><text class="empty-copy">一段假期、一次旅行，都值得被收藏。</text><button class="primary-button empty-button" bindtap="createChapter">开启新一章</button></view>
-    <button wx:if="{{ongoingCount > 1}}" class="switch-link" bindtap="switchChapter">切换章节 · {{ongoingCount}} 个进行中 ›</button>
-  </view>
-  <view wx:if="{{chapter}}" class="page-pad">
-    <view class="section-head"><text class="section-title">今天，想记录什么？</text><text class="section-note">随手记一条 ›</text></view>
-    <view class="quick-grid">
-      <button class="quick-item quick-photo" data-type="photo" bindtap="quickRecord"><image src="/assets/icons/camera.svg" /><text>拍照记录</text></button>
-      <button class="quick-item quick-text" data-type="text" bindtap="quickRecord"><image src="/assets/icons/pencil.svg" /><text>写点想法</text></button>
-      <button class="quick-item quick-voice" data-type="voice" bindtap="quickRecord"><image src="/assets/icons/mic.svg" /><text>语音记录</text></button>
-    </view>
-    <view class="section-head"><text class="section-title">最新时刻</text><button class="section-link" bindtap="openChapter">查看更多 ›</button></view>
-    <view class="moment-list"><moment-card wx:for="{{moments}}" wx:key="id" moment="{{item}}" bind:open="openMoment" /></view>
-    <view wx:if="{{!moments.length}}" class="empty-state"><text class="empty-copy">生活的小事，等你写下第一笔。</text></view>
-    <button wx:if="{{echo}}" class="echo-card" bindtap="openMoment" data-id="{{echo.id}}"><image src="{{echo.image}}" mode="aspectFill"/><view><text class="eyebrow">MEMORY ECHO</text><text>过去的一刻，今天又想起。</text><text>{{echo.content}}</text></view></button>
-  </view>
-  <app-tabbar active="now" />
+<view class="home-page tabbar-space">
+ <navigation-bar home background="#F9FAFC"><view slot="home" class="home-masthead"><text class="home-wordmark">ongoing_</text></view></navigation-bar>
+ <view class="home-intro page-pad"><text>生活仍在继续，每一刻都有意义。</text></view>
+ <swiper class="chapter-swiper {{!chapters.length ? 'is-empty' : ''}}" current="{{chapterIndex}}" bindchange="changeChapter" duration="220" previous-margin="32rpx" next-margin="82rpx">
+  <swiper-item wx:for="{{chapters}}" wx:key="id">
+   <button class="ui-button chapter-cover {{item.homeCover ? 'has-image' : ''}}" data-id="{{item.id}}" bindtap="openChapter" hover-class="card-hover" aria-label="打开章节：{{item.title}}">
+    <image wx:if="{{item.homeCover}}" class="cover-photo" src="{{item.homeCover}}" mode="aspectFill" data-index="{{index}}" binderror="coverError"/>
+    <view wx:else class="cover-placeholder media-placeholder"><image src="/assets/icons/image.svg"/></view><view wx:if="{{item.homeCover}}" class="cover-shade"></view>
+    <view class="cover-copy"><text class="chapter-label">CHAPTER {{index + 1}} · 进行中</text><text class="cover-title">{{item.title}}</text><text class="cover-description">{{item.description || '把正在经历的日常，慢慢记录下来。'}}</text><view class="cover-footer"><text>{{item.shortStart}}{{item.shortEnd ? ' — ' + item.shortEnd : ' 起'}}</text><text>{{item.momentCount}} 个 Moment</text></view></view>
+   </button>
+  </swiper-item>
+  <swiper-item><button class="ui-button chapter-cover new-chapter" bindtap="createChapter"><view class="new-plus">＋</view><text class="new-title">新建 Chapter</text><text class="new-copy">给最近的生活，开启新的一章。</text></button></swiper-item>
+ </swiper>
+ <view class="page-pad">
+  <view class="chapter-pagination"><view wx:for="{{chapters}}" wx:key="id" class="{{index === chapterIndex ? 'selected' : ''}}"></view><view class="{{chapterIndex === chapters.length ? 'selected' : ''}}"></view></view>
+  <button class="ui-button primary-button record-cta" bindtap="createMoment"><text class="cta-spark">✦</text><text>记录此刻</text><text class="cta-arrow">→</text></button>
+  <button wx:if="{{draft}}" class="ui-button draft-resume" bindtap="resumeDraft"><text>继续上次的草稿</text><text>继续写 →</text></button>
+  <view class="section-head"><text class="section-title brand-serif">最近的 Moment</text><button wx:if="{{hasMore || expanded}}" class="ui-button section-link" bindtap="toggleRecent">{{expanded ? '收起' : '查看全部 ›'}}</button></view>
+  <scroll-view wx:if="{{moments.length}}" scroll-x class="recent-scroll" show-scrollbar="{{false}}"><view class="recent-cards"><view class="recent-card" wx:for="{{moments}}" wx:key="id"><moment-card moment="{{item}}" layout="compact" bind:open="openMoment"/></view></view></scroll-view>
+  <view wx:else class="recent-empty"><text>这一章，还在等第一个瞬间。</text><text>从此刻的一句话开始。</text></view>
+  <button class="ui-button echo-card" bindtap="openEcho"><view class="echo-copy"><view class="echo-heading"><text class="echo-spark">✦</text><text>记忆回响 <text class="echo-english">Memory Echo</text></text></view><text class="echo-description">{{echo ? echo.content || '有些瞬间，值得再次想起。' : '今天留下一点记录，未来在这里重逢。'}}</text><text class="echo-meta">{{echo ? echo.dateLabel + ' · ' + echo.chapterTitle : '每一个小小的记录，都有回响。'}}</text></view><view class="echo-thumb media-placeholder"><image wx:if="{{echo.image && !echoImageFailed}}" class="echo-photo" src="{{echo.image}}" mode="aspectFill" binderror="echoImageError"/><image wx:else src="/assets/icons/image.svg"/></view></button>
+ </view><app-tabbar active="now"/>
 </view>

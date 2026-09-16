@@ -1,70 +1,22 @@
-<view class="quick-page">
-  <navigation-bar title="{{id ? '补完 Moment' : '快速记录'}}" background="#F4F1E9" color="#253029" />
-
-  <view wx:if="{{chapter}}" class="quick-editor page-pad">
-    <view class="context-line">
-      <image src="{{chapter.cover}}" mode="aspectFill" />
-      <view><text>自动收进</text><text>{{chapter.title}}</text></view>
-      <text class="creator-name">{{currentUser.nickname}} 记录</text>
-    </view>
-
-    <view class="quick-heading">
-      <text class="quick-title">{{id ? '把这个瞬间补完整' : '3 秒，留住现在'}}</text>
-      <text class="quick-copy">地点、心情和标签都可以以后再补。</text>
-    </view>
-
-    <view class="type-grid">
-      <button wx:for="{{types}}" wx:key="key" class="type-card type-{{item.key}} {{type === item.key ? 'active' : ''}}" data-type="{{item.key}}" bindtap="selectType">
-        <view><image src="/assets/icons/{{item.icon}}.svg" /></view><text>{{item.title}}</text><text>{{item.copy}}</text>
-      </button>
-    </view>
-
-    <view class="capture-surface type-surface-{{type}}">
-      <block wx:if="{{type === 'photo'}}">
-        <view wx:if="{{media.length}}" class="media-grid">
-          <view wx:for="{{media}}" wx:key="id" class="media-item"><image src="{{item.path}}" mode="aspectFill" /><button data-index="{{index}}" bindtap="removePhoto" aria-label="移除照片">×</button></view>
-          <button wx:if="{{media.length < 6}}" class="media-add" bindtap="choosePhoto"><image src="/assets/icons/plus.svg" /><text>再加一张</text></button>
-        </view>
-        <button wx:else class="capture-empty" bindtap="choosePhoto"><image src="/assets/icons/camera.svg" /><text>拍下眼前</text><text>也可以从相册选择</text></button>
-        <textarea class="quick-textarea photo-caption" value="{{content}}" auto-height maxlength="500" bindinput="inputContent" placeholder="为照片写一句话（可选）" placeholder-class="placeholder" />
-      </block>
-
-      <block wx:elif="{{type === 'text'}}">
-        <textarea class="quick-textarea main-copy" value="{{content}}" focus="{{autoFocus}}" auto-height maxlength="1000" bindinput="inputContent" placeholder="此刻，你想记住什么？" placeholder-class="placeholder" />
-      </block>
-
-      <block wx:else>
-        <button class="voice-capture {{isRecording ? 'recording' : ''}}" bindtouchstart="startRecord" bindtouchend="stopRecord">
-          <view class="voice-orbit"><image src="/assets/icons/mic.svg" /></view>
-          <text>{{isRecording ? '松开保存声音' : (voicePath ? '重新按住录音' : '按住说话')}}</text>
-          <text>{{voicePath ? voiceDuration + ' 秒声音已保存' : '最长 60 秒'}}</text>
-        </button>
-        <button wx:if="{{voicePath}}" class="remove-voice" bindtap="removeVoice">移除这段声音</button>
-        <textarea class="quick-textarea voice-caption" value="{{content}}" auto-height maxlength="500" bindinput="inputContent" placeholder="补一句说明（可选）" placeholder-class="placeholder" />
-      </block>
-    </view>
-
-    <button class="details-toggle" bindtap="toggleDetails"><text>补充地点、心情和标签</text><text>{{showDetails ? '收起' : '展开'}}</text></button>
-
-    <view wx:if="{{showDetails}}" class="details-panel">
-      <view class="detail-block">
-        <view class="detail-head"><text>地点</text><text>可选</text></view>
-        <button wx:if="{{!location}}" class="detail-action" bindtap="choosePlace"><image src="/assets/icons/pin.svg" /><text>选择发生地点</text></button>
-        <view wx:else class="selected-place"><image src="/assets/icons/pin.svg" /><text>{{location}}</text><button bindtap="removePlace">移除</button></view>
-      </view>
-      <view class="detail-block">
-        <view class="detail-head"><text>此刻心情</text><text>可选</text></view>
-        <view class="mood-grid"><button wx:for="{{moods}}" wx:key="*this" class="mood-chip {{mood === item ? 'active' : ''}}" data-mood="{{item}}" bindtap="chooseMood">{{item}}</button></view>
-      </view>
-      <view class="detail-block">
-        <view class="detail-head"><text>标签</text><text>可选</text></view>
-        <view class="tag-grid"><button wx:for="{{availableTags}}" wx:key="name" class="tag-chip {{item.selected ? 'active' : ''}}" data-tag="{{item.name}}" bindtap="toggleTag">#{{item.name}}</button></view>
-      </view>
-    </view>
-  </view>
-
-  <view wx:if="{{chapter}}" class="quick-save-bar">
-    <button class="draft-button" disabled="{{saving}}" bindtap="saveDraft">存为待补完</button>
-    <button class="publish-button" disabled="{{saving || !canSave}}" bindtap="savePublished">{{saving ? '保存中' : (id ? '保存修改' : '保存 Moment')}}</button>
-  </view>
+<view class="composer">
+ <navigation-bar title="{{momentId ? '共同记录' : '记录此刻'}}" background="#FFFFFF" intercept-back bind:back="handleBack"><text slot="right" class="nav-draft">{{saving ? '发布中' : '草稿'}}</text></navigation-bar>
+ <view class="composer-body">
+  <button class="ui-button chapter-context" bindtap="openChapters" disabled="{{!!momentId}}"><view class="context-thumb media-placeholder"><image src="/assets/icons/book-open.svg"/></view><view class="context-copy"><text class="context-label">{{momentId ? '同一个 Moment' : '当前 Chapter'}}</text><text class="context-name">{{chapter ? chapter.title : (momentId ? '受邀的共同记录' : '选择 Chapter')}}</text></view><image wx:if="{{!momentId}}" class="context-chevron" src="/assets/icons/chevron-right.svg"/></button>
+  <view class="draft-line"><text>{{recovered ? '已恢复上次的草稿' : audience}}</text><text>{{draftStatus}}</text></view>
+  <text wx:if="{{momentId}}" class="parent-context">{{parentLabel}}</text>
+  <view class="writing-area"><textarea class="composer-input" value="{{content}}" auto-height maxlength="10000" bindinput="input" placeholder="此刻的你，想记录什么？" placeholder-class="placeholder" cursor-spacing="120" adjust-position="{{true}}" disabled="{{blocked}}"/><text class="word-count">{{content.length}} / 10000</text></view>
+  <view class="media-grid"><view wx:for="{{media}}" wx:key="id" class="media-item"><image src="{{item.displayPath || item.path}}" mode="aspectFill" bindtap="preview" data-src="{{item.displayPath || item.path}}"/><button class="ui-button remove-photo" bindtap="removePhoto" data-index="{{index}}" aria-label="移除照片">×</button></view><button wx:if="{{media.length < 12}}" class="ui-button add-photo" bindtap="addPhotos" disabled="{{adding || blocked}}" aria-label="添加图片"><text>＋</text></button></view>
+  <text wx:if="{{media.length}}" class="media-count">{{media.length}} / 12 张图片</text>
+  <view wx:if="{{voicePath}}" class="voice-ready"><button class="ui-button" bindtap="play"><image src="/assets/icons/mic.svg"/><text>{{playing ? '暂停' : '播放录音'}} · {{voiceDuration}} 秒</text></button><button class="ui-button" bindtap="removeVoice" aria-label="移除录音">×</button></view>
+  <view wx:if="{{isRecording}}" class="record-status"><view class="record-dot"></view><text>录音中 · {{recordSeconds}} 秒</text><button class="ui-button" bindtap="record">停止</button></view>
+  <view class="metadata"><picker mode="date" value="{{localDateKey}}" bindchange="changeDate"><view class="date-control"><image src="/assets/icons/calendar.svg"/><text>{{localDateKey}}</text></view></picker><view wx:if="{{location}}" class="place"><image src="/assets/icons/pin.svg"/><text>{{location}}</text><button class="ui-button" bindtap="removePlace" aria-label="移除地点">×</button></view></view>
+  <view wx:if="{{tags.length}}" class="composer-tags"><button wx:for="{{tags}}" wx:key="*this" class="ui-button tag" bindtap="openTags"># {{item}}</button></view>
+  <text wx:if="{{error}}" class="inline-error">{{error}}</text>
+ </view>
+ <view class="composer-toolbar {{keyboardHeight ? 'keyboard-open' : ''}}" style="bottom:{{keyboardHeight}}px;">
+  <view class="capture-tools"><button class="ui-button" bindtap="addPhotos" disabled="{{adding || media.length >= 12 || blocked}}"><image src="/assets/icons/image.svg"/><text>图片</text></button><button class="ui-button" bindtap="record" disabled="{{blocked}}"><view wx:if="{{isRecording}}" class="stop-recording"></view><image wx:else src="/assets/icons/mic.svg"/><text>{{isRecording ? '停止' : '语音'}}</text></button><button class="ui-button" bindtap="choosePlace" disabled="{{blocked}}"><image src="/assets/icons/pin.svg"/><text>地点</text></button><picker mode="date" value="{{localDateKey}}" bindchange="changeDate" disabled="{{blocked}}"><view class="dock-tool"><image src="/assets/icons/calendar.svg"/><text>日期</text></view></picker><button class="ui-button" bindtap="openTags" disabled="{{blocked}}"><image src="/assets/icons/tag.svg"/><text>标签</text></button></view>
+  <button class="ui-button primary-button publish-button" bindtap="save" disabled="{{!canSave || saving || adding || isRecording || blocked}}" loading="{{saving}}"><text>✦</text><text>{{momentId ? '发布我的视角' : '发布此刻'}}</text><text>→</text></button>
+ </view>
+ <view wx:if="{{showChapters}}" class="sheet-mask" bindtap="closeChapters" catchtouchmove="noop"><view class="sheet" catchtap="noop"><text class="sheet-title">记录在哪一章？</text><scroll-view scroll-y class="chapter-choices"><button class="ui-button sheet-row" bindtap="chooseChapter" data-id="">暂不选择<text>仅自己可见</text></button><button wx:for="{{chapters}}" wx:key="id" class="ui-button sheet-row {{chapterId === item.id ? 'chosen' : ''}}" bindtap="chooseChapter" data-id="{{item.id}}"><text class="choice-name">{{item.title}}</text><text>{{item.memberCount > 1 ? item.memberCount + ' 人' : '仅自己'}}</text></button></scroll-view><button class="ui-button sheet-row new-chapter" bindtap="createChapter">＋ 新建 Chapter</button><button class="ui-button sheet-close" bindtap="closeChapters">取消</button></view></view>
+ <view wx:if="{{showTags}}" class="sheet-mask" bindtap="closeTags"><view class="sheet" catchtap="noop"><text class="sheet-title">为此刻加个标签</text><text class="sheet-copy">用逗号分隔，最多 8 个。</text><input class="tag-input" value="{{tagInput}}" bindinput="inputTags" maxlength="160" placeholder="日常，心情，小小的完成"/><button class="ui-button primary-button" bindtap="saveTags">完成</button><button class="ui-button sheet-close" bindtap="closeTags">取消</button></view></view>
 </view>

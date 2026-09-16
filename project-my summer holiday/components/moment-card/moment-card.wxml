@@ -1,17 +1,1 @@
-<button class="moment-card {{layout === 'stack' ? 'is-stack' : ''}} pressable" bindtap="open">
-  <view class="photo-wrap">
-    <image wx:if="{{moment.image}}" class="moment-photo" src="{{moment.image}}" mode="aspectFill" />
-    <view wx:else class="moment-photo-placeholder"><text class="brand-serif">“</text><text>文字片刻</text></view>
-    <text wx:if="{{moment.imageCount > 1}}" class="photo-count">{{moment.imageCount}}</text>
-    <text wx:if="{{moment.status === 'DRAFT'}}" class="draft-badge">待补完</text>
-  </view>
-  <view class="moment-body">
-    <view class="moment-meta">
-      <text>{{moment.dateLabel}} · {{moment.time}}</text>
-      <text wx:if="{{moment.favorite}}" class="favorite">♥</text>
-    </view>
-    <text class="moment-copy">{{moment.content || '画面已经替此刻说完了一切。'}}</text>
-    <view class="moment-place" wx:if="{{moment.location}}"><text class="pin">⌖</text>{{moment.location}}</view>
-    <view class="moment-footer"><view class="creator"><image src="{{moment.creator.avatar}}" mode="aspectFill"/><text>{{moment.creator.nickname}}</text></view><text wx:if="{{moment.contributionCount}}" class="together">＋{{moment.contributionCount}} 补完</text></view>
-  </view>
-</button>
+<button class="ui-button moment-card {{layout === 'compact' ? 'compact' : ''}}" bindtap="open" hover-class="card-hover"><view wx:if="{{moment.image && !imageFailed}}" class="photo-wrap"><image src="{{moment.image}}" mode="{{layout === 'compact' ? 'aspectFill' : 'widthFix'}}" lazy-load binderror="imageError"/></view><view wx:elif="{{layout === 'compact'}}" class="photo-wrap media-placeholder"><image class="placeholder-icon" src="/assets/icons/{{moment.voicePath ? 'mic' : 'image'}}.svg"/></view><view class="moment-copy"><text class="excerpt {{moment.image ? '' : 'text-only'}}">{{moment.content || (moment.voicePath ? '留住这一刻的声音' : '此刻的画面')}}</text><view wx:if="{{moment.voicePath && layout !== 'compact'}}" class="audio-note"><image src="/assets/icons/mic.svg"/><text>录音 · {{moment.voiceDuration}} 秒</text></view><view class="moment-meta"><text>{{moment.dateLabel}}</text><text wx:if="{{layout !== 'compact' && moment.location}}">{{moment.location}}</text></view><text wx:if="{{moment.participantCount > 1 && layout !== 'compact'}}" class="perspective-note">{{moment.participantCount}} 人的视角</text></view></button>

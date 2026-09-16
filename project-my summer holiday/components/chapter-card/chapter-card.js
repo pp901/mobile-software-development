@@ -1,4 +1,5 @@
 Component({
+  options:{styleIsolation:'apply-shared'},
   properties: { chapter: { type: Object, value: {} }, compact: { type: Boolean, value: false } },
   data: { imageFailed: false },
   observers: {

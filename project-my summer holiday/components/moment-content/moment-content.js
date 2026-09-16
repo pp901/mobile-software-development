@@ -1,6 +1,7 @@
 const focus = require('../../services/audio-focus')
 Component({
- properties: { item: { type:Object, value:{} } },
+  options:{styleIsolation:'apply-shared'},
+ properties: { showPhotos:{type:Boolean,value:true}, showText:{type:Boolean,value:true}, item: { type:Object, value:{} } },
  data: { playing:false, elapsed:0, failed:{} },
  observers: { 'item.id':function(){ this.setData({failed:{},elapsed:0}); if(this.audio)this.audio.stop() } },
  lifetimes: { detached(){ if(this.audio){focus.release(this.audio);this.audio.destroy()} } },

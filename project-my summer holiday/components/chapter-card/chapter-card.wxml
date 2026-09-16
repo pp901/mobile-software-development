@@ -1,14 +1,1 @@
-<button class="chapter-card {{compact ? 'is-compact' : ''}}" hover-class="card-hover" bindtap="open">
-  <image class="chapter-cover" src="{{chapter.cover}}" mode="aspectFill" />
-  <view class="chapter-shade"></view>
-  <view wx:if="{{!compact}}" class="cover-note"><text>一些温柔的日常，
-正在让你成为更好的人。</text><text>Still Ongoing …</text></view>
-  <view class="chapter-content">
-    <view class="chapter-caption"><text class="chapter-season">{{chapter.englishTitle}}</text><text wx:if="{{compact}}" class="chapter-more">···</text></view>
-    <text class="chapter-title">{{chapter.title}}</text>
-    <view class="chapter-summary"><text class="chapter-day">第 {{chapter.dayCurrent}} / {{chapter.dayTotal}} 天</text><text wx:if="{{!compact}}" class="chapter-quote">“{{chapter.description}}”</text></view>
-    <view class="chapter-progress-row"><view class="progress-track"><view class="progress-fill" style="width: {{chapter.progress}}%"></view></view><text>{{chapter.progress}}%</text></view>
-    <view class="member-line"><view class="mini-avatars"><image wx:for="{{chapter.memberPreview}}" wx:key="id" src="{{item.avatar}}" mode="aspectFill" /></view><text>{{chapter.memberCount}} 人 · {{chapter.momentCount}} 个 Moment</text><text wx:if="{{chapter.pendingCount}}" class="pending">{{chapter.pendingCount}} 待补完</text></view>
-    <text wx:if="{{compact}}" class="chapter-copy">“{{chapter.description}}”</text>
-  </view>
-</button>
+<button class="ui-button chapter-card {{compact ? 'compact' : ''}}" bindtap="open" hover-class="card-hover"><view class="chapter-art media-placeholder"><image wx:if="{{chapter.cover && !imageFailed}}" class="chapter-photo" src="{{chapter.displayCover || chapter.cover}}" mode="aspectFill" lazy-load binderror="imageError"/><image wx:else src="/assets/icons/image.svg"/></view><view class="chapter-label"><text class="chapter-state">{{chapter.status === 'ONGOING' ? '进行中' : '已成章'}}</text><text class="chapter-name">{{chapter.title}}</text><text class="chapter-description">{{chapter.description}}</text><text class="chapter-meta">{{chapter.momentCount}} 个 Moment · {{chapter.memberCount}} 位同行者</text></view></button>

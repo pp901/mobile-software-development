@@ -13,7 +13,7 @@ function greeting(now) {
 Page({
   data: {
     chapters: [], moments: [], chapterIndex: 0, limit: 3,
-    expanded: false, hasMore: false, avatarFailed: false
+    expanded: false, hasMore: false, avatarFailed: false, echo: null, echoImageFailed: false, selectedChapterId: ''
   },
   onShow() {
     this.load()
@@ -26,18 +26,25 @@ Page({
       const recentPhoto = all.find(moment => moment.chapterId === chapter.id && moment.image)
       const customCover = chapter.cover && chapter.cover !== '/assets/images/chapter-summer.webp'
       return Object.assign({}, chapter, {
-        homeCover: customCover ? chapter.displayCover || chapter.cover : recentPhoto ? recentPhoto.image : '',
+        homeCover: customCover ? chapter.displayCover || chapter.cover : recentPhoto ? recentPhoto.image : chapter.displayCover || chapter.cover || '',
         yearLabel: String(chapter.startDate || '').slice(0, 4),
         shortStart: this.shortDate(chapter.startDate),
         shortEnd: this.shortDate(chapter.endDate)
       })
     })
+    const selectedId = this.data.selectedChapterId || (store.getActiveChapter() || {}).id
+    const selectedIndex = chapters.findIndex(chapter => chapter.id === selectedId)
+    const chapterIndex = this.showingNew ? chapters.length : selectedIndex >= 0 ? selectedIndex : 0
+    const current = chapters[chapterIndex]
+    const recent = current ? all.filter(moment => moment.chapterId === current.id) : chapters.length ? [] : all
     this.setData({
       chapters,
-      chapterIndex: Math.min(this.data.chapterIndex, Math.max(0, chapters.length - 1)),
-      moments: all.slice(0, this.data.limit),
-      total: all.length,
-      hasMore: all.length > this.data.limit,
+      chapterIndex,
+      selectedChapterId: current ? current.id : '',
+      moments: recent.slice(0, this.data.limit),
+      total: recent.length,
+      hasMore: recent.length > this.data.limit,
+      echo: store.getEchoMoment(),
       profile: store.getCurrentUser(),
       today: `${now.getMonth() + 1}月${now.getDate()}日  周${'日一二三四五六'[now.getDay()]}`,
       greeting: greeting(now),
@@ -57,13 +64,23 @@ Page({
   onPullDownRefresh() {
     cloud.refreshAll().finally(() => { this.load(); wx.stopPullDownRefresh() })
   },
-  changeChapter(event) { this.setData({ chapterIndex: event.detail.current }) },
+  changeChapter(event) {
+    const chapterIndex = event.detail.current
+    const chapter = this.data.chapters[chapterIndex]
+    this.showingNew = !chapter
+    this.setData({ chapterIndex, selectedChapterId: chapter ? chapter.id : '', expanded: false, limit: 3 })
+    if (chapter) store.setActiveChapter(chapter.id)
+    this.load()
+  },
   coverError(event) { this.setData({ [`chapters[${event.currentTarget.dataset.index}].homeCover`]: '' }) },
   avatarError() { this.setData({ avatarFailed: true }) },
   openChapter(event) { wx.navigateTo({ url: '/pages/chapter/detail/index?id=' + event.currentTarget.dataset.id }) },
   openMoment(event) { wx.navigateTo({ url: '/pages/moment/detail/index?id=' + event.detail.id }) },
   createChapter() { wx.navigateTo({ url: '/pages/chapter/editor/index' }) },
-  createMoment() { wx.navigateTo({ url: '/pages/moment/editor/index' }) },
+  createMoment() { const chapter = this.data.chapters[this.data.chapterIndex]; wx.navigateTo({ url: '/pages/moment/editor/index' + (chapter ? '?chapterId=' + chapter.id : '') }) },
+  resumeDraft() { wx.navigateTo({ url: '/pages/moment/editor/index' }) },
+  openEcho() { wx.navigateTo({ url: this.data.echo ? '/pages/moment/detail/index?id=' + this.data.echo.id : '/pages/history/index?view=review' }) },
+  echoImageError() { this.setData({ echoImageFailed: true }) },
   openSearch() { wx.navigateTo({ url: '/pages/search/index' }) },
   openProfile() { wx.navigateTo({ url: '/pages/profile/index' }) },
   toggleRecent() {

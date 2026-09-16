@@ -1,13 +1,12 @@
 <view class="page-shell safe-bottom">
-  <navigation-bar title="寻找片刻" background="#F6F3ED" color="#26312B" />
+  <navigation-bar title="搜索" />
   <view class="search-wrap page-pad">
-    <view class="search-box"><image src="/assets/icons/search.svg" /><input value="{{keyword}}" bindinput="input" focus placeholder="搜索 Chapter、文字、地点或标签" placeholder-class="placeholder" /><button wx:if="{{keyword}}" bindtap="clear">清除</button></view>
-    <view wx:if="{{!searched}}" class="suggestions"><text class="eyebrow">最近想起</text><view class="suggestion-row"><button wx:for="{{suggestions}}" wx:key="*this" class="tag pressable" data-value="{{item}}" bindtap="useSuggestion">{{item}}</button></view></view>
+    <view class="search-box"><image src="/assets/icons/search.svg" /><input value="{{keyword}}" bindinput="input" focus placeholder="搜索 Chapter、内容或地点" placeholder-class="placeholder" /><button class="ui-button" wx:if="{{keyword}}" bindtap="clear">清除</button></view>
     <block wx:if="{{searched}}">
-      <view wx:if="{{places.length}}"><view class="section-head"><text class="section-title">地点</text><text class="count">{{places.length}} 个结果</text></view><view class="suggestion-row"><text wx:for="{{places}}" wx:key="*this" class="tag">⌖ {{item}}</text></view></view>
+      <view wx:if="{{places.length}}"><view class="section-head"><text class="section-title">地点</text><text class="count">{{places.length}} 个结果</text></view><view class="place-results"><view wx:for="{{places}}" wx:key="*this" class="place-result"><text>地点</text><text>{{item}}</text></view></view></view>
       <view wx:if="{{chapters.length}}"><view class="section-head"><text class="section-title">Chapter</text><text class="count">{{chapters.length}} 个结果</text></view><view class="result-list"><chapter-card wx:for="{{chapters}}" wx:key="id" chapter="{{item}}" compact bind:open="openChapter" /></view></view>
       <view wx:if="{{moments.length}}"><view class="section-head"><text class="section-title">Moment</text><text class="count">{{moments.length}} 个结果</text></view><view class="result-list"><moment-card wx:for="{{moments}}" wx:key="id" moment="{{item}}" bind:open="openMoment" /></view></view>
-      <view wx:if="{{noResults}}" class="empty-state"><text class="empty-mark">_</text><text class="empty-title">没有找到这一页</text><text class="empty-copy">换一个词，或许会遇见别的片刻。</text></view>
+      <view wx:if="{{noResults}}" class="empty-state"><text class="empty-mark">_</text><text class="empty-title">没有匹配的记录</text><text class="empty-copy">试试其他关键词。</text></view>
     </block>
   </view>
 </view>

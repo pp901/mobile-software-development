@@ -1,4 +1,5 @@
 Component({
+  options:{styleIsolation:'apply-shared'},
   properties: {
     moment: { type: Object, value: {}, observer() { this.setData({ imageFailed: false }) } },
     layout: { type: String, value: 'row' }

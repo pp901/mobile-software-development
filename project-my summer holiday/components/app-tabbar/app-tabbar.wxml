@@ -1,13 +1,6 @@
-<view class="tabbar">
-  <button class="tab-item {{active === 'now' ? 'is-active' : ''}}" bindtap="openNow"><image src="/assets/icons/home.svg" /><text>当下</text></button>
-  <button class="create-button" bindtap="openCreate" aria-label="记录一个瞬间"><text>＋</text></button>
-  <button class="tab-item {{active === 'history' ? 'is-active' : ''}}" bindtap="openHistory"><image src="/assets/icons/book-open.svg" /><text>回望</text></button>
-</view>
-<view wx:if="{{choosing}}" class="record-mask" bindtap="closeCreate" catchtouchmove="noop">
-  <button class="sheet-close" aria-label="关闭" bindtap="closeCreate">×</button>
-  <view class="record-sheet" catchtap="noop">
-    <view class="sheet-handle"></view><text class="sheet-title">快速记录</text><text class="sheet-copy">先留下，细节以后再补</text>
-    <view class="record-options"><button wx:for="{{choices}}" wx:key="key" data-type="{{item.key}}" bindtap="choose" class="record-option"><view class="option-icon {{item.tone}}"><image src="/assets/icons/{{item.icon}}.svg" /></view><text class="option-title">{{item.title}}</text><text class="option-copy">{{item.copy}}</text></button></view>
-    <text class="sheet-footer">自动收进当前 Chapter</text>
-  </view>
+<view class="tabbar" role="navigation" aria-label="主导航">
+ <button class="ui-button tab-item {{active === 'now' ? 'active' : ''}}" bindtap="openNow" aria-label="当下"><image src="/assets/icons/home{{active === 'now' ? '-active' : ''}}.svg"/><text>当下</text></button>
+ <button class="ui-button tab-item {{active === 'chapters' ? 'active' : ''}}" bindtap="openChapters" aria-label="章节"><image src="/assets/icons/book-open{{active === 'chapters' ? '-active' : ''}}.svg"/><text>章节</text></button>
+ <button class="ui-button tab-item {{active === 'history' ? 'active' : ''}}" bindtap="openHistory" aria-label="回望"><image src="/assets/icons/echo{{active === 'history' ? '-active' : ''}}.svg"/><text>回望</text></button>
+ <button class="ui-button tab-item {{active === 'profile' ? 'active' : ''}}" bindtap="openProfile" aria-label="我的"><image src="/assets/icons/user{{active === 'profile' ? '-active' : ''}}.svg"/><text>我的</text></button>
 </view>

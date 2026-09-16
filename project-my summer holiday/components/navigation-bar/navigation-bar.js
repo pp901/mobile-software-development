@@ -1,8 +1,8 @@
 Component({
-  options:{multipleSlots:true},
+  options:{multipleSlots:true,styleIsolation:'apply-shared'},
   properties:{
-    title:{type:String,value:''}, background:{type:String,value:'#f5f3ee'},
-    color:{type:String,value:'#25251f'}, back:{type:Boolean,value:true},
+    title:{type:String,value:''}, background:{type:String,value:'#F9FAFC'},
+    color:{type:String,value:'#293246'}, back:{type:Boolean,value:true},
     home:{type:Boolean,value:false},
     show:{type:Boolean,value:true}, delta:{type:Number,value:1},
     interceptBack:{type:Boolean,value:false}
