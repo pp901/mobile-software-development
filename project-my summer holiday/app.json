@@ -18,7 +18,7 @@
   "window": {
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom",
-    "backgroundColor": "#F7F7F2",
+    "backgroundColor": "#FAFBF6",
     "backgroundTextStyle": "dark"
   },
   "debug": false,

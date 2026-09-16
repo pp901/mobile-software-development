@@ -289,11 +289,33 @@ function adoptIdentity(payload) {
   return clone(next)
 }
 
+// A verified WeChat account owns its own cache. Never reassign another account's records.
+function activateCloudIdentity(user) {
+  const current = getState()
+  if (current.currentUserId === user.id) return getCurrentUser()
+  if (/^(local-|user-)/.test(current.currentUserId)) {
+    return adoptIdentity(Object.assign({}, user, { avatar: current.profile.avatar || user.avatar || '' }))
+  }
+  storageSet('ongoing:account:' + current.currentUserId, current)
+  const saved = storageGet('ongoing:account:' + user.id)
+  const next = saved || emptyState()
+  if (!saved) {
+    next.currentUserId = user.id
+    next.profile = clone(user)
+    next.users = [clone(user)]
+  }
+  if (next.currentUserId !== user.id) throw new Error('账号缓存不一致，原记录已保留')
+  setState(next)
+  dailyEcho = null
+  return getCurrentUser()
+}
+
 function saveProfile(payload) {
   const state = getState()
   const current = rawUser(state, state.currentUserId)
   Object.assign(current, payload, { id: state.currentUserId })
   state.profile = clone(current)
+  queueOperation(state, 'ensureUser', current.id, { update: true, profile: clone(current) })
   setState(state)
   return clone(current)
 }
@@ -805,7 +827,7 @@ function mergeSharedSnapshot(snapshot) {
 function reset() { return setState(clone(demo)) }
 
 module.exports = {
-  init, getState, setState, getCurrentUser, getUser, getUsers, setCurrentUser, adoptIdentity, saveProfile, getSettings, updateSettings,
+  init, getState, setState, getCurrentUser, getUser, getUsers, setCurrentUser, adoptIdentity, activateCloudIdentity, saveProfile, getSettings, updateSettings,
   getChapters, getChapter, getActiveChapter, setActiveChapter, getMembers, getMoments, getTimelineMoments, getCalendarData, getMapData,
   getMoment, saveMoment, deleteMoment,
   toggleFavorite, saveChapter, saveGoal, deleteGoal, moveGoal, toggleGoal, saveContribution, deleteContribution,
@@ -862,6 +884,13 @@ function acknowledgeOperation(operation, remote) {
   }
   state.pendingOps = state.pendingOps.filter(item => item.revision !== operation.revision)
   delete state.syncIssues[operation.key]
+  if (operation.action === 'ensureUser' && remote) {
+    const localAvatar = operation.data.profile && operation.data.profile.avatar
+    if (remote.avatar && localAvatar && !/^(cloud:|https?:)/.test(localAvatar)) state.mediaCache[remote.avatar] = localAvatar
+    const user = rawUser(state, state.currentUserId)
+    Object.assign(user, remote)
+    state.profile = clone(user)
+  }
   if (operation.action === 'saveChapter' && remote) { const chapter = state.chapters.find(item => item.id === operation.id); if (chapter) Object.assign(chapter, remote, { syncState: 'synced' }) }
   const list = operation.action === 'saveMoment' ? state.moments : operation.action === 'saveContribution' ? state.contributions : null
   if (list) { const item = list.find(one => one.id === operation.id); if (item) Object.assign(item, remote || {}, { syncState: 'synced' }) }
@@ -900,5 +929,5 @@ function resolveConflict(op, remote, useLocal) {
 Object.assign(module.exports,{setSyncIssue,getSyncIssues,resolveConflict})
 function getLastError() { return lastError }
 Object.assign(module.exports, { getDrafts, getWritingDrafts, saveEditorDraft, getEditorDraft, getPerspectives, getPendingOps, acknowledgeOperation, getLastError, hasContent })
-const writes = ['saveMoment','saveChapter','saveContribution','deleteMoment','deleteChapter','deleteContribution','saveEditorDraft','completeChapter','setChapterStatus','saveProfile','updateSettings','removeMember','toggleFavorite','acknowledgeOperation','revokeAccess','queueLocalContent','adoptIdentity','setSyncIssue','resolveConflict']
+const writes = ['saveMoment','saveChapter','saveContribution','deleteMoment','deleteChapter','deleteContribution','saveEditorDraft','completeChapter','setChapterStatus','saveProfile','updateSettings','removeMember','toggleFavorite','acknowledgeOperation','revokeAccess','queueLocalContent','adoptIdentity','activateCloudIdentity','setSyncIssue','resolveConflict']
 writes.forEach(name => { const action = module.exports[name]; module.exports[name] = function () { lastError = ''; try { return action.apply(null, arguments) } catch (error) { lastError = error.message; return null } } })

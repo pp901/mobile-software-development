@@ -1,5 +1,6 @@
 const store = require('./store')
 let identityReady = null
+let verifiedId = ''
 let flushing = null
 let refreshing = null
 let lastError = ''
@@ -17,14 +18,15 @@ const errors = {
  MEDIA_UPLOAD_FAILED: '照片或声音尚未上传，内容已保留，请联网后重试',
  LOCAL_MEDIA_MISSING: '本机照片或声音无法读取，请重新选择后再同步',
  DEMO_MEDIA_LOCAL: '示例图片仅在本机展示，替换成自己的照片后即可同步',
- IDENTITY_MISMATCH: '当前微信账号与本机记录不一致。请切回原账号，原记录仍保留',
+ IDENTITY_MISMATCH: '微信账号已变化，请重新进入页面；原账号记录已保留',
+ CLOUD_UPDATE_REQUIRED: '请重新部署本项目的 collaboration 云函数，再进行共同记录',
  NOT_A_MEMBER: '你已不在这个 Chapter 中', NO_ACCESS: '你没有这条记录的访问权限',
  OWNER_ONLY: '只有创建者可以操作', CREATOR_ONLY: '只能编辑自己的记录',
  INVITE_INVALID: '邀请已失效，请重新邀请', INVITE_NOT_FOR_USER: '这份邀请不属于当前账号',
  CONFLICT: '其他设备修改了同一内容，请在“我的 → 同步与数据”选择保留的版本',
  DELETED: '这条内容已在另一台设备删除', UNKNOWN_ACTION: '云端 collaboration 需要重新部署',
- CHAPTER_NOT_FOUND: '这一章还没有同步到云端，请先完成同步',
- MOMENT_NOT_FOUND: '这一刻还没有同步到云端，请先完成同步',
+ CHAPTER_NOT_FOUND: '这个 Chapter 不存在或已被删除',
+ MOMENT_NOT_FOUND: '这个 Moment 不存在或已被删除',
  SHARED_MOVE_FORBIDDEN: '共同记录暂时不能更换 Chapter，以免改变他人的访问范围',
  UNAUTHENTICATED: '没有取得微信身份，请从小程序重新进入',
  EMPTY_CONTENT: '内容为空，暂时无法同步', INVALID_STATUS: '记录状态无效，请重新保存',
@@ -53,26 +55,27 @@ function clearError() { lastError = ''; diagnostic = null }
 async function call(action, data) {
  if (!enabled()) throw remember({ code: 'CLOUD_DISABLED', message: errors.CLOUD_DISABLED }, action)
  try {
-  const response = await wx.cloud.callFunction({ name: 'collaboration', data: Object.assign({ action }, data || {}) })
+  const expectedUserId = action === 'ensureUser' && !(data && data.update) ? '' : store.getCurrentUser().id
+  const response = await wx.cloud.callFunction({ name: 'collaboration', data: Object.assign({ action, expectedUserId }, data || {}) })
   const result = response.result
   if (!result || !result.ok) throw Object.assign(new Error(result && (result.detail || result.error) || '云函数未返回有效结果'), { code: result && result.error || 'CLOUD_OFFLINE', detail: result && result.detail, requestId: response.requestID || '' })
+  if (result.protocolVersion !== 2) throw { code: 'CLOUD_UPDATE_REQUIRED' }
+  if (expectedUserId && (result.userId !== expectedUserId || store.getCurrentUser().id !== expectedUserId)) throw { code: 'IDENTITY_MISMATCH' }
   return result.data
  } catch (error) { throw remember(error, action) }
 }
-async function bootstrap() {
+async function bootstrap(force) {
  if (!enabled()) { remember({ code: 'CLOUD_DISABLED', message: errors.CLOUD_DISABLED }, 'init'); return null }
+ if (!identityReady && !force && verifiedId === store.getCurrentUser().id) return store.getCurrentUser()
  if (!identityReady) identityReady = (async () => {
   const profile = store.getCurrentUser()
-  const user = await call('ensureUser', { profile: { nickname: profile.nickname, avatar: profile.avatar && profile.avatar.startsWith('cloud://') ? profile.avatar : '', bio: profile.bio || '' } })
-  if (user.id !== profile.id) {
-   const state = store.getState()
-   const hasRemoteIdentity = !/^(local-|user-)/.test(profile.id) && state.moments.concat(state.chapters, state.contributions).some(item => item.serverVersion)
-   if (hasRemoteIdentity) throw { code: 'IDENTITY_MISMATCH', message: errors.IDENTITY_MISMATCH }
-   if (!store.adoptIdentity(Object.assign({}, user, { avatar: profile.avatar || user.avatar }))) throw { code: 'LOCAL_WRITE_FAILED', message: store.getLastError() }
-  }
+  const localIdentity = /^(local-|user-)/.test(profile.id)
+  const user = await call('ensureUser', { profile: localIdentity ? { nickname: profile.nickname, avatar: profile.avatar && profile.avatar.startsWith('cloud://') ? profile.avatar : '', bio: profile.bio || '' } : {} })
+  if (user.id !== profile.id && !store.activateCloudIdentity(user)) throw { code: 'LOCAL_WRITE_FAILED', message: store.getLastError() }
+  verifiedId = user.id
   if (!store.queueLocalContent()) throw { code: 'LOCAL_WRITE_FAILED', message: store.getLastError() }
   return user
- })().catch(error => { identityReady = null; remember(error, 'ensureUser'); return null })
+ })().catch(error => { verifiedId = ''; remember(error, 'ensureUser'); return null }).finally(() => { identityReady = null })
  return identityReady
 }
 async function ready() { if (!await bootstrap()) throw Object.assign(new Error(lastError || errors.CLOUD_OFFLINE), diagnostic || { code: 'CLOUD_OFFLINE' }) }
@@ -109,7 +112,8 @@ function flush() {
  if (flushing) return flushing
  flushing = (async () => {
   if (!await bootstrap()) return false
-  const priority = { saveChapter: 0, saveMoment: 1, saveContribution: 2 }
+  const actor = store.getCurrentUser().id
+  const priority = { ensureUser: -1, saveChapter: 0, saveMoment: 1, saveContribution: 2 }
   const attempted = new Set()
   let firstFailure = null
   let stop = false
@@ -118,6 +122,7 @@ function flush() {
    const operations = store.getPendingOps().filter(op => !attempted.has(op.revision)).sort((a, b) => (priority[a.action] === undefined ? 3 : priority[a.action]) - (priority[b.action] === undefined ? 3 : priority[b.action]))
    if (!operations.length) break
    for (const op of operations) {
+    if (store.getCurrentUser().id !== actor) return false
     attempted.add(op.revision)
     if (!store.getPendingOps().some(current => current.revision === op.revision)) continue
     const field = op.action === 'saveChapter' ? 'chapter' : op.action === 'saveMoment' ? 'moment' : op.action === 'saveContribution' ? 'contribution' : ''
@@ -128,6 +133,8 @@ function flush() {
     try {
      const data = Object.assign({}, op.data, { operationId: op.revision })
      if (field) data[field] = await prepare(item)
+     if (op.action === 'ensureUser') data.profile = Object.assign({}, data.profile, { avatar: await upload(data.profile.avatar, 'image') })
+     if (store.getCurrentUser().id !== actor) return false
      if (!store.getPendingOps().some(current => current.revision === op.revision)) continue
      const remote = await call(op.action, data)
      const acknowledged = store.acknowledgeOperation(op, remote)
@@ -161,21 +168,27 @@ async function pull(kind, id) {
   return snapshot
  } catch (error) {
   remember(error, error.action || 'get' + kind)
-  if (['NOT_A_MEMBER', 'NO_ACCESS', 'DELETED'].includes(error.code)) store.revokeAccess(kind, id)
+  if (['NOT_A_MEMBER', 'NO_ACCESS', 'DELETED', 'CHAPTER_NOT_FOUND', 'MOMENT_NOT_FOUND'].includes(error.code)) store.revokeAccess(kind, id)
   return null
  }
 }
 function refreshAll() {
  if (refreshing) return refreshing
  refreshing = (async () => {
-  await ready()
+  if (!await bootstrap(true)) return false
   const pushed = await flush()
   const pushError = !pushed && lastError ? { message: lastError, diagnostic } : null
   const result = await call('listMine')
   let pulled = true
   for (const id of result.chapterIds || []) if (!await pull('chapter', id)) pulled = false
   for (const id of result.momentIds || []) if (!await pull('moment', id)) pulled = false
-  for (const chapter of store.getChapters()) if (!(result.chapterIds || []).includes(chapter.id) && chapter.syncState === 'synced') await pull('chapter', chapter.id)
+  const checkRemoved = async (kind, id) => {
+   if (await pull(kind, id)) return
+   const revoked = ['NOT_A_MEMBER', 'NO_ACCESS', 'DELETED', 'CHAPTER_NOT_FOUND', 'MOMENT_NOT_FOUND']
+   if (!diagnostic || !revoked.includes(diagnostic.code)) pulled = false
+  }
+  for (const moment of store.getMoments()) if (!moment.chapterId && moment.syncState === 'synced' && !(result.momentIds || []).includes(moment.id)) await checkRemoved('moment', moment.id)
+  for (const chapter of store.getChapters()) if (!(result.chapterIds || []).includes(chapter.id) && chapter.syncState === 'synced') await checkRemoved('chapter', chapter.id)
   if (pushError) { lastError = pushError.message; diagnostic = pushError.diagnostic }
   else if (pushed && pulled) { clearError(); lastSyncedAt = new Date().toISOString() }
   return pushed && pulled
@@ -200,8 +213,24 @@ async function joinInvite(code) {
  if (!store.mergeSharedSnapshot(snapshot)) throw new Error(store.getLastError() || '邀请已接受，但内容尚未保存到本机，请重试')
  return snapshot.chapter ? { scope: 'chapter', id: snapshot.chapter.id } : { scope: 'moment', id: snapshot.moment.id }
 }
-async function removeMember(chapterId, memberId) { try { await ready(); await call('removeMember', { chapterId, memberId }); return !!store.removeMember(chapterId, memberId) } catch (error) { remember(error); return false } }
-async function updateProfile() { try { await ready(); const profile = store.getCurrentUser(); const avatar = await upload(profile.avatar, 'image'); await call('ensureUser', { update: true, profile: { nickname: profile.nickname, avatar, bio: profile.bio || '' } }); if (avatar !== profile.avatar) store.saveProfile({ avatar }); return true } catch (error) { remember(error, 'updateProfile'); return false } }
+async function removeMember(chapterId, memberId) {
+ try {
+  await ready()
+  await call('removeMember', { chapterId, memberId })
+  if (!store.removeMember(chapterId, memberId)) throw { code: 'LOCAL_WRITE_FAILED' }
+  if (memberId === store.getCurrentUser().id) store.revokeAccess('chapter', chapterId)
+  else if (!await pull('chapter', chapterId)) return false
+  clearError()
+  return true
+ } catch (error) { remember(error); return false }
+}
+async function updateProfile() {
+ try {
+  await ready()
+  if (!store.getPendingOps().some(op => op.action === 'ensureUser') && !store.saveProfile(store.getCurrentUser())) throw { code: 'LOCAL_WRITE_FAILED' }
+  return await flush()
+ } catch (error) { remember(error, 'updateProfile'); return false }
+}
 async function readConflict(key) {
  await ready()
  const op = store.getPendingOps().find(item => item.key === key)

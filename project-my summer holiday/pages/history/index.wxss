@@ -1,7 +1,40 @@
-.library { padding-top:32rpx; }.library-head { display:flex; align-items:center; justify-content:space-between; gap:20rpx; }.library-head>view { min-width:0; }.library-title { display:block; font:600 48rpx/1.3 var(--font-display); }.library-subtitle { display:block; margin-top:16rpx; color:var(--text-muted); font-size:25rpx; }.search-button.search-button { width:84rpx; min-height:88rpx; flex:none; display:flex; align-items:center; justify-content:center; background:var(--surface); border-radius:50%; }.search-button.search-button image { width:36rpx; height:36rpx; }.library-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12rpx; margin:28rpx 0; }.library-tabs { display:flex; gap:8rpx; }.library-tabs button[class] { min-height:88rpx; padding:14rpx 20rpx; color:var(--text-secondary); border-radius:20rpx; font-size:25rpx; display:flex; align-items:center; }.library-tabs .selected { background:var(--primary-pale); color:var(--primary-deep); font-weight:600; }.new-button.new-button { min-height:88rpx; color:var(--primary-deep); font-size:25rpx; white-space:nowrap; }.library-item { margin-bottom:28rpx; }
-
-.library-tabs { min-width:0; gap:6rpx; }.library-tabs button[class] { padding:14rpx 18rpx; border-radius:999rpx; white-space:nowrap; }.library-head>view { flex:1; }.library-title { font-family:var(--font-ui); font-size:46rpx; letter-spacing:-1rpx; }.search-button.search-button { border-radius:28rpx; }.library-toolbar { gap:12rpx; }
-
-.library-tabs button.selected { color:var(--primary-deep); }
-.reading-tabs { display:flex; gap:32rpx; margin:30rpx 0 8rpx; border-bottom:1rpx solid var(--line); }.reading-tabs button[class] { position:relative; min-height:96rpx; font-size:28rpx; color:var(--text-muted); }.reading-tabs button.selected { color:var(--primary-deep); font-weight:500; }.reading-tabs .selected:after { content:''; position:absolute; bottom:0; left:0; right:0; top:auto; height:3rpx; border-radius:3rpx; background:var(--primary); transform:none; width:100%; }.month-heading { display:flex; align-items:center; gap:24rpx; margin:36rpx 0 8rpx; color:#536581; font:500 31rpx/1.5 var(--font-display); }.month-heading>view { height:1rpx; flex:1; background:var(--line); }.reading-more,.reading-end { display:block; padding:32rpx 0; font-size:23rpx; color:var(--text-muted); text-align:center; }.empty-title>text { display:block; }
-.library-title { font-weight:600; font-size:48rpx; color:var(--ink); }.reading-tabs { gap:24rpx; }.reading-tabs button[class] { font-size:27rpx; }.library-item:nth-child(3n+1) { --chapter-surface:#EEE8DC; }.month-heading { color:#5C775B; }.search-button.search-button { border-radius:50%; background:#E9EEDF; }.library-subtitle { color:#8A987E; }.library-tabs button.selected { background:#E6ECDC; }.new-button.new-button { background:#EECFB8; padding:0 18rpx; min-height:72rpx; border-radius:999rpx; color:#755B43; }
+.library { padding-top:28rpx; }
+.library-head { margin-bottom:24rpx; }
+.library-title { display:block; color:var(--ink); font-size:var(--type-page-title); font-weight:600; line-height:1.3; letter-spacing:-1rpx; }
+.library-subtitle { display:block; margin-top:10rpx; color:var(--text-secondary); font-size:25rpx; }
+.reading-tabs { display:flex; gap:36rpx; border-bottom:1rpx solid var(--line); }
+.reading-tab.reading-tab { width:auto; position:relative; display:flex; align-items:center; gap:10rpx; min-height:100rpx; padding:12rpx 0; color:var(--text-secondary); font-size:28rpx; }
+.reading-tab.selected { color:var(--ink); font-weight:600; }
+.tab-count { color:var(--text-muted); font-size:22rpx; font-weight:400; font-variant-numeric:tabular-nums; }
+.selected .tab-count { color:var(--primary-deep); }
+.reading-indicator { position:absolute; bottom:-1rpx; left:0; right:0; height:4rpx; border-radius:4rpx; background:transparent; }
+.selected .reading-indicator { background:var(--primary-deep); }
+.month-heading { display:flex; align-items:center; gap:24rpx; margin:32rpx 0 4rpx; color:var(--primary-deep); font-size:24rpx; font-weight:500; }
+.month-heading>view { height:1rpx; flex:1; background:var(--line); }
+.album-day { display:flex; align-items:flex-start; gap:20rpx; margin-top:30rpx; }
+.album-date { width:76rpx; flex:none; padding-top:2rpx; color:var(--ink); }
+.album-date>text:first-child { display:block; font-size:46rpx; font-weight:600; line-height:1.2; letter-spacing:-2rpx; font-variant-numeric:tabular-nums; }
+.album-date>text+text { display:block; margin-top:6rpx; color:var(--text-secondary); font-size:21rpx; }
+.album-entries { flex:1; min-width:0; }
+.month-group+.month-group .month-heading { margin-top:44rpx; }
+.reading-end { display:flex; flex-direction:column; align-items:center; gap:16rpx; padding:40rpx 0 16rpx; color:var(--text-muted); font-size:23rpx; }
+.end-dot { width:6rpx; height:6rpx; border-radius:50%; background:var(--primary); }
+.library-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12rpx; margin:20rpx 0; }
+.chapter-filters { display:flex; min-width:0; gap:4rpx; }
+.chapter-filter.chapter-filter { width:auto; display:flex; align-items:center; min-height:88rpx; padding:12rpx 16rpx; white-space:nowrap; color:var(--text-secondary); font-size:24rpx; }
+.chapter-filter.selected { color:var(--primary-deep); font-weight:600; }
+.new-chapter.new-chapter { width:auto; display:flex; align-items:center; gap:4rpx; flex:none; padding:0 8rpx; color:var(--primary-deep); font-size:24rpx; }
+.new-chapter>text { font-size:30rpx; }
+.library-item { margin-bottom:24rpx; --chapter-surface:#E9EEE2; }
+.chapter-tone-1 { --chapter-surface:#EEE9F1; }
+.chapter-tone-2 { --chapter-surface:#F1E8D9; }
+.library-empty { padding:64rpx 0 40rpx; }
+.empty-print { position:relative; display:flex; align-items:center; justify-content:center; width:124rpx; height:144rpx; margin:0 0 24rpx 8rpx; border:8rpx solid var(--surface); border-bottom-width:24rpx; border-radius:12rpx; background:var(--blush-soft); transform:rotate(-8deg); }
+.empty-print>image { width:40rpx; height:40rpx; opacity:.65; }
+.empty-print>view { position:absolute; right:-30rpx; bottom:-32rpx; width:36rpx; height:36rpx; border-radius:50%; background:var(--sage); }
+.chapter-print { background:var(--sage); transform:rotate(5deg); }
+.chapter-print>view { background:var(--apricot); }
+.library-empty .empty-title { font-size:34rpx; }
+.library-empty .empty-copy { font-size:26rpx; }
+.empty-copy>text { display:block; }
+.library-empty .primary-button,.library-empty .secondary-button { width:auto; padding-left:36rpx; padding-right:36rpx; margin-top:16rpx; font-size:27rpx; }

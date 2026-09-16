@@ -1,6 +1,39 @@
-<button class="ui-button moment-card {{layout === 'compact' ? 'compact' : ''}}" bindtap="open" hover-class="card-hover">
- <view wx:if="{{moment.image && !imageFailed}}" class="photo-wrap"><image src="{{moment.image}}" mode="{{layout === 'compact' ? 'aspectFill' : 'widthFix'}}" lazy-load binderror="imageError"/><text wx:if="{{moment.imageCount > 1}}" class="photo-count">{{moment.imageCount}} 张</text></view>
- <view wx:elif="{{layout === 'compact' && moment.voicePath}}" class="voice-cover"><image src="/assets/icons/mic.svg"/><view class="sound-lines"><view></view><view></view><view></view><view></view><view></view><view></view><view></view></view><text>{{moment.voiceDuration || 0}} 秒 · 那一刻的声音</text></view>
- <view wx:elif="{{layout === 'compact'}}" class="text-cover"><text class="quote-mark">“</text><text class="text-preview">{{moment.content || '此刻的画面'}}</text><text class="text-cover-label">{{moment.image ? '图片暂时无法显示' : '写在此刻'}}</text></view>
- <view class="moment-copy"><text wx:if="{{layout !== 'compact' || moment.image || moment.voicePath}}" class="excerpt {{moment.image ? '' : 'text-only'}}">{{moment.content || (moment.voicePath ? '留住这一刻的声音' : '此刻的画面')}}</text><view wx:if="{{moment.voicePath && layout !== 'compact'}}" class="audio-note"><image src="/assets/icons/mic.svg"/><text>录音 · {{moment.voiceDuration}} 秒</text></view><view class="moment-meta"><text>{{moment.dateLabel}}</text><text wx:if="{{layout !== 'compact' && moment.location}}">{{moment.location}}</text></view><view wx:if="{{moment.participantCount > 1}}" class="perspective-note"><view class="participant-stack"><view wx:for="{{moment.participantPreview}}" wx:key="id" class="participant-avatar"><image wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill"/><text wx:else>{{item.nickname[0]}}</text></view></view><text>{{moment.participantCount}} 人共同记录</text></view></view>
+<button wx:if="{{layout === 'compact'}}" class="ui-button moment-preview" bindtap="open" hover-class="card-hover">
+  <view wx:if="{{moment.image && !imageFailed}}" class="preview-photo"><image src="{{moment.image}}" mode="aspectFill" lazy-load binderror="imageError"/><text wx:if="{{moment.imageCount > 1}}" class="photo-count">{{moment.imageCount}} 张</text></view>
+  <view wx:elif="{{moment.voicePath}}" class="voice-cover"><image src="/assets/icons/mic.svg"/><view class="sound-lines"><view></view><view></view><view></view><view></view><view></view><view></view><view></view></view><text>{{moment.voiceDuration || 0}} 秒 · 那一刻的声音</text></view>
+  <view wx:else class="text-cover"><text class="quote-mark">“</text><text class="text-preview">{{moment.content || '此刻的画面'}}</text><text class="text-cover-label">{{moment.image ? '图片暂时无法显示' : '写在此刻'}}</text></view>
+  <view class="preview-copy">
+    <text wx:if="{{moment.image || moment.voicePath}}" class="preview-excerpt">{{moment.content || (moment.voicePath ? '留住这一刻的声音' : '此刻的画面')}}</text>
+    <text class="preview-date">{{moment.dateLabel}} · {{moment.canEdit ? '我' : moment.creator.nickname}}</text>
+    <view wx:if="{{moment.participantCount > 1}}" class="shared-note"><view class="shared-rings"><view></view><view></view></view><text>{{moment.participantCount}} 人共同记录</text></view>
+  </view>
 </button>
+<button wx:elif="{{layout === 'album'}}" class="ui-button album-entry {{albumPhotos.length ? 'has-photos' : 'words-only'}}" bindtap="open" hover-class="card-hover" aria-label="打开 {{moment.creator.nickname}} 在 {{moment.dateLabel}} 的 Moment">
+  <view wx:if="{{albumPhotos.length}}" class="album-photos album-photos-{{albumPhotos.length}}">
+    <view wx:for="{{albumPhotos}}" wx:key="id" class="album-photo"><image wx:if="{{!albumFailed[index]}}" src="{{item.displayPath || item.path}}" mode="aspectFill" lazy-load data-index="{{index}}" binderror="albumImageError"/><image wx:else class="album-photo-fallback" src="/assets/icons/image.svg"/></view>
+  </view>
+  <view class="album-summary">
+    <text class="album-excerpt">{{moment.content || (moment.voicePath ? '留下一段那时的声音' : '那天的几个画面')}}</text>
+    <view class="album-media-note"><text wx:if="{{moment.imageCount > 1}}">共 {{moment.imageCount}} 张</text><view wx:if="{{moment.voicePath}}"><image src="/assets/icons/mic.svg"/><text>{{moment.voiceDuration || 0}} 秒</text></view></view>
+    <text class="album-author">{{moment.canEdit ? '我' : moment.creator.nickname}}<text wx:if="{{moment.location}}"> · {{moment.location}}</text></text>
+    <text wx:if="{{moment.participantCount > 1}}" class="album-together">{{moment.participantCount}} 人共同记录</text>
+  </view>
+</button>
+<view wx:else class="moment-feed" bindtap="open">
+  <view class="feed-author"><image wx:if="{{moment.creator.avatar}}" src="{{moment.creator.avatar}}" mode="aspectFill"/><text>{{moment.canEdit ? '我' : moment.creator.nickname}}</text><text>记录</text></view>
+  <view class="feed-heading"><text class="feed-date">{{moment.dateLabel}}</text><text class="feed-time">{{moment.time}}</text></view>
+  <view wx:if="{{moment.content}}" class="feed-writing">
+    <text class="feed-text {{longText && !textExpanded ? 'collapsed' : ''}}" selectable>{{moment.content}}</text>
+    <button wx:if="{{longText}}" class="ui-button expand-text" catchtap="toggleText" aria-expanded="{{textExpanded}}">{{textExpanded ? '收起文字' : '展开文字'}}<view class="disclosure-chevron {{textExpanded ? 'is-open' : ''}}"></view></button>
+  </view>
+  <moment-content item="{{moment}}" show-text="{{false}}" photo-layout="grid"/>
+  <view wx:if="{{moment.location || moment.tags.length || moment.mood}}" class="feed-context">
+    <view wx:if="{{moment.location}}" class="feed-location"><image src="/assets/icons/pin.svg"/><text>{{moment.location}}</text></view>
+    <view wx:if="{{moment.tags.length || moment.mood}}" class="feed-tags"><text wx:if="{{moment.mood}}">{{moment.mood}}</text><text wx:for="{{moment.tags}}" wx:key="*this">#{{item}}</text></view>
+  </view>
+  <view wx:if="{{(showChapter && moment.chapterId) || moment.participantCount > 1}}" class="feed-footer">
+    <button wx:if="{{showChapter && moment.chapterId && moment.chapterTitle !== '受邀 Moment'}}" class="ui-button feed-chapter" catchtap="openChapter" aria-label="打开 Chapter：{{moment.chapterTitle}}"><image src="/assets/icons/book-open.svg"/><text>{{moment.chapterTitle}}</text></button>
+    <text wx:elif="{{showChapter && moment.chapterId}}" class="invited-note">受邀的共同 Moment</text>
+    <view wx:if="{{moment.participantCount > 1}}" class="shared-note"><view class="shared-rings"><view></view><view></view></view><text>{{moment.participantCount}} 人共同记录</text></view>
+  </view>
+</view>

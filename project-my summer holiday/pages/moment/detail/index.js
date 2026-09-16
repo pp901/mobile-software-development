@@ -1,16 +1,17 @@
 const store = require('../../../services/store')
 const cloud = require('../../../services/collaboration')
 Page({
- data: { id: '', moment: null, perspectives: [], missing: false, loading: false, invitePanel: false, invite: null, error: '', imageIndex: 0, failedImages: {}, headline: '', showReceipt: false, echo: null, organizePanel: false, organizeError: '' },
+ data: { id: '', moment: null, perspectives: [], missing: false, loading: false, invitePanel: false, invite: null, error: '', imageIndex: 0, failedImages: {}, headline: '', showReceipt: false, echo: null, organizePanel: false, organizeError: '', readError: '', pendingHere: false },
  onLoad(options) {
   this.setData({ id: options.id || '', showReceipt: options.saved === '1' })
   this.fromEcho = options.echo === '1'
   this.load()
-  this.refreshMoment()
  },
- onShow() { if (this.data.id) this.load() },
+ onShow() { if (this.data.id) { this.load(); this.refreshMoment() } },
  async refreshMoment() {
-  this.setData({ loading: !this.data.moment })
+  if (this.refreshing) return
+  this.refreshing = true
+  this.setData({ loading: !this.data.moment, readError: '' })
   try {
    // A newly saved local Moment may not exist remotely until its queued write finishes.
    const local = store.getMoment(this.data.id)
@@ -19,13 +20,15 @@ Page({
     const latest = store.getMoment(this.data.id)
     if (!latest || latest.syncState === 'pending') return
    }
-   await cloud.pullMoment(this.data.id)
-  } finally { this.setData({ loading: false }); this.load() }
+   const snapshot = await cloud.pullMoment(this.data.id)
+   this.setData({ readError: snapshot ? '' : cloud.getLastError() })
+  } finally { this.refreshing = false; this.setData({ loading: false }); this.load() }
  },
  load() {
   const moment = store.getMoment(this.data.id)
   const echo = this.fromEcho ? store.getEchoMoment() : null
   this.setData({
+   pendingHere: !!moment && (moment.syncState === 'pending' || moment.contributions.some(item => item.syncState === 'pending')),
    syncStatus: cloud.getSyncStatus ? cloud.getSyncStatus() : {}, moment, perspectives: moment ? store.getPerspectives(moment.id).filter(item => !item.isOriginal) : [],
    headline: moment ? moment.media.length ? '这一刻的画面' : moment.voicePath ? '把声音留给以后' : '记下这一刻' : '',
    imageIndex: moment ? Math.min(this.data.imageIndex, Math.max(0, moment.media.length - 1)) : 0,

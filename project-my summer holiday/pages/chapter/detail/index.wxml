@@ -7,7 +7,14 @@
  <view class="chapter-body">
   <view class="chapter-tabs" role="tablist"><button wx:for="{{tabs}}" wx:key="*this" class="ui-button {{activeTab === item ? 'selected' : ''}}" data-tab="{{item}}" bindtap="selectTab" role="tab" aria-selected="{{activeTab === item}}"><text>{{item}}</text><view wx:if="{{activeTab === item}}" class="tab-indicator"></view></button></view>
   <view class="page-pad">
-   <block wx:if="{{activeTab === '瞬间'}}"><view class="section-head"><text class="section-title">这一章的瞬间</text><button wx:if="{{chapter.memberCount > 1}}" class="ui-button section-link" bindtap="filterMine">{{filter === 'all' ? '我参与的' : '查看全部'}}</button></view><moment-card wx:for="{{moments}}" wx:key="id" moment="{{item}}" bind:open="openMoment"/><view wx:if="{{!moments.length}}" class="empty-state"><text class="empty-title">{{filter === 'mine' ? '还没有参与的记录' : '从一个小小的瞬间开始'}}</text><text class="empty-copy">把这一章的日常，留在这里。</text></view><text wx:if="{{hasMore}}" class="more-note">向下滑动，继续回看</text></block>
+   <view wx:if="{{chapter.isOwner}}" class="chapter-invite-strip">
+    <text>{{chapter.memberCount > 1 ? chapter.memberCount + ' 人，一起记住这段生活' : '这一段生活，也可以一起记。'}}</text>
+    <button wx:if="{{invite}}" class="ui-button chapter-invite-button" open-type="share">邀请一起记录</button>
+    <button wx:else class="ui-button chapter-invite-button" bindtap="prepareInvite" loading="{{preparingInvite}}" disabled="{{preparingInvite}}">{{preparingInvite ? '准备邀请' : '重试邀请'}}</button>
+   </view>
+   <text wx:if="{{inviteError}}" class="inline-error">{{inviteError}}</text>
+   <button wx:if="{{readError}}" class="ui-button chapter-read-error" bindtap="refreshChapter">{{readError}} · 点击重试</button>
+   <block wx:if="{{activeTab === '瞬间'}}"><view class="section-head"><text class="section-title">这一章的瞬间</text><button wx:if="{{chapter.memberCount > 1}}" class="ui-button section-link" bindtap="filterMine">{{filter === 'all' ? '我参与的' : '查看全部'}}</button></view><moment-card wx:for="{{moments}}" wx:key="id" moment="{{item}}" show-chapter="{{false}}" bind:open="openMoment"/><view wx:if="{{!moments.length}}" class="empty-state"><text class="empty-title">{{filter === 'mine' ? '还没有参与的记录' : '从一个小小的瞬间开始'}}</text><text class="empty-copy">把这一章的日常，留在这里。</text></view><text wx:if="{{hasMore}}" class="more-note">向下滑动，继续回看</text></block>
    <view wx:elif="{{activeTab === '日历'}}" class="calendar-panel">
     <view class="calendar-title"><text>{{calendar.monthLabel}}</text><view class="month-arrows"><button class="ui-button" bindtap="previousMonth" aria-label="上个月"><image src="/assets/icons/chevron-left.svg"/></button><button class="ui-button" bindtap="nextMonth" aria-label="下个月"><image src="/assets/icons/chevron-right.svg"/></button></view></view>
     <view class="calendar-grid week"><text wx:for="{{calendar.weekdays}}" wx:key="*this">{{item}}</text></view>
@@ -24,4 +31,4 @@
  <button wx:if="{{chapter.canAddMoment}}" class="ui-button record-button" bindtap="createMoment" aria-label="记录此刻"><text>＋</text></button>
  <view wx:if="{{goalPanel}}" class="sheet-mask" bindtap="closeGoal"><view class="sheet" catchtap="noop"><text class="sheet-title">{{goalId ? '编辑目标' : '一个小目标'}}</text><input class="goal-input" value="{{goalTitle}}" bindinput="inputGoal" maxlength="100" placeholder="想在这一章完成什么？"/><text wx:if="{{goalError}}" class="inline-error">{{goalError}}</text><button class="ui-button primary-button" bindtap="saveGoal">保存目标</button><button wx:if="{{goalId}}" class="ui-button sheet-close" bindtap="deleteGoal">删除目标</button><button class="ui-button sheet-close" bindtap="closeGoal">取消</button></view></view>
 </view>
-<view wx:elif="{{missing}}" class="page-pad"><navigation-bar title="Chapter"/><view class="empty-state"><text class="empty-title">无法打开这个 Chapter</text><text class="empty-copy">记录不存在，或你没有阅读权限。</text><button class="ui-button secondary-button" bindtap="goBack">返回</button></view></view>
+<view wx:elif="{{missing}}" class="page-pad"><navigation-bar title="Chapter"/><view class="empty-state"><text class="empty-title">{{refreshing ? '正在读取 Chapter' : '无法打开这个 Chapter'}}</text><text class="empty-copy">{{readError || '记录不存在，或你没有阅读权限。'}}</text><button class="ui-button section-link" bindtap="refreshChapter" disabled="{{refreshing}}">重新读取</button><button class="ui-button secondary-button" bindtap="goBack">返回</button></view></view>

@@ -1,3 +1,53 @@
-const store=require('../../../services/store')
-const cloud=require('../../../services/collaboration')
-Page({data:{id:'',chapter:null,members:[],invite:null,preparing:false,error:''},onLoad(o){this.setData({id:o.id||''});this.load()},onShow(){this.load()},load(){const chapter=store.getChapter(this.data.id);this.setData({chapter,members:chapter?chapter.members.map(m=>Object.assign({},m,{isOwner:m.id===chapter.ownerId,isMe:m.id===store.getCurrentUser().id})):[]})},async prepareInvite(){if(this.data.preparing)return;this.setData({preparing:true,error:''});try{this.setData({invite:await cloud.createInvite(this.data.id)})}catch(e){this.setData({error:e.message})}finally{this.setData({preparing:false})}},removeMember(e){const member=this.data.members.find(m=>m.id===e.currentTarget.dataset.id);if(!member||member.isOwner||!this.data.chapter.isOwner)return;wx.showModal({title:'移除 '+member.nickname+'？',content:'对方发布的记录会保留，已发出的单个 Moment 邀请不受影响。',confirmText:'移除',success:async r=>{if(!r.confirm)return;const ok=await cloud.removeMember(this.data.id,member.id);if(!ok)this.setData({error:cloud.getLastError()||'移除失败，请重试'});this.load()}})},leave(){wx.showModal({title:'退出这个 Chapter？',content:'已经分享的记录会保留。',success:async r=>{if(!r.confirm)return;const ok=await cloud.removeMember(this.data.id,store.getCurrentUser().id);if(ok)wx.redirectTo({url:'/pages/index/index'});else this.setData({error:cloud.getLastError()||'退出失败，请重试'})}})},onShareAppMessage(){return this.data.invite?{title:'一起记录「'+this.data.chapter.title+'」',path:'/pages/chapter/join/index?code='+this.data.invite.code}:{title:'ongoing_',path:'/pages/index/index'}}})
+const store = require('../../../services/store')
+const cloud = require('../../../services/collaboration')
+Page({
+ data: { id: '', chapter: null, members: [], invite: null, preparing: false, loading: true, error: '', busy: false },
+ onLoad(options) { this.setData({ id: options.id || '' }); if (wx.hideShareMenu) wx.hideShareMenu() },
+ onShow() { this.load(); this.refresh() },
+ load() {
+  const chapter = store.getChapter(this.data.id)
+  this.setData({ chapter, members: chapter ? chapter.members.map(member => Object.assign({}, member, { isOwner: member.id === chapter.ownerId, isMe: member.id === store.getCurrentUser().id })) : [] })
+ },
+ async refresh() {
+  this.setData({ loading: true, error: '' })
+  const result = await cloud.pullChapter(this.data.id)
+  this.load()
+  this.setData({ loading: false, error: result ? '' : cloud.getLastError() })
+  if (this.data.chapter && this.data.chapter.isOwner) this.prepareInvite()
+ },
+ async prepareInvite() {
+  if (this.data.preparing) return
+  if (this.data.invite && this.data.invite.expiresAt > Date.now() + 60000) return
+  this.setData({ preparing: true, invite: null, error: '' })
+  try { this.setData({ invite: await cloud.createInvite(this.data.id) }) }
+  catch (error) { this.setData({ error: error.message }) }
+  finally { this.setData({ preparing: false }) }
+ },
+ removeMember(e) {
+  const member = this.data.members.find(item => item.id === e.currentTarget.dataset.id)
+  if (!member || member.isOwner || !this.data.chapter.isOwner || this.data.busy) return
+  wx.showModal({ title: '移除 ' + member.nickname + '？', content: '对方发布的记录会保留，已接受的单个 Moment 邀请不受影响。', confirmText: '移除',
+   success: result => { if (result.confirm) this.changeMembership(member.id) } })
+ },
+ leave() {
+  if (this.data.busy) return
+  wx.showModal({ title: '退出这个 Chapter？', content: '你留下的共同记录会保留。', confirmText: '退出',
+   success: result => { if (result.confirm) this.changeMembership(store.getCurrentUser().id) } })
+ },
+ async changeMembership(memberId) {
+  this.setData({ busy: true, error: '' })
+  const leaving = memberId === store.getCurrentUser().id
+  const ok = await cloud.removeMember(this.data.id, memberId)
+  this.setData({ busy: false })
+  if (!ok) return this.setData({ error: cloud.getLastError() || '操作未完成，请重试' })
+  if (leaving) wx.redirectTo({ url: '/pages/history/index?view=chapters' })
+  else { this.load(); wx.showToast({ title: '成员已移除', icon: 'success' }) }
+ },
+ avatarError(e) { this.setData({ ['members[' + e.currentTarget.dataset.index + '].avatar']: '' }) },
+ onPullDownRefresh() { this.refresh().finally(() => wx.stopPullDownRefresh()) },
+ goHome() { wx.redirectTo({ url: '/pages/history/index?view=chapters' }) },
+ onShareAppMessage() {
+  const invite = this.data.invite
+  return invite ? { title: '一起记录「' + this.data.chapter.title + '」', path: '/pages/chapter/join/index?code=' + invite.code, imageUrl: '/assets/images/logo.png' } : { title: 'ongoing_', path: '/pages/index/index' }
+ }
+})

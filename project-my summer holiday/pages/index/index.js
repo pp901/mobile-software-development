@@ -2,7 +2,7 @@ const store = require('../../services/store')
 const cloud = require('../../services/collaboration')
 
 Page({
-  data: { chapters: [], moments: [], limit: 3, expanded: false, hasMore: false, echo: null, echoImageFailed: false },
+  data: { chapters: [], moments: [], echo: null, echoImageFailed: false },
   onShow() { this.load(); cloud.refreshAll().then(() => this.load()) },
   load() {
     const now = new Date()
@@ -15,14 +15,13 @@ Page({
     })
     this.setData({
       capturePhotos: all.filter(item => item.image).slice(0, 2), syncStatus: cloud.getSyncStatus ? cloud.getSyncStatus() : {},
-      chapters, moments: all.slice(0, this.data.limit), total: all.length, hasMore: all.length > this.data.limit,
+      chapters, moments: all.slice(0, 3), total: all.length,
       echo, echoImageFailed: this.data.echo && echo && this.data.echo.id === echo.id ? this.data.echoImageFailed : false,
       todayDay: String(now.getDate()).padStart(2, '0'), todayMonth: now.getFullYear() + '年 ' + (now.getMonth() + 1) + '月',
       weekday: '星期' + '日一二三四五六'[now.getDay()], todayCount: stats.todayMomentCount,
       draft: store.getEditorDraft(store.getCurrentUser().id + ':new')
     })
   },
-  onReachBottom() { if (this.data.expanded && this.data.hasMore) { this.setData({ limit: this.data.limit + 15 }); this.load() } },
   onPullDownRefresh() { cloud.refreshAll().finally(() => { this.load(); wx.stopPullDownRefresh() }) },
   coverError(event) { this.setData({ ['chapters[' + event.currentTarget.dataset.index + '].homeCover']: '' }) },
   openChapter(event) { wx.navigateTo({ url: '/pages/chapter/detail/index?id=' + event.currentTarget.dataset.id }) },
@@ -32,8 +31,8 @@ Page({
   resumeDraft() { this.createMoment() },
   openEcho() { if (this.data.echo) wx.navigateTo({ url: '/pages/moment/detail/index?id=' + this.data.echo.id + '&echo=1' }) },
   echoImageError() { this.setData({ echoImageFailed: true }) },
-  openSync() { wx.navigateTo({ url: '/pages/profile/index?panel=sync' }) },
+  openSync() { wx.redirectTo({ url: '/pages/profile/index?panel=sync' }) },
   captureImageError(e) { this.setData({ ['capturePhotos[' + e.currentTarget.dataset.index + '].image']: '' }) },
   openSearch() { wx.navigateTo({ url: '/pages/search/index' }) },
-  toggleRecent() { const expanded = !this.data.expanded; this.setData({ expanded, limit: expanded ? 18 : 3 }); this.load() }
+  openLife() { wx.redirectTo({ url: '/pages/history/index' }) }
 })

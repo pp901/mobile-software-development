@@ -1,1 +1,19 @@
-<view class="page-shell safe-bottom"><navigation-bar title="Chapter 成员"/><view class="page-pad" wx:if="{{chapter}}"><text class="members-title">{{chapter.title}}</text><text class="members-description">成员可以阅读这一章，并记录新的 Moment。</text><view class="member-row" wx:for="{{members}}" wx:key="id"><image wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill"/><view wx:else class="avatar-placeholder">·</view><view class="member-copy"><text>{{item.nickname}}{{item.isMe ? '（我）' : ''}}</text><text class="member-role">{{item.isOwner ? '创建者' : '成员'}}</text></view><button wx:if="{{chapter.isOwner && !item.isOwner}}" class="ui-button remove" data-id="{{item.id}}" bindtap="removeMember">移除</button></view><view wx:if="{{chapter.isOwner}}" class="invite-box"><button wx:if="{{!invite}}" class="ui-button primary-button" loading="{{preparing}}" disabled="{{preparing}}" bindtap="prepareInvite">邀请 Chapter 成员</button><block wx:else><text class="invite-scope">对方接受后，可以阅读这一章的全部记录。邀请 7 天内有效。</text><button class="ui-button primary-button" open-type="share">发给微信朋友</button></block></view><button wx:else class="ui-button danger-button leave" bindtap="leave">退出 Chapter</button><text wx:if="{{error}}" class="inline-error">{{error}}</text></view><view wx:else class="empty-state"><text class="empty-title">无法读取成员</text></view></view>
+<view class="page-shell safe-bottom">
+ <navigation-bar title="一起记录的人"/>
+ <view class="page-pad" wx:if="{{chapter}}">
+  <view class="members-heading"><text class="members-title">{{chapter.title}}</text><text class="members-description">{{members.length}} 人在这一段生活里 · 各自留下，也一起记得</text></view>
+  <view class="member-row" wx:for="{{members}}" wx:key="id">
+   <view class="member-avatar"><image wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill" data-index="{{index}}" binderror="avatarError"/><text wx:else>{{item.nickname[0]}}</text></view>
+   <view class="member-copy"><text>{{item.nickname}}{{item.isMe ? '（我）' : ''}}</text><text class="member-role">{{item.isOwner ? 'Chapter 创建者' : '共同记录者'}}</text></view>
+   <button wx:if="{{chapter.isOwner && !item.isOwner}}" class="ui-button remove" data-id="{{item.id}}" bindtap="removeMember" disabled="{{busy}}">移除</button>
+  </view>
+  <view wx:if="{{chapter.isOwner}}" class="invite-box">
+   <button wx:if="{{invite}}" class="ui-button primary-button" open-type="share">邀请一起记录</button>
+   <button wx:else class="ui-button primary-button" loading="{{preparing}}" disabled="{{preparing}}" bindtap="prepareInvite">{{preparing ? '正在准备邀请' : '重试邀请'}}</button>
+   <text class="invite-scope">通过微信发给朋友，对方确认后加入。邀请 7 天内有效。</text>
+  </view>
+  <button wx:else class="ui-button danger-button leave" bindtap="leave" disabled="{{busy}}">退出 Chapter</button>
+ </view>
+ <view wx:else class="page-pad empty-state"><text class="empty-title">{{loading ? '正在读取成员' : '暂时无法打开这个 Chapter'}}</text><button wx:if="{{!loading}}" class="ui-button secondary-button" bindtap="refresh">重新读取</button><button class="ui-button section-link" bindtap="goHome">返回生活</button></view>
+ <text wx:if="{{error}}" class="inline-error page-pad">{{error}}</text>
+</view>

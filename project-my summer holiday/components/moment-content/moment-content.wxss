@@ -1,1 +1,33 @@
-:host { display:block; min-width:0; }.content { min-width:0; }.photos { display:flex; flex-direction:column; gap:16rpx; }.photos image { width:100%; display:block; border-radius:24rpx; background:var(--surface-soft); }.body-copy { display:block; margin:24rpx 0; font-size:29rpx; line-height:1.85; white-space:pre-wrap; overflow-wrap:anywhere; }.image-error { padding:56rpx 24rpx; background:var(--lavender-soft); color:var(--text-secondary); font-size:26rpx; border-radius:24rpx; }.audio.audio { width:100%; min-height:112rpx; padding:20rpx 24rpx; margin:24rpx 0; display:flex; align-items:center; gap:24rpx; border-radius:32rpx; background:var(--lavender-soft); text-align:left; font-size:27rpx; }.audio-symbol { width:64rpx; height:64rpx; flex:none; display:flex; align-items:center; justify-content:center; border-radius:50%; background:var(--surface); color:var(--primary-deep); }.audio-time { display:block; color:var(--text-secondary); font-size:23rpx; }
+:host { display:block; min-width:0; }
+.content { min-width:0; }
+.photos { display:flex; flex-direction:column; gap:16rpx; }
+.photos>image { display:block; width:100%; border-radius:var(--radius-medium); background:var(--surface-soft); }
+.photo-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8rpx; }
+.photo-grid-1 { grid-template-columns:minmax(0,1fr); }
+.photo-grid-2,.photo-grid-4 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.photo-cell { position:relative; height:0; padding-bottom:100%; overflow:hidden; border-radius:12rpx; background:var(--surface-soft); }
+.photo-grid-1 .photo-cell { border-radius:var(--radius-medium); }
+.photo-grid-2 .photo-cell { padding-bottom:116%; border-radius:var(--radius-small); }
+.photo-cell>image { position:absolute; inset:0; width:100%; height:100%; }
+.photo-error { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12rpx; padding:12rpx; color:var(--text-secondary); font-size:21rpx; text-align:center; }
+.photo-error>image { width:32rpx; height:32rpx; opacity:.5; }
+.remaining-photos { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(41,62,56,.5); color:#fff; font-size:26rpx; }
+.body-copy { display:block; margin:24rpx 0; font-size:var(--type-body); line-height:1.8; white-space:pre-wrap; overflow-wrap:anywhere; }
+.image-error { padding:56rpx 24rpx; background:var(--surface-soft); color:var(--text-secondary); font-size:26rpx; border-radius:var(--radius-medium); }
+.audio.audio { display:flex; align-items:center; gap:20rpx; width:100%; min-height:112rpx; margin:24rpx 0; padding:20rpx 24rpx; border-radius:var(--radius-medium); background:var(--lavender-soft); font-size:26rpx; text-align:left; }
+.feed-content .audio { margin:16rpx 0 0; }
+.feed-content>.audio:first-child { margin-top:0; }
+.audio-control { display:flex; align-items:center; justify-content:center; width:64rpx; height:64rpx; flex:none; border-radius:50%; background:var(--surface); color:var(--primary-deep); }
+.play-symbol { width:0; height:0; margin-left:5rpx; border-top:11rpx solid transparent; border-bottom:11rpx solid transparent; border-left:17rpx solid currentColor; }
+.pause-symbol { width:18rpx; height:22rpx; border-left:6rpx solid currentColor; border-right:6rpx solid currentColor; }
+.audio-label { flex:1; min-width:0; }
+.audio-time { display:block; margin-top:2rpx; color:var(--text-secondary); font-size:22rpx; font-variant-numeric:tabular-nums; }
+.audio-wave { display:flex; align-items:center; gap:5rpx; height:44rpx; flex:none; }
+.audio-wave>view { width:4rpx; height:16rpx; border-radius:4rpx; background:#A8A4B9; }
+.audio-wave>view:nth-child(2n) { height:30rpx; }
+.audio-wave>view:nth-child(3n) { height:42rpx; }
+.is-playing .audio-wave>view { animation:voice-pulse 850ms ease-in-out infinite alternate; }
+.is-playing .audio-wave>view:nth-child(2n) { animation-delay:180ms; }
+.is-playing .audio-wave>view:nth-child(3n) { animation-delay:350ms; }
+@keyframes voice-pulse { from { transform:scaleY(.5); } to { transform:scaleY(1); } }
+@media (prefers-reduced-motion:reduce) { .is-playing .audio-wave>view { animation:none; } }

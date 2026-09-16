@@ -1,6 +1,43 @@
-<view class="page-shell tabbar-space"><navigation-bar back="{{false}}" title="ongoing_"/><view class="library page-pad">
- <view class="library-head"><view><text class="library-title">生活收藏</text><text class="library-subtitle">每一段，都有自己的颜色。</text></view><button class="ui-button search-button" bindtap="openSearch" aria-label="搜索记录"><image src="/assets/icons/search.svg"/></button></view>
- <view class="reading-tabs"><button class="ui-button {{reading === 'months' ? 'selected' : ''}}" data-value="months" bindtap="changeReading">按月份回看</button><button class="ui-button {{reading === 'chapters' ? 'selected' : ''}}" data-value="chapters" bindtap="changeReading">我的 Chapter</button></view>
- <block wx:if="{{reviewMode && reading === 'months'}}"><view wx:for="{{months}}" wx:key="key" class="month-section"><view class="month-heading"><text>{{item.label}}</text><view></view></view><moment-row wx:for="{{item.moments}}" wx:for-item="moment" wx:key="id" moment="{{moment}}" show-date bind:open="openMoment"/></view><text wx:if="{{hasMore}}" class="reading-more">向下滑动，继续翻阅</text><text wx:elif="{{months.length}}" class="reading-end">这是目前留下的全部 {{totalMoments}} 个 Moment。</text><view wx:else class="empty-state"><text class="empty-title">往后的某一天，<text>你会在这里遇见今天。</text></text><text class="empty-copy">留下一刻，时间会让它变得不同。</text><button class="ui-button primary-button" bindtap="createMoment">记录此刻</button></view></block>
- <block wx:else><view class="library-toolbar"><view class="library-tabs"><button wx:for="{{tabs}}" wx:key="key" class="ui-button {{active === item.key ? 'selected' : ''}}" data-key="{{item.key}}" bindtap="changeTab">{{item.label}}</button></view><button wx:if="{{!reviewMode}}" class="ui-button new-button" bindtap="createChapter">＋ 新建</button></view><view class="library-item" wx:for="{{chapters}}" wx:key="id"><chapter-card chapter="{{item}}" compact="{{!reviewMode}}" bind:open="openChapter"/></view><view wx:if="{{!chapters.length}}" class="empty-state"><text class="empty-title">{{active === 'COMPLETED' ? '有些故事，还在继续' : '开启生活的新一章'}}</text><text class="empty-copy">{{active === 'COMPLETED' ? '进行中的章节，也可以随时回望。' : '给最近正在经历的生活取个名字。'}}</text><button wx:if="{{active !== 'COMPLETED'}}" class="ui-button primary-button" bindtap="createChapter">新建 Chapter</button></view></block>
- </view><app-tabbar active="chapters"/></view>
+<view class="page-shell tabbar-space">
+  <navigation-bar home>
+    <view slot="home" class="app-masthead"><text class="app-wordmark">ongoing_</text><button class="ui-button masthead-action" bindtap="openSearch" aria-label="搜索生活记录"><image src="/assets/icons/search.svg"/></button></view>
+  </navigation-bar>
+  <view class="library page-pad">
+    <view class="library-head"><text class="library-title">生活</text><text class="library-subtitle">那些平常的日子，都在这里。</text></view>
+    <view class="reading-tabs" role="tablist">
+      <button class="ui-button reading-tab {{reading === 'moments' ? 'selected' : ''}}" bindtap="changeReading" data-value="moments" role="tab" aria-selected="{{reading === 'moments'}}"><text>所有 Moment</text><text class="tab-count">{{totalMoments}}</text><view class="reading-indicator"></view></button>
+      <button class="ui-button reading-tab {{reading === 'chapters' ? 'selected' : ''}}" bindtap="changeReading" data-value="chapters" role="tab" aria-selected="{{reading === 'chapters'}}"><text>Chapter</text><text class="tab-count">{{totalChapters}}</text><view class="reading-indicator"></view></button>
+    </view>
+    <block wx:if="{{reading === 'moments'}}">
+      <view wx:for="{{months}}" wx:key="key" wx:for-item="month" class="month-group">
+        <view class="month-heading"><text>{{month.label}}</text><view></view></view>
+        <view wx:for="{{month.days}}" wx:key="key" wx:for-item="day" class="album-day">
+          <view class="album-date"><text>{{day.label}}</text><text>{{day.weekday}}</text></view>
+          <view class="album-entries"><moment-card wx:for="{{day.moments}}" wx:key="id" moment="{{item}}" layout="album" bind:open="openMoment"/></view>
+        </view>
+      </view>
+      <text wx:if="{{hasMore}}" class="reading-end">向下滑动，继续翻看</text>
+      <view wx:elif="{{months.length}}" class="reading-end"><view class="end-dot"></view><text>从这一刻，一路记到现在。</text></view>
+      <view wx:else class="empty-state library-empty">
+        <view class="empty-print"><image src="/assets/icons/image.svg"/><view></view></view>
+        <text class="empty-title">生活，不必等到特别时刻。</text>
+        <text class="empty-copy">一张照片，或一句今天的话。<text>不放进 Chapter，也会好好留在这里。</text></text>
+        <button class="ui-button primary-button" bindtap="createMoment">留下第一个 Moment</button>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="library-toolbar">
+        <view class="chapter-filters"><button wx:for="{{tabs}}" wx:key="key" class="ui-button chapter-filter {{active === item.key ? 'selected' : ''}}" data-key="{{item.key}}" bindtap="changeTab" aria-pressed="{{active === item.key}}">{{item.label}}</button></view>
+        <button class="ui-button new-chapter" bindtap="createChapter" aria-label="新建 Chapter"><text>＋</text> 新建</button>
+      </view>
+      <view class="library-item chapter-tone-{{index % 3}}" wx:for="{{chapters}}" wx:key="id"><chapter-card chapter="{{item}}" compact bind:open="openChapter"/></view>
+      <view wx:if="{{!chapters.length}}" class="empty-state library-empty">
+        <view class="empty-print chapter-print"><image src="/assets/icons/book-open.svg"/><view></view></view>
+        <text class="empty-title">{{active === 'COMPLETED' ? '有些故事，还在继续。' : '给一段生活，取个名字。'}}</text>
+        <text class="empty-copy">{{active === 'COMPLETED' ? '每个进行中的 Chapter，也可以随时回望。' : '一个夏天，一次旅行，或最近的日常。'}}</text>
+        <button wx:if="{{active !== 'COMPLETED'}}" class="ui-button secondary-button" bindtap="createChapter">新建 Chapter</button>
+      </view>
+    </block>
+  </view>
+  <app-tabbar active="chapters" show-create="{{reading === 'moments' && totalMoments > 0}}"/>
+</view>

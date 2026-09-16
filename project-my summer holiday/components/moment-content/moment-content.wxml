@@ -1,1 +1,21 @@
-<view class="content"><view wx:if="{{showPhotos && item.media.length}}" class="photos"><block wx:for="{{item.media}}" wx:key="id"><image wx:if="{{item.type === 'image' && !failed[index]}}" src="{{item.displayPath || item.path}}" mode="widthFix" lazy-load bindtap="preview" data-src="{{item.displayPath || item.path}}" data-index="{{index}}" binderror="imageError"/><view wx:elif="{{failed[index]}}" class="image-error">图片暂时无法显示</view></block></view><text wx:if="{{showText && item.content}}" class="body-copy" selectable>{{item.content}}</text><button wx:if="{{item.voicePath}}" class="ui-button audio" bindtap="play" aria-label="{{playing ? '暂停录音' : '播放录音'}}"><view class="audio-symbol">{{playing ? 'Ⅱ' : '▶'}}</view><view><text>{{playing ? '正在播放' : '录音'}}</text><text class="audio-time">{{playing ? elapsed + ' / ' : ''}}{{item.voiceDuration || 0}} 秒</text></view></button></view>
+<view class="content {{photoLayout === 'grid' ? 'feed-content' : ''}}">
+  <view wx:if="{{showPhotos && photos.length && photoLayout === 'grid'}}" class="photo-grid photo-grid-{{gridPhotos.length}}">
+    <view wx:for="{{gridPhotos}}" wx:key="key" wx:for-item="photo" class="photo-cell" style="{{photos.length === 1 ? 'padding-bottom:' + singleRatio + '%;' : ''}}" catchtap="preview" data-src="{{photo.src}}" aria-role="button" aria-label="查看第 {{index + 1}} 张照片，共 {{photos.length}} 张">
+      <image wx:if="{{!failed[index]}}" src="{{photo.src}}" mode="aspectFill" lazy-load bindload="photoLoaded" binderror="imageError" data-index="{{index}}"/>
+      <view wx:else class="photo-error"><image src="/assets/icons/image.svg"/><text>图片暂不可用</text></view>
+      <view wx:if="{{index === 8 && photos.length > 9}}" class="remaining-photos">共 {{photos.length}} 张</view>
+    </view>
+  </view>
+  <view wx:elif="{{showPhotos && photos.length}}" class="photos">
+    <block wx:for="{{photos}}" wx:key="key" wx:for-item="photo">
+      <image wx:if="{{!failed[index]}}" src="{{photo.src}}" mode="widthFix" lazy-load catchtap="preview" data-src="{{photo.src}}" data-index="{{index}}" binderror="imageError"/>
+      <view wx:else class="image-error">图片暂时无法显示</view>
+    </block>
+  </view>
+  <text wx:if="{{showText && item.content}}" class="body-copy" selectable>{{item.content}}</text>
+  <button wx:if="{{item.voicePath}}" class="ui-button audio {{playing ? 'is-playing' : ''}}" catchtap="play" aria-label="{{playing ? '暂停录音' : '播放录音'}}，{{item.voiceDuration || 0}} 秒">
+    <view class="audio-control"><view class="{{playing ? 'pause-symbol' : 'play-symbol'}}"></view></view>
+    <view class="audio-label"><text>{{playing ? '正在播放' : '那一刻的声音'}}</text><text class="audio-time">{{playing ? elapsed + ' / ' : ''}}{{item.voiceDuration || 0}} 秒</text></view>
+    <view class="audio-wave"><view></view><view></view><view></view><view></view><view></view><view></view><view></view><view></view><view></view><view></view><view></view><view></view></view>
+  </button>
+</view>

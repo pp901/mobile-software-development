@@ -1,7 +1,7 @@
 Component({
   options:{multipleSlots:true,styleIsolation:'apply-shared'},
   properties:{
-    title:{type:String,value:''}, background:{type:String,value:'#F7F7F2'},
+    title:{type:String,value:''}, background:{type:String,value:'#FAFBF6'},
     color:{type:String,value:'#2D3D36'}, back:{type:Boolean,value:true},
     home:{type:Boolean,value:false},
     show:{type:Boolean,value:true}, delta:{type:Number,value:1},
