@@ -6,6 +6,7 @@ const audioFocus = require('../../../services/audio-focus')
 Page({
  data:{id:'',momentId:'',contributionId:'',content:'',media:[],voicePath:'',voiceDuration:0,location:'',latitude:0,longitude:0,localDateKey:'',chapterId:'',chapter:null,chapters:[],isRecording:false,recordSeconds:0,saving:false,adding:false,canSave:false,keyboardHeight:0,error:'',recovered:false,showChapters:false,playing:false,tags:[],showTags:false,tagInput:'',draftStatus:'草稿仅自己可见'},
  onLoad(options){
+  if(options.momentId&&!options.contributionId){const parent=store.getMoment(options.momentId);if(parent&&parent.myPerspectiveId){options=parent.canEdit?{id:parent.id}:Object.assign({},options,{contributionId:parent.myPerspectiveId})}}
   this.draftKey=store.getCurrentUser().id+':'+(options.contributionId?'perspective:'+options.contributionId:options.momentId?'perspective-new:'+options.momentId:options.id?'moment:'+options.id:'new')
   let existing=options.id?store.getMoment(options.id):null
   if(options.momentId){const parent=store.getMoment(options.momentId);if(!parent||!parent.canContribute)return this.blocked('这条记录暂时无法共同编辑');existing=options.contributionId?(parent.contributions||[]).find(x=>x.id===options.contributionId):null;if(options.contributionId&&(!existing||existing.creatorId!==store.getCurrentUser().id))return this.blocked('只能编辑自己的视角');this.setData({momentId:parent.id,contributionId:options.contributionId||'',chapterId:parent.chapterId,parentLabel:parent.content||parent.dateLabel})}
@@ -13,7 +14,8 @@ Page({
   const draft=store.getEditorDraft(this.draftKey)
   const chapterId=existing?existing.chapterId:options.chapterId||this.data.chapterId||''
   const values=existing?{id:options.id||'',content:existing.content||'',tags:existing.tags||[],media:existing.media||[],voicePath:existing.voicePath||'',displayVoicePath:existing.displayVoicePath||'',voiceDuration:existing.voiceDuration||0,location:existing.location||'',latitude:existing.latitude||0,longitude:existing.longitude||0,localDateKey:existing.localDateKey||date.dateKey(existing.createdAt)}:{}
-  this.setData(Object.assign({chapterId,localDateKey:date.isDateKey(options.date)?options.date:date.today()},values,draft||{},{recovered:!!draft}),()=>{this.refreshChapters();this.validate()})
+  const context=!existing&&!options.momentId&&options.chapterId?{chapterId:options.chapterId}:{}
+  this.setData(Object.assign({chapterId,localDateKey:date.isDateKey(options.date)?options.date:date.today()},values,draft||{},context,{recovered:!!draft}),()=>{this.refreshChapters();this.validate()})
   this.recorder=wx.getRecorderManager()
   this.onStop=async result=>{
    clearInterval(this.recordTimer);const values=this.snapshot();if(!this.disposed)this.setData({isRecording:false,adding:true})
@@ -51,7 +53,7 @@ Page({
  createChapter(){this.setData({showChapters:false});wx.navigateTo({url:'/pages/chapter/editor/index?returnToComposer=1',events:{chapterCreated:chapter=>{this.setData({chapterId:chapter.id});this.refreshChapters();this.changed()}}})},
  handleBack(){if(this.data.saving||this.data.adding)return;if(this.data.isRecording){this.recorder.stop();return}if(this.flushDraft())wx.navigateBack({fail:()=>wx.redirectTo({url:'/pages/index/index'})})},
  save(){
-  if(this.data.saving||this.data.adding||this.data.isRecording||!this.data.canSave||this.data.blocked)return
+  if(this.committed||this.data.saving||this.data.adding||this.data.isRecording||!this.data.canSave||this.data.blocked)return
   this.setData({saving:true,error:''})
   const payload=Object.assign(this.snapshot(),{status:'PUBLISHED'})
   let result
@@ -60,7 +62,12 @@ Page({
   if(!result){this.setData({saving:false,error:store.getLastError()||'无法保存，请确认内容归属和编辑权限'});return}
   this.committed=true;this.draftKey=store.getCurrentUser().id+this.draftKey.slice(this.draftKey.indexOf(':'));store.saveEditorDraft(this.draftKey,null)
   if(cloud.flush)cloud.flush()
-  wx.showToast({title:'已保存',icon:'success'})
-  wx.navigateBack({fail:()=>wx.redirectTo({url:'/pages/index/index'})})
- }
+  if(!this.data.momentId&&!this.data.id){
+   wx.redirectTo({url:'/pages/moment/detail/index?id='+result.id+'&saved=1',fail:()=>{this.setData({saving:false,savedMomentId:result.id,error:'这一刻已保存，点击下方查看。'})}})
+  }else{
+   wx.showToast({title:this.data.momentId?'视角已留下':'已保存',icon:'success'})
+   wx.navigateBack({fail:()=>wx.redirectTo({url:'/pages/moment/detail/index?id='+(this.data.momentId||result.id)})})
+  }
+ },
+ openSaved(){if(this.data.savedMomentId)wx.redirectTo({url:'/pages/moment/detail/index?id='+this.data.savedMomentId+'&saved=1'})}
 })

@@ -10,3 +10,4 @@
 .record-button.record-button { min-width:44px; min-height:44px; }
 
 .chapter-tabs button[class] { display:flex; align-items:center; justify-content:center; }.chapter-tabs button.selected { color:var(--primary-deep); }.tab-indicator { position:absolute; bottom:0; left:calc(50% - 18rpx); width:36rpx; height:5rpx; border-radius:999rpx; background:var(--primary-deep); }
+.chapter-life-stats { display:flex; flex-wrap:wrap; gap:8rpx 24rpx; margin-top:18rpx; font-size:25rpx; }.chapter-life-stats>text:first-child { font-weight:600; }.chapter-life-stats>text+text { opacity:.85; }.hero-content { padding-top:80rpx; }.chapter-dates { margin-top:16rpx; }

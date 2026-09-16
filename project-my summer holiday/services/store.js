@@ -7,6 +7,7 @@ const STORAGE_KEY = 'ongoing:data:v2'
 const LEGACY_KEY = 'ongoing:data:v1'
 const STATUS_TEXT = { ONGOING: '进行中', COMPLETED: '已结束', ARCHIVED: '已归档' }
 let lastError = ''
+let dailyEcho = null
 
 function clone(value) { return value == null ? value : JSON.parse(JSON.stringify(value)) }
 function makeId(prefix) { return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}` }
@@ -198,6 +199,7 @@ function decorateMoment(item, state) {
   const localDateKey = date.momentDateKey(item)
   const chapter = rawChapter(state, item.chapterId)
   const canDelete = item.creatorId === state.currentUserId || (chapter && chapter.ownerId === state.currentUserId)
+  const participantIds = Array.from(new Set([item.creatorId].concat(contributions.map(one => one.creatorId))))
   return Object.assign({}, item, {
     media,
     image: media[0] ? media[0].displayPath || media[0].path : '',
@@ -206,7 +208,10 @@ function decorateMoment(item, state) {
     displayVoicePath: displayPath(item.voicePath,state),
     contributions,
     contributionCount: contributions.length,
-    participantCount: new Set([item.creatorId].concat(contributions.map(one => one.creatorId))).size,
+    participantCount: participantIds.length,
+    participantPreview: participantIds.slice(0, 3).map(id => displayUser(id, state)),
+    myPerspectiveId: item.creatorId === state.currentUserId ? item.id : (contributions.find(one => one.creatorId === state.currentUserId) || {}).id || '',
+    canOrganize: item.creatorId === state.currentUserId && !item.chapterId && !(item.participantIds || []).length && !contributions.length,
     chapterTitle: canReadChapter(chapter, state) ? chapter.title : item.chapterId ? '受邀 Moment' : '暂未归入',
     canContribute: item.status !== 'DRAFT' && canReadMoment(item, state),
     syncState: item.syncState || '',
@@ -242,7 +247,8 @@ function decorateChapter(chapter, state) {
     memberPreview: members.slice(0, 4),
     isOwner: chapter.ownerId === state.currentUserId,
     canAddMoment: (chapter.memberIds || []).includes(state.currentUserId),
-    dateRange: `${date.displayDate(chapter.startDate) || '日期待确认'} - ${chapter.endDate ? (date.displayDate(chapter.endDate) || '日期待确认') : '仍在继续'}`
+    dateRange: `${String(chapter.startDate || '').replace(/-/g, '.')} — ${chapter.endDate ? String(chapter.endDate).replace(/-/g, '.') : chapter.status === 'ONGOING' ? '至今' : '结束日期未记录'}`,
+    elapsedLabel: chapter.startDate > date.today() ? '即将开始' : chapter.status === 'ONGOING' ? `已走过 ${date.daysBetween(chapter.startDate, date.today())} 天` : chapter.endDate ? `一起走过 ${timing.dayTotal} 天` : '这一段，已成章'
   })
 }
 
@@ -669,12 +675,71 @@ function getReviewData(chapterId) {
   }
 }
 
-function getEchoMoment() {
+// Select by the recorded natural day, never by upload time or Chapter selection.
+function getEchoMoment(todayKey = date.today()) {
+  if (!date.isDateKey(todayKey)) return null
   const state = getState()
-  const currentId = (getActiveChapter() || {}).id
-  const candidates = state.moments.filter(item => canReadMoment(item, state) && item.status === 'PUBLISHED' && normalizeMedia(item).length && item.chapterId !== currentId)
-  if (!candidates.length) return null
-  return decorateMoment(candidates.sort(chapterBrowse.compareMomentsDesc)[0], state)
+  const dayNumber = key => { const parts = key.split('-').map(Number); return Date.UTC(parts[0], parts[1] - 1, parts[2]) / 86400000 }
+  const moments = state.moments.filter(item => canReadMoment(item, state) && item.status === 'PUBLISHED' && hasContent(item) && date.isDateKey(date.momentDateKey(item)))
+  const firstInChapter = {}
+  moments.slice().sort((a, b) => date.momentDateKey(a).localeCompare(date.momentDateKey(b)) || chapterBrowse.compareMomentsAsc(a, b)).forEach(item => {
+    if (item.chapterId && !firstInChapter[item.chapterId]) firstInChapter[item.chapterId] = item.id
+  })
+  const candidates = []
+  moments.forEach(item => {
+    const key = date.momentDateKey(item)
+    const age = dayNumber(todayKey) - dayNumber(key)
+    if (age < 27) return
+    const years = Number(todayKey.slice(0, 4)) - Number(key.slice(0, 4))
+    if (years > 0 && key.slice(5) === todayKey.slice(5)) {
+      candidates.push({ item, reason: 'anniversary', label: years === 1 ? '一年前的今天' : `${years} 年前的今天`, rank: 0, distance: years, age })
+      return
+    }
+    const interval = [{ days: 30, tolerance: 3, label: '一个月前' }, { days: 90, tolerance: 5, label: '三个月前' }, { days: 180, tolerance: 7, label: '半年前' }]
+      .find(one => Math.abs(age - one.days) <= one.tolerance)
+    if (interval) {
+      candidates.push({ item, reason: `days_${interval.days}`, label: (age === interval.days ? '' : '大约') + interval.label, rank: 1, distance: Math.abs(age - interval.days), age })
+      return
+    }
+    const chapter = rawChapter(state, item.chapterId)
+    if (age >= 30 && firstInChapter[item.chapterId] === item.id && canReadChapter(chapter, state)) {
+      candidates.push({ item, reason: 'chapter_first', label: `这是「${chapter.title}」的第一刻`, rank: 2, distance: -age, age })
+    }
+  })
+  const cacheKey = state.currentUserId + ':' + todayKey
+  // Keep today's selection through refresh/sync; removal or lost access invalidates it.
+  const cached = dailyEcho && dailyEcho.key === cacheKey && candidates.find(one => one.item.id === dailyEcho.id)
+  const selected = cached || candidates.sort((a, b) => a.rank - b.rank || a.distance - b.distance || b.age - a.age || a.item.id.localeCompare(b.item.id))[0]
+  if (!selected) { dailyEcho = null; return null }
+  dailyEcho = { key: cacheKey, id: selected.item.id }
+  const moment = decorateMoment(selected.item, state)
+  const includesMe = moment.participantPreview.some(user => user.id === state.currentUserId) || selected.item.creatorId === state.currentUserId || moment.contributions.some(one => one.creatorId === state.currentUserId)
+  const who = includesMe ? moment.participantCount > 1 ? '你和 TA 一起' : '你' : moment.participantCount > 1 ? '他们一起' : moment.creator.nickname
+  return Object.assign(moment, {
+    reason: selected.reason, label: selected.label, ageDays: selected.age,
+    echoDate: date.momentDateKey(selected.item).replace(/-/g, '.'),
+    returnDate: todayKey.replace(/-/g, '.'),
+    explanation: `${who}${moment.location ? '在' + moment.location : ''}留下了这一刻。`
+  })
+}
+
+function getLifeStats() {
+  const state = getState()
+  const visible = state.moments.filter(item => canReadMoment(item, state) && item.status === 'PUBLISHED')
+  const visibleIds = new Set(visible.map(item => item.id))
+  const contributions = state.contributions.filter(item => item.creatorId === state.currentUserId && visibleIds.has(item.momentId))
+  const contributedIds = new Set(contributions.map(item => item.momentId))
+  const own = visible.filter(item => item.creatorId === state.currentUserId)
+  const mine = visible.filter(item => item.creatorId === state.currentUserId || contributedIds.has(item.id))
+  const days = Array.from(new Set(own.concat(contributions).map(date.momentDateKey).filter(Boolean))).sort()
+  return {
+    momentCount: mine.length,
+    recordedDayCount: days.length,
+    chapterCount: state.chapters.filter(item => canReadChapter(item, state)).length,
+    sharedMomentCount: mine.filter(item => new Set([item.creatorId].concat(state.contributions.filter(one => one.momentId === item.id).map(one => one.creatorId))).size > 1).length,
+    firstDate: days[0] ? days[0].replace(/-/g, '.') : '',
+    todayMomentCount: own.filter(item => date.momentDateKey(item) === date.today()).length
+  }
 }
 
 function search(keyword) {
@@ -742,12 +807,35 @@ module.exports = {
   getMoment, saveMoment, deleteMoment,
   toggleFavorite, saveChapter, saveGoal, deleteGoal, moveGoal, toggleGoal, saveContribution, deleteContribution,
   createInvite, joinChapter, removeMember, completeChapter, setChapterStatus, setReviewPhotos, deleteChapter,
-  getReviewData, getEchoMoment, search, exportChapterSnapshot, mergeSharedSnapshot, reset
+  getReviewData, getEchoMoment, getLifeStats, search, exportChapterSnapshot, mergeSharedSnapshot, reset
 }
 
 function getDrafts() { const state = getState(); return state.moments.filter(item => item.creatorId === state.currentUserId && item.status === 'DRAFT').map(item => decorateMoment(item, state)) }
 function saveEditorDraft(key, value) { const state = getState(); if (value) state.editorDrafts[key] = Object.assign({}, value, { savedAt: new Date().toISOString() }); else delete state.editorDrafts[key]; setState(state); return true }
 function getEditorDraft(key) { return clone(getState().editorDrafts[key] || null) }
+function getWritingDrafts() {
+  const state = getState()
+  const prefix = state.currentUserId + ':'
+  return Object.keys(state.editorDrafts).filter(key => key.startsWith(prefix)).map(key => {
+    const draft = state.editorDrafts[key]
+    const scope = key.slice(prefix.length)
+    let url = '/pages/moment/editor/index'
+    if (scope.startsWith('moment:')) {
+      const moment = getMoment(scope.slice(7))
+      if (!moment || !moment.canEdit) return null
+      url += '?id=' + moment.id
+    } else if (scope.startsWith('perspective-new:')) {
+      const moment = getMoment(scope.slice(16))
+      if (!moment || !moment.canContribute) return null
+      url += '?momentId=' + moment.id
+    } else if (scope.startsWith('perspective:')) {
+      const item = state.contributions.find(one => one.id === scope.slice(12) && one.creatorId === state.currentUserId)
+      if (!item || !getMoment(item.momentId)) return null
+      url += '?momentId=' + item.momentId + '&contributionId=' + item.id
+    }
+    return hasContent(draft) ? { id: key, content: draft.content || (draft.voicePath ? '还没发布的声音' : '还没发布的照片'), dateLabel: date.displayDate(draft.savedAt), url } : null
+  }).filter(Boolean)
+}
 function getPerspectives(id) {
   const moment = getMoment(id)
   if (!moment) return []
@@ -808,6 +896,6 @@ function resolveConflict(op, remote, useLocal) {
 }
 Object.assign(module.exports,{setSyncIssue,getSyncIssues,resolveConflict})
 function getLastError() { return lastError }
-Object.assign(module.exports, { getDrafts, saveEditorDraft, getEditorDraft, getPerspectives, getPendingOps, acknowledgeOperation, getLastError, hasContent })
+Object.assign(module.exports, { getDrafts, getWritingDrafts, saveEditorDraft, getEditorDraft, getPerspectives, getPendingOps, acknowledgeOperation, getLastError, hasContent })
 const writes = ['saveMoment','saveChapter','saveContribution','deleteMoment','deleteChapter','deleteContribution','saveEditorDraft','completeChapter','setChapterStatus','saveProfile','updateSettings','removeMember','toggleFavorite','acknowledgeOperation','revokeAccess','queueLocalContent','adoptIdentity','setSyncIssue','resolveConflict']
 writes.forEach(name => { const action = module.exports[name]; module.exports[name] = function () { lastError = ''; try { return action.apply(null, arguments) } catch (error) { lastError = error.message; return null } } })
