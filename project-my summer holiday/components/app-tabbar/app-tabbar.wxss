@@ -1,10 +1,10 @@
 .navigation-dock {
   position:fixed; z-index:80; left:32rpx; right:32rpx;
   bottom:calc(20rpx + env(safe-area-inset-bottom));
-  display:flex; align-items:center; justify-content:center; gap:16rpx; pointer-events:none;
+  display:flex; align-items:center; justify-content:center; pointer-events:none;
 }
 .nav-pill {
-  display:flex; flex:1; max-width:504rpx; min-width:0; padding:8rpx;
+  display:flex; width:504rpx; max-width:100%; min-width:0; padding:8rpx;
   border:1rpx solid rgba(255,255,255,.8); border-radius:var(--radius-full);
   background:var(--material); box-shadow:var(--elevation-material);
   -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px); pointer-events:auto;
@@ -17,8 +17,8 @@
 .nav-item>image { width:34rpx; height:34rpx; }
 .nav-item.selected { color:var(--primary-deep); background:var(--primary-pale); font-weight:600; }
 .dock-create.dock-create {
-  flex:none; position:relative; width:104rpx; height:104rpx; min-height:44px;
-  border-radius:50%; background:var(--primary-deep); color:var(--surface);
+  position:absolute; left:calc(50% - 22px); bottom:calc(100% + 12rpx); width:44px; height:44px; min-width:44px; min-height:44px;
+  border-radius:50%; background:var(--primary-deep); color:var(--surface); transform:translateX(0);
   box-shadow:0 8rpx 24rpx rgba(55,105,92,.18); pointer-events:auto;
 }
 .create-stroke { position:absolute; left:calc(50% - 18rpx); top:calc(50% - 2rpx); width:36rpx; height:4rpx; border-radius:4rpx; background:currentColor; }

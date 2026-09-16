@@ -8,9 +8,8 @@
    <button wx:if="{{chapter.isOwner && !item.isOwner}}" class="ui-button remove" data-id="{{item.id}}" bindtap="removeMember" disabled="{{busy}}">移除</button>
   </view>
   <view wx:if="{{chapter.isOwner}}" class="invite-box">
-   <button wx:if="{{invite}}" class="ui-button primary-button" open-type="share">邀请一起记录</button>
-   <button wx:else class="ui-button primary-button" loading="{{preparing}}" disabled="{{preparing}}" bindtap="prepareInvite">{{preparing ? '正在准备邀请' : '重试邀请'}}</button>
-   <text class="invite-scope">通过微信发给朋友，对方确认后加入。邀请 7 天内有效。</text>
+   <button class="ui-button primary-button" loading="{{preparing}}" disabled="{{preparing}}" bindtap="copyInvite">{{preparing ? '正在准备邀请' : '复制邀请信息'}}</button>
+   <text class="invite-scope">把邀请信息发给朋友。对方在「生活 → 加入共同记录」粘贴后确认加入，7 天内有效。</text>
   </view>
   <button wx:else class="ui-button danger-button leave" bindtap="leave" disabled="{{busy}}">退出 Chapter</button>
  </view>

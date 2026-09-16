@@ -1,8 +1,8 @@
 {
   "pages": [
+    "pages/index/index",
     "pages/splash/index",
     "pages/onboarding/index",
-    "pages/index/index",
     "pages/history/index",
     "pages/chapter/detail/index",
     "pages/chapter/editor/index",

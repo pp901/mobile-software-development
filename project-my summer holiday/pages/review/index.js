@@ -3,8 +3,8 @@ const cloud = require('../../services/collaboration')
 const poster = require('../../services/review-poster')
 Page({
  data: { id: '', chapter: null, entries: [], limit: 8, hasMore: false, missing: false, composing: false, ending: '', generating: false, posterPath: '', error: '', expanded: false, coverFailed: false, featured: [], posterOpen: false, posterStep: 'select', photoChoices: [], selectedPhotos: [], selectedCount: 0, photoLimit: 30, savingPoster: false, albumDenied: false, posterError: '' },
- onLoad(options) { this.setData({ id: options.id || '', composing: options.finish === '1' }); this.load(); cloud.pullChapter(this.data.id).then(() => this.load()) },
- onShow() { if (this.data.id) this.load() },
+ onLoad(options) { this.setData({ id: options.id || '', composing: options.finish === '1' }) },
+ onShow() { if (this.data.id) { this.load(); cloud.pullChapter(this.data.id).then(() => this.load()) } },
  onUnload() { this.disposed = true },
  load() {
   const review = store.getReviewData(this.data.id)

@@ -1,9 +1,15 @@
 <view class="page-shell safe-bottom">
  <navigation-bar title="共同记录"/>
  <view class="invitation page-pad">
-  <image class="invite-logo" src="/assets/images/logo.png"/>
-  <text wx:if="{{loading}}" class="loading-copy">正在读取邀请…</text>
-  <block wx:elif="{{invitation}}">
+  <image class="invite-logo" src="/assets/images/logo.webp"/>
+  <view wx:if="{{!invitation}}" class="join-entry">
+   <text class="invitation-title">一起，把生活记下来。</text>
+   <text class="invitation-scope">粘贴朋友发来的邀请信息，就能找到同一段生活或同一个 Moment。</text>
+   <view class="invite-code-field"><input value="{{inputCode}}" bindinput="inputCode" maxlength="500" placeholder="邀请码，如 ABCD-EF12-3456" disabled="{{loading}}" confirm-type="go" bindconfirm="load"/></view>
+   <button class="ui-button paste-invite" bindtap="pasteInvite" disabled="{{loading}}">粘贴邀请信息</button>
+   <button class="ui-button primary-button" bindtap="load" loading="{{loading}}" disabled="{{loading || !inputCode}}">{{loading ? '正在读取邀请' : '查看邀请'}}</button>
+  </view>
+  <block wx:else>
    <view class="invite-person"><image wx:if="{{invitation.inviterAvatar}}" src="{{invitation.inviterAvatar}}" mode="aspectFill" binderror="imageError" data-field="invitation.inviterAvatar"/><text>{{invitation.inviter}} 邀请你</text></view>
    <text class="invitation-title">{{invitation.title}}</text>
    <image wx:if="{{invitation.cover}}" class="invite-cover" src="{{invitation.cover}}" mode="aspectFill" binderror="imageError" data-field="invitation.cover"/>
@@ -16,7 +22,7 @@
    <button class="ui-button primary-button" loading="{{joining || uploading}}" disabled="{{joining || uploading}}" bindtap="join">{{invitation.alreadyMember ? '进入看看' : invitation.scope === 'moment' ? '加入，共同记住这一刻' : '加入这一章'}}</button>
   </block>
   <text wx:if="{{error}}" class="inline-error">{{error}}</text>
-  <button wx:if="{{error && !invitation}}" class="ui-button secondary-button" bindtap="load">重新读取邀请</button>
+  <button wx:if="{{invitation && !joining}}" class="ui-button sheet-close" bindtap="changeInvite">使用另一份邀请</button>
   <button class="ui-button sheet-close" bindtap="goHome">返回首页</button>
  </view>
 </view>

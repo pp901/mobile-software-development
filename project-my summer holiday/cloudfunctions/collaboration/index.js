@@ -79,12 +79,12 @@ async function deleteItem(user,kind,id) {
   return true
 }
 async function invitation(code,user) {
-  if(typeof code!=='string'||code.length>100)fail('INVITE_INVALID');const rows=await db.collection(tables.invites).where({code}).limit(1).get();const invite=rows.data[0];if(!invite||invite.revoked||invite.expiresAt<=Date.now())fail('INVITE_INVALID');if(invite.memberId&&invite.memberId!==user)fail('INVITE_NOT_FOR_USER')
+  if(typeof code!=='string'||!/^([A-F0-9]{12}|[a-f0-9]{48})$/.test(code))fail('INVITE_INVALID');const rows=await db.collection(tables.invites).where({code}).limit(1).get();const invite=rows.data[0];if(!invite||invite.revoked||invite.expiresAt<=Date.now())fail('INVITE_INVALID');if(invite.memberId&&invite.memberId!==user)fail('INVITE_NOT_FOR_USER')
   const scope=invite.scope||'chapter';const target=await one(scope==='moment'?'moments':'chapters',scope==='moment'?invite.momentId:invite.chapterId);if(!target||target.deleted)fail('INVITE_INVALID');if(scope==='moment'&&target.chapterId){const c=await one('chapters',target.chapterId);if(!c||c.deleted)fail('INVITE_INVALID')}
   if((scope==='chapter'?target.ownerId:target.creatorId)!==invite.createdBy)fail('INVITE_INVALID')
   return {invite,target,scope}
 }
-async function createInvite(user,event) { const scope=event.scope==='moment'?'moment':'chapter';const target=scope==='moment'?await requireMoment(event.momentId,user):await requireChapter(event.chapterId,user);if((scope==='moment'?target.creatorId:target.ownerId)!==user)fail('OWNER_ONLY');const invite={id:'invite-'+crypto.randomBytes(16).toString('hex'),code:crypto.randomBytes(24).toString('hex'),scope,createdBy:user,expiresAt:Date.now()+7*86400000};invite[scope==='moment'?'momentId':'chapterId']=target.id;await write('invites',invite.id,invite);return clean(invite) }
+async function createInvite(user,event) { const scope=event.scope==='moment'?'moment':'chapter';const target=scope==='moment'?await requireMoment(event.momentId,user):await requireChapter(event.chapterId,user);if((scope==='moment'?target.creatorId:target.ownerId)!==user)fail('OWNER_ONLY');const invite={id:'invite-'+crypto.randomBytes(16).toString('hex'),code:crypto.randomBytes(6).toString('hex').toUpperCase(),scope,createdBy:user,expiresAt:Date.now()+7*86400000};invite[scope==='moment'?'momentId':'chapterId']=target.id;await write('invites',invite.id,invite);return clean(invite) }
 async function peekInvite(user,event) {
  const {target,scope,invite}=await invitation(event.code,user)
  const owner=await one('users',invite.createdBy)

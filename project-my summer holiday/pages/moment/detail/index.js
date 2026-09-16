@@ -7,7 +7,12 @@ Page({
   this.fromEcho = options.echo === '1'
   this.load()
  },
- onShow() { if (this.data.id) { this.load(); this.refreshMoment() } },
+ onShow() {
+  if (!this.data.id) return
+  if (this.hasShown) this.load()
+  this.hasShown = true
+  this.refreshMoment()
+ },
  async refreshMoment() {
   if (this.refreshing) return
   this.refreshing = true
@@ -33,16 +38,21 @@ Page({
    headline: moment ? moment.media.length ? '这一刻的画面' : moment.voicePath ? '把声音留给以后' : '记下这一刻' : '',
    imageIndex: moment ? Math.min(this.data.imageIndex, Math.max(0, moment.media.length - 1)) : 0,
    chapter: moment ? store.getChapter(moment.chapterId) : null, missing: !moment, currentId: store.getCurrentUser().id,
-   stats: store.getLifeStats(), echo: echo && echo.id === this.data.id ? echo : null,
-   myPerspectiveLabel: moment && moment.myPerspectiveId ? '编辑我的视角' : '留下我的视角'
+   stats: store.getLifeStats(), echo: echo && echo.id === this.data.id ? echo : null
   })
  },
- async retrySync() { await cloud.refreshAll(); this.load() },
+ async retrySync() { await cloud.flush(); await this.refreshMoment() },
  dismissReceipt() { this.setData({ showReceipt: false }) },
  changeImage(e) { this.setData({ imageIndex: e.detail.current }) },
  imageError(e) { this.setData({ ['failedImages.' + e.currentTarget.dataset.index]: true }) },
  preview(e) { const urls = this.data.moment.media.filter(x => x.type === 'image').map(x => x.displayPath || x.path); if (urls.length) wx.previewImage({ urls, current: e.currentTarget.dataset.src }) },
  onPullDownRefresh() { this.refreshMoment().finally(() => wx.stopPullDownRefresh()) },
+ perspectiveMore(e) {
+  wx.showActionSheet({ itemList: ['编辑我的视角', '删除我的视角'], success: result => {
+   if (result.tapIndex === 0) this.edit(e)
+   else this.deletePerspective(e)
+  } })
+ },
  edit(e) { const original = e.currentTarget.dataset.original; const id = e.currentTarget.dataset.id; wx.navigateTo({ url: original ? '/pages/moment/editor/index?id=' + this.data.id : '/pages/moment/editor/index?momentId=' + this.data.id + '&contributionId=' + id }) },
  contribute() {
   const moment = this.data.moment
@@ -69,9 +79,15 @@ Page({
  createChapter() { this.setData({ organizePanel: false }); wx.navigateTo({ url: '/pages/chapter/editor/index' }) },
  favorite() { if (store.toggleFavorite(this.data.id)) this.load() },
  async invite() {
-  this.setData({ invitePanel: true, invite: null, error: '' })
+  this.setData({ invitePanel: true, error: '' })
+  if (this.data.invite && this.data.invite.expiresAt > Date.now() + 60000) return
+  this.setData({ invite: null })
   try { const invite = await cloud.createMomentInvite(this.data.id); if (!invite) throw new Error('暂时无法创建邀请，请检查连接后重试'); this.setData({ invite }) }
   catch (error) { this.setData({ error: error.message }) }
+ },
+ copyInvite() {
+  if (!this.data.invite) return
+  wx.setClipboardData({ data: cloud.inviteText(this.data.invite, '邀请你留下这个 Moment 的视角'), fail: () => this.setData({ error: '复制未成功，请重试' }) })
  },
  closeInvite() { this.setData({ invitePanel: false }) },
  noop() {},

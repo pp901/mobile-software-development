@@ -2,7 +2,7 @@
  <navigation-bar home background="#FAFBF6"><view slot="home" class="app-masthead"><text class="app-wordmark">ongoing_</text><button class="ui-button masthead-action" bindtap="openSearch" aria-label="搜索生活记录"><image src="/assets/icons/search.svg"/></button></view></navigation-bar>
  <view class="page-pad">
   <view class="today-intro">
-   <view class="date-lockup"><text class="date-day">{{todayDay}}</text><view class="date-aside"><text>{{todayMonth}}</text><text>{{weekday}}<text class="today-dot"> · </text>今天</text></view><image class="today-mark" src="/assets/images/logo.png" mode="aspectFit" aria-label="ongoing_"/></view>
+   <view class="date-lockup"><text class="date-day">{{todayDay}}</text><view class="date-aside"><text>{{todayMonth}}</text><text>{{weekday}}<text class="today-dot"> · </text>今天</text></view><image class="today-mark" src="/assets/images/logo.webp" mode="aspectFit" aria-label="ongoing_"/></view>
    <text wx:if="{{todayCount}}" class="today-title">今天已留下 <text class="count-accent">{{todayCount}}</text> 个 Moment。</text>
    <text wx:else class="today-title">今天，有什么想留给<text class="title-line">以后的自己？</text></text>
    

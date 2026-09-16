@@ -2,10 +2,25 @@ const cloud = require('../../../services/collaboration')
 const store = require('../../../services/store')
 const media = require('../../../services/media')
 Page({
- data: { code: '', invitation: null, loading: true, joining: false, uploading: false, error: '', nickname: '', avatar: '' },
- onLoad(options) { this.setData({ code: options.code || '' }); this.load() },
+ data: { code: '', inputCode: '', invitation: null, loading: true, joining: false, uploading: false, error: '', nickname: '', avatar: '' },
+ onLoad(options) {
+  const code = options.code || ''
+  this.setData({ code, inputCode: code, loading: false })
+  if (code) this.load()
+ },
+ inputCode(e) { this.setData({ inputCode: e.detail.value, error: '' }) },
+ pasteInvite() {
+  wx.getClipboardData({
+   success: result => { this.setData({ inputCode: result.data }); this.load() },
+   fail: () => this.setData({ error: '没有读到剪贴板，请长按输入框粘贴邀请' })
+  })
+ },
+ changeInvite() { this.setData({ invitation: null, error: '', code: '', inputCode: '' }) },
  async load() {
-  this.setData({ loading: true, invitation: null, error: '' })
+  if (this.data.loading) return
+  const code = cloud.parseInviteCode(this.data.inputCode || this.data.code)
+  if (!code) return this.setData({ error: '请粘贴邀请信息，或输入完整的邀请码' })
+  this.setData({ code, loading: true, invitation: null, error: '' })
   try {
    const invitation = await cloud.peekInvite(this.data.code)
    const urls = invitation.mediaUrls || {}

@@ -3,7 +3,7 @@
     <view slot="home" class="app-masthead"><text class="app-wordmark">ongoing_</text><button class="ui-button masthead-action" bindtap="openSearch" aria-label="搜索生活记录"><image src="/assets/icons/search.svg"/></button></view>
   </navigation-bar>
   <view class="library page-pad">
-    <view class="library-head"><text class="library-title">生活</text><text class="library-subtitle">那些平常的日子，都在这里。</text></view>
+    <view class="library-head"><view><text class="library-title">生活</text><text class="library-subtitle">那些平常的日子，都在这里。</text></view><button class="ui-button join-shared" bindtap="joinShared"><image src="/assets/icons/user.svg"/><text>加入共同记录</text></button></view>
     <view class="reading-tabs" role="tablist">
       <button class="ui-button reading-tab {{reading === 'moments' ? 'selected' : ''}}" bindtap="changeReading" data-value="moments" role="tab" aria-selected="{{reading === 'moments'}}"><text>所有 Moment</text><text class="tab-count">{{totalMoments}}</text><view class="reading-indicator"></view></button>
       <button class="ui-button reading-tab {{reading === 'chapters' ? 'selected' : ''}}" bindtap="changeReading" data-value="chapters" role="tab" aria-selected="{{reading === 'chapters'}}"><text>Chapter</text><text class="tab-count">{{totalChapters}}</text><view class="reading-indicator"></view></button>

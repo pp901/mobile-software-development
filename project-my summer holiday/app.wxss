@@ -27,7 +27,7 @@ button[class]:active,.pressable:active,.card-hover { opacity:.86; transform:scal
 .page-shell { width:100%; min-width:0; min-height:100vh; }
 .page-pad { padding-left:32rpx; padding-right:32rpx; }
 .safe-bottom { padding-bottom:calc(40rpx + env(safe-area-inset-bottom)); }
-.tabbar-space { padding-bottom:calc(164rpx + env(safe-area-inset-bottom)); }
+.tabbar-space { padding-bottom:calc(240rpx + env(safe-area-inset-bottom)); }
 .brand-serif,.editorial-display { font-family:var(--font-display); }
 .eyebrow { font-size:var(--type-micro); color:var(--text-muted); letter-spacing:2rpx; }
 

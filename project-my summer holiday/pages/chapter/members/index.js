@@ -13,7 +13,6 @@ Page({
   const result = await cloud.pullChapter(this.data.id)
   this.load()
   this.setData({ loading: false, error: result ? '' : cloud.getLastError() })
-  if (this.data.chapter && this.data.chapter.isOwner) this.prepareInvite()
  },
  async prepareInvite() {
   if (this.data.preparing) return
@@ -22,6 +21,11 @@ Page({
   try { this.setData({ invite: await cloud.createInvite(this.data.id) }) }
   catch (error) { this.setData({ error: error.message }) }
   finally { this.setData({ preparing: false }) }
+ },
+ async copyInvite() {
+  await this.prepareInvite()
+  if (!this.data.invite) return
+  wx.setClipboardData({ data: cloud.inviteText(this.data.invite, '一起记录「' + this.data.chapter.title + '」'), fail: () => this.setData({ error: '复制未成功，请重试' }) })
  },
  removeMember(e) {
   const member = this.data.members.find(item => item.id === e.currentTarget.dataset.id)
@@ -48,6 +52,6 @@ Page({
  goHome() { wx.redirectTo({ url: '/pages/history/index?view=chapters' }) },
  onShareAppMessage() {
   const invite = this.data.invite
-  return invite ? { title: '一起记录「' + this.data.chapter.title + '」', path: '/pages/chapter/join/index?code=' + invite.code, imageUrl: '/assets/images/logo.png' } : { title: 'ongoing_', path: '/pages/index/index' }
+  return invite ? { title: '一起记录「' + this.data.chapter.title + '」', path: '/pages/chapter/join/index?code=' + invite.code, imageUrl: '/assets/images/logo.webp' } : { title: 'ongoing_', path: '/pages/index/index' }
  }
 })

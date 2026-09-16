@@ -12,7 +12,7 @@ Page({
     // Old review links still open the complete timeline, including unfiled Moments.
     this.setData({ reading: options.view === 'chapters' ? 'chapters' : 'moments' })
   },
-  onShow() { this.load() },
+  onShow() { this.load(); cloud.refreshAll({ passive: true }).then(() => this.load()) },
   load() {
     const chapters = store.getChapters()
     const visibleChapters = this.data.active === 'all' ? chapters : chapters.filter(chapter =>
@@ -61,6 +61,7 @@ Page({
   openChapter(e) { wx.navigateTo({ url: '/pages/chapter/detail/index?id=' + e.detail.id }) },
   openMoment(e) { wx.navigateTo({ url: '/pages/moment/detail/index?id=' + e.detail.id }) },
   openSearch() { wx.navigateTo({ url: '/pages/search/index' }) },
+  joinShared() { wx.navigateTo({ url: '/pages/chapter/join/index' }) },
   createChapter() { wx.navigateTo({ url: '/pages/chapter/editor/index' }) },
   createMoment() { wx.navigateTo({ url: '/pages/moment/editor/index' }) }
 })

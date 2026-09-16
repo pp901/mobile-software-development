@@ -9,8 +9,7 @@
   <view class="page-pad">
    <view wx:if="{{chapter.isOwner}}" class="chapter-invite-strip">
     <text>{{chapter.memberCount > 1 ? chapter.memberCount + ' 人，一起记住这段生活' : '这一段生活，也可以一起记。'}}</text>
-    <button wx:if="{{invite}}" class="ui-button chapter-invite-button" open-type="share">邀请一起记录</button>
-    <button wx:else class="ui-button chapter-invite-button" bindtap="prepareInvite" loading="{{preparingInvite}}" disabled="{{preparingInvite}}">{{preparingInvite ? '准备邀请' : '重试邀请'}}</button>
+    <button class="ui-button chapter-invite-button" bindtap="copyInvite" loading="{{preparingInvite}}" disabled="{{preparingInvite}}">{{preparingInvite ? '准备邀请' : '邀请一起记录'}}</button>
    </view>
    <text wx:if="{{inviteError}}" class="inline-error">{{inviteError}}</text>
    <button wx:if="{{readError}}" class="ui-button chapter-read-error" bindtap="refreshChapter">{{readError}} · 点击重试</button>

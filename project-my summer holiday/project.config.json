@@ -11,7 +11,9 @@
       "disablePlugins": [],
       "outputPath": ""
     },
-    "useCompilerPlugins": false
+    "useCompilerPlugins": false,
+    "minifyWXSS": true,
+    "minifyWXML": true
   },
   "compileType": "miniprogram",
   "cloudfunctionRoot": "cloudfunctions/",
@@ -21,6 +23,18 @@
       {
         "type": "folder",
         "value": "tests"
+      },
+      {
+        "type": "file",
+        "value": "assets/images/logo.png"
+      },
+      {
+        "type": "folder",
+        "value": "ui-review"
+      },
+      {
+        "type": "folder",
+        "value": "node_modules"
       }
     ],
     "include": []

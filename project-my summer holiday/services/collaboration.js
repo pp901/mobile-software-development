@@ -6,6 +6,8 @@ let refreshing = null
 let lastError = ''
 let diagnostic = null
 let lastSyncedAt = ''
+let lastLibraryRefresh = 0
+const pulls = new Map()
 const uploaded = new Map()
 const errors = {
  CLOUD_OFFLINE: '暂时无法连接云端，内容已保存在本机',
@@ -72,6 +74,7 @@ async function bootstrap(force) {
   const localIdentity = /^(local-|user-)/.test(profile.id)
   const user = await call('ensureUser', { profile: localIdentity ? { nickname: profile.nickname, avatar: profile.avatar && profile.avatar.startsWith('cloud://') ? profile.avatar : '', bio: profile.bio || '' } : {} })
   if (user.id !== profile.id && !store.activateCloudIdentity(user)) throw { code: 'LOCAL_WRITE_FAILED', message: store.getLastError() }
+  if (user.id !== profile.id) lastLibraryRefresh = 0
   verifiedId = user.id
   if (!store.queueLocalContent()) throw { code: 'LOCAL_WRITE_FAILED', message: store.getLastError() }
   return user
@@ -154,7 +157,14 @@ function flush() {
  })().catch(error => { remember(error, 'flush'); return false }).finally(() => { flushing = null })
  return flushing
 }
-async function pull(kind, id) {
+function pull(kind, id) {
+ const key = store.getCurrentUser().id + ':' + kind + ':' + id
+ if (pulls.has(key)) return pulls.get(key)
+ const request = pullRemote(kind, id).finally(() => pulls.delete(key))
+ pulls.set(key, request)
+ return request
+}
+async function pullRemote(kind, id) {
  if (!id) return null
  try {
   await ready()
@@ -172,16 +182,20 @@ async function pull(kind, id) {
   return null
  }
 }
-function refreshAll() {
+function refreshAll(options) {
+ if (options && options.passive && verifiedId === store.getCurrentUser().id && Date.now() - lastLibraryRefresh < 15000 && !store.getPendingOps().length) return refreshing || Promise.resolve(true)
  if (refreshing) return refreshing
  refreshing = (async () => {
-  if (!await bootstrap(true)) return false
+  if (!await bootstrap(!(options && options.identityChecked))) return false
   const pushed = await flush()
   const pushError = !pushed && lastError ? { message: lastError, diagnostic } : null
   const result = await call('listMine')
   let pulled = true
-  for (const id of result.chapterIds || []) if (!await pull('chapter', id)) pulled = false
-  for (const id of result.momentIds || []) if (!await pull('moment', id)) pulled = false
+  const targets = (result.chapterIds || []).map(id => ['chapter', id]).concat((result.momentIds || []).map(id => ['moment', id]))
+  for (let index = 0; index < targets.length; index += 3) {
+   const results = await Promise.all(targets.slice(index, index + 3).map(target => pull(target[0], target[1])))
+   if (results.some(value => !value)) pulled = false
+  }
   const checkRemoved = async (kind, id) => {
    if (await pull(kind, id)) return
    const revoked = ['NOT_A_MEMBER', 'NO_ACCESS', 'DELETED', 'CHAPTER_NOT_FOUND', 'MOMENT_NOT_FOUND']
@@ -191,6 +205,7 @@ function refreshAll() {
   for (const chapter of store.getChapters()) if (!(result.chapterIds || []).includes(chapter.id) && chapter.syncState === 'synced') await checkRemoved('chapter', chapter.id)
   if (pushError) { lastError = pushError.message; diagnostic = pushError.diagnostic }
   else if (pushed && pulled) { clearError(); lastSyncedAt = new Date().toISOString() }
+  if (pushed && pulled) lastLibraryRefresh = Date.now()
   return pushed && pulled
  })().catch(error => { remember(error, error.action || 'refreshAll'); return false }).finally(() => { refreshing = null })
  return refreshing
@@ -206,8 +221,28 @@ async function ensureSharedTarget(kind, id) {
 }
 async function createInvite(chapterId) { await ensureSharedTarget('chapter', chapterId); return call('createInvite', { scope: 'chapter', chapterId }) }
 async function createMomentInvite(momentId) { await ensureSharedTarget('moment', momentId); return call('createInvite', { scope: 'moment', momentId }) }
-async function peekInvite(code) { await ready(); return call('peekInvite', { code }) }
-async function joinInvite(code) {
+function parseInviteCode(value) {
+ const text = String(value || '').trim()
+ const marked = text.match(/(?:邀请码[：:]?\s*|[?&]code=)([^\r\n&]+)/i)
+ const candidate = marked ? marked[1].trim() : text
+ const legacy = candidate.match(/\b([a-fA-F0-9]{48})\b/)
+ if (legacy) return legacy[1].toLowerCase()
+ const short = candidate.match(/\b([a-fA-F0-9]{4}[-\s]?[a-fA-F0-9]{4}[-\s]?[a-fA-F0-9]{4})\b/)
+ return short ? short[1].replace(/[-\s]/g, '').toUpperCase() : ''
+}
+function inviteText(invite, title) {
+ const code = invite.code.length === 12 ? invite.code.match(/.{4}/g).join('-') : invite.code
+ return 'ongoing_ · ' + title + '\n邀请码：' + code + '\n打开小程序体验版 → 生活 → 加入共同记录，粘贴这段邀请即可。'
+}
+async function peekInvite(value) {
+ const code = parseInviteCode(value)
+ if (!code) throw new Error('请粘贴邀请信息，或输入完整的邀请码')
+ await ready()
+ return call('peekInvite', { code })
+}
+async function joinInvite(value) {
+ const code = parseInviteCode(value)
+ if (!code) throw new Error('邀请码不完整，请重新粘贴')
  await ready()
  const snapshot = await call('joinInvite', { code })
  if (!store.mergeSharedSnapshot(snapshot)) throw new Error(store.getLastError() || '邀请已接受，但内容尚未保存到本机，请重试')
@@ -244,4 +279,4 @@ async function readConflict(key) {
 }
 async function resolveConflict(conflict, useLocal) { if (!store.resolveConflict(conflict.op, conflict.remote, useLocal)) throw new Error(store.getLastError() || '内容已有变化，请重新检查'); if (!useLocal) store.mergeSharedSnapshot(conflict.snapshot); return flush() }
 function getSyncStatus() { return { syncing: !!flushing || !!refreshing, pending: store.getPendingOps().length, error: lastError, diagnostic, lastSyncedAt } }
-module.exports = { readConflict, resolveConflict, enabled, bootstrap, flush, refreshAll, createInvite, createMomentInvite, peekInvite, joinInvite, removeMember, updateProfile, upload, getSyncStatus, pullChapter: id => pull('chapter', id), pullMoment: id => pull('moment', id), getLastError: () => lastError }
+module.exports = { parseInviteCode, inviteText, readConflict, resolveConflict, enabled, bootstrap, flush, refreshAll, createInvite, createMomentInvite, peekInvite, joinInvite, removeMember, updateProfile, upload, getSyncStatus, pullChapter: id => pull('chapter', id), pullMoment: id => pull('moment', id), getLastError: () => lastError }

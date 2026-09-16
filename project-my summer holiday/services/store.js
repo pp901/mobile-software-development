@@ -8,6 +8,7 @@ const LEGACY_KEY = 'ongoing:data:v1'
 const STATUS_TEXT = { ONGOING: '进行中', COMPLETED: '已结束', ARCHIVED: '已归档' }
 let lastError = ''
 let dailyEcho = null
+let cachedState = null
 
 function clone(value) { return value == null ? value : JSON.parse(JSON.stringify(value)) }
 function makeId(prefix) { return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}` }
@@ -132,26 +133,31 @@ function emptyState() {
   const id = makeId('local')
   return { schemaVersion: 3, currentUserId: id, profile: { id, nickname: '我', avatar: '', bio: '' }, users: [{ id, nickname: '我', avatar: '' }], chapters: [], moments: [], contributions: [], invites: [], activeChapterId: '', settings: { privateMode: true, saveOriginal: false } }
 }
-function init() {
+function init(reload) {
+  if (reload) cachedState = null
+  if (cachedState) return clone(cachedState)
   const cached = storageGet(STORAGE_KEY)
   if (cached) {
-    if (cached.schemaVersion >= 3) return normalizeV2(cached)
+    if (cached.schemaVersion >= 3) { cachedState = normalizeV2(cached); return clone(cachedState) }
     if (!storageGet('ongoing:backup:before-v3')) storageSet('ongoing:backup:before-v3', cached)
     const normalized = normalizeV2(cached)
     storageSet(STORAGE_KEY, normalized)
-    return normalized
+    cachedState = normalized
+    return clone(cachedState)
   }
   const legacy = storageGet(LEGACY_KEY)
   if (legacy && !storageGet('ongoing:backup:before-v3')) storageSet('ongoing:backup:before-v3', legacy)
   const next = normalizeV2(legacy || emptyState())
   storageSet(STORAGE_KEY, next)
-  return next
+  cachedState = next
+  return clone(cachedState)
 }
 
-function getState() { return clone(init()) }
+function getState() { return init() }
 function setState(state) {
   const normalized = normalizeV2(state)
   storageSet(STORAGE_KEY, normalized)
+  cachedState = normalized
   return clone(normalized)
 }
 
@@ -907,11 +913,12 @@ function revokeAccess(kind, id) {
 }
 function queueLocalContent() {
   const state = getState()
-  const enqueue = (action, item, field) => { if (!state.pendingOps.some(op => op.action === action && op.id === item.id)) queueOperation(state, action, item.id, { [field]: item }) }
+  let changed = false
+  const enqueue = (action, item, field) => { changed = true; if (!state.pendingOps.some(op => op.action === action && op.id === item.id)) queueOperation(state, action, item.id, { [field]: item }) }
   state.chapters.filter(item => item.ownerId === state.currentUserId && !item.syncState && !item.accessRevoked).forEach(item => { item.syncState = 'pending'; enqueue('saveChapter',item,'chapter') })
   state.moments.filter(item => item.creatorId === state.currentUserId && item.status !== 'DRAFT' && !item.syncState && !item.accessRevoked).forEach(item => { item.syncState = 'pending'; enqueue('saveMoment',item,'moment') })
   state.contributions.filter(item => item.creatorId === state.currentUserId && !item.syncState).forEach(item => { item.syncState = 'pending'; enqueue('saveContribution',item,'contribution') })
-  setState(state)
+  if (changed) setState(state)
   return true
 }
 Object.assign(module.exports, { revokeAccess, queueLocalContent })

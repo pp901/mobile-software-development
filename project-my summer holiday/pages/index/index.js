@@ -3,7 +3,7 @@ const cloud = require('../../services/collaboration')
 
 Page({
   data: { chapters: [], moments: [], echo: null, echoImageFailed: false },
-  onShow() { this.load(); cloud.refreshAll().then(() => this.load()) },
+  onShow() { this.load(); cloud.refreshAll({ passive: true }).then(() => this.load()) },
   load() {
     const now = new Date()
     const all = store.getMoments()

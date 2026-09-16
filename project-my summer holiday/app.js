@@ -3,7 +3,7 @@ const collaboration = require('./services/collaboration')
 
 App({
   onLaunch() {
-    try { store.init() } catch (error) { wx.showModal({title:'无法读取记录',content:error.message,showCancel:false}); return }
+    try { store.init(true) } catch (error) { wx.showModal({title:'无法读取记录',content:error.message,showCancel:false}); return }
     let cloudEnabled = false
     if (wx.cloud) {
       try {
@@ -17,19 +17,31 @@ App({
   },
   onShow() {
     this.visible = true
-    this.syncVisible()
+    clearTimeout(this.resumeTimer)
+    this.resumeTimer = setTimeout(() => this.syncVisible(), 120)
     clearInterval(this.syncTimer)
     this.syncTimer = setInterval(() => this.syncVisible(), 30000)
   },
-  onHide() { this.visible = false; clearInterval(this.syncTimer) },
+  onHide() { this.visible = false; clearTimeout(this.resumeTimer); clearInterval(this.syncTimer) },
   async syncVisible() {
     if (!this.globalData.cloudEnabled || this.online === false || this.syncing) return
     this.syncing = true
     try {
-      await collaboration.refreshAll()
+      if (!await collaboration.bootstrap(true)) return
+      let pages = getCurrentPages()
+      let page = pages[pages.length - 1]
+      const route = page && page.route || ''
+      const chapterPage = ['pages/chapter/detail/index', 'pages/chapter/members/index', 'pages/review/index'].includes(route)
+      if (chapterPage || route === 'pages/moment/detail/index') {
+        await collaboration.flush()
+        if (page.data.id) {
+          if (chapterPage) await collaboration.pullChapter(page.data.id)
+          else await collaboration.pullMoment(page.data.id)
+        }
+      } else await collaboration.refreshAll({ identityChecked: true })
       if (!this.visible) return
-      const pages = getCurrentPages()
-      const page = pages[pages.length - 1]
+      pages = getCurrentPages()
+      page = pages[pages.length - 1]
       const readers = ['pages/index/index', 'pages/history/index', 'pages/profile/index', 'pages/chapter/detail/index', 'pages/chapter/members/index', 'pages/moment/detail/index', 'pages/review/index']
       if (page && readers.includes(page.route) && typeof page.load === 'function') page.load()
     } finally { this.syncing = false }
