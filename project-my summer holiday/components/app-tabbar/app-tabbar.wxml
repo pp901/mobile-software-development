@@ -1,6 +1,6 @@
 <view class="tabbar" role="navigation" aria-label="主导航">
- <button class="ui-button tab-item {{active === 'now' ? 'active' : ''}}" bindtap="openNow" aria-label="当下"><image src="/assets/icons/home{{active === 'now' ? '-active' : ''}}.svg"/><text>当下</text></button>
- <button class="ui-button tab-item {{active === 'chapters' ? 'active' : ''}}" bindtap="openChapters" aria-label="章节"><image src="/assets/icons/book-open{{active === 'chapters' ? '-active' : ''}}.svg"/><text>章节</text></button>
- <button class="ui-button tab-item {{active === 'history' ? 'active' : ''}}" bindtap="openHistory" aria-label="回望"><image src="/assets/icons/echo{{active === 'history' ? '-active' : ''}}.svg"/><text>回望</text></button>
- <button class="ui-button tab-item {{active === 'profile' ? 'active' : ''}}" bindtap="openProfile" aria-label="我的"><image src="/assets/icons/user{{active === 'profile' ? '-active' : ''}}.svg"/><text>我的</text></button>
+ <button class="ui-button tab-item {{active === 'now' ? 'active' : ''}}" bindtap="openNow" aria-label="当下"><view class="tab-circle"><image src="/assets/icons/home{{active === 'now' ? '-active' : ''}}.svg"/></view><text>当下</text></button>
+ <button class="ui-button tab-item {{active === 'chapters' || active === 'history' ? 'active' : ''}}" bindtap="openChapters" aria-label="生活章节"><view class="tab-circle"><image src="/assets/icons/book-open{{active === 'chapters' || active === 'history' ? '-active' : ''}}.svg"/></view><text>生活</text></button>
+ <button class="ui-button tab-item capture-tab" bindtap="createMoment" aria-label="记录此刻"><view class="capture-circle"><view></view><view></view></view><text>记录</text></button>
+ <button class="ui-button tab-item {{active === 'profile' ? 'active' : ''}}" bindtap="openProfile" aria-label="我的"><view class="tab-circle"><image src="/assets/icons/user{{active === 'profile' ? '-active' : ''}}.svg"/></view><text>我的</text></button>
 </view>

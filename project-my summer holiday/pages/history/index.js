@@ -2,7 +2,7 @@ const store = require('../../services/store')
 const date = require('../../utils/date')
 Page({
  data: { reviewMode: false, reading: 'months', active: 'all', chapters: [], months: [], limit: 30, hasMore: false, tabs: [{ key: 'all', label: '全部' }, { key: 'ONGOING', label: '进行中' }, { key: 'COMPLETED', label: '已结束' }] },
- onLoad(options) { this.setData({ reviewMode: options.view === 'review' }) },
+ onLoad(options) { this.setData({ reviewMode: options.view === 'review', reading:options.view === 'review' ? 'months' : 'chapters' }) },
  onShow() { this.load() },
  load() {
   let chapters = store.getChapters()
@@ -18,7 +18,7 @@ Page({
   this.setData({ chapters, months: groups, totalMoments: all.length, hasMore: all.length > this.data.limit })
  },
  onReachBottom() { if (this.data.reviewMode && this.data.reading === 'months' && this.data.hasMore) { this.setData({ limit: this.data.limit + 30 }); this.load() } },
- changeReading(e) { this.setData({ reading: e.currentTarget.dataset.value }) },
+ changeReading(e) { const reading=e.currentTarget.dataset.value; this.setData({ reading, reviewMode:reading === 'months' }) },
  changeTab(e) { this.setData({ active: e.currentTarget.dataset.key }); this.load() },
  openChapter(e) { wx.navigateTo({ url: (this.data.reviewMode ? '/pages/review/index?id=' : '/pages/chapter/detail/index?id=') + e.detail.id }) },
  openMoment(e) { wx.navigateTo({ url: '/pages/moment/detail/index?id=' + e.detail.id }) },

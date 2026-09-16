@@ -14,6 +14,7 @@ Page({
       return Object.assign({}, chapter, { homeCover: chapter.displayCover || (recentPhoto && recentPhoto.image) || '' })
     })
     this.setData({
+      capturePhotos: all.filter(item => item.image).slice(0, 2), syncStatus: cloud.getSyncStatus ? cloud.getSyncStatus() : {},
       chapters, moments: all.slice(0, this.data.limit), total: all.length, hasMore: all.length > this.data.limit,
       echo, echoImageFailed: this.data.echo && echo && this.data.echo.id === echo.id ? this.data.echoImageFailed : false,
       todayDay: String(now.getDate()).padStart(2, '0'), todayMonth: now.getFullYear() + '年 ' + (now.getMonth() + 1) + '月',
@@ -31,6 +32,8 @@ Page({
   resumeDraft() { this.createMoment() },
   openEcho() { if (this.data.echo) wx.navigateTo({ url: '/pages/moment/detail/index?id=' + this.data.echo.id + '&echo=1' }) },
   echoImageError() { this.setData({ echoImageFailed: true }) },
+  openSync() { wx.navigateTo({ url: '/pages/profile/index?panel=sync' }) },
+  captureImageError(e) { this.setData({ ['capturePhotos[' + e.currentTarget.dataset.index + '].image']: '' }) },
   openSearch() { wx.navigateTo({ url: '/pages/search/index' }) },
   toggleRecent() { const expanded = !this.data.expanded; this.setData({ expanded, limit: expanded ? 18 : 3 }); this.load() }
 })

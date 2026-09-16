@@ -1,12 +1,13 @@
 /* Native style v2 sets fixed button widths. Class-qualified resets and component selectors below override those defaults. */
 page {
- --bg:#F9FAFC; --surface:#FFFFFF; --surface-soft:#F1F3F7;
- --primary:#8498BD; --primary-deep:#536C9B; --primary-soft:#E0E7F3; --primary-pale:#EDF1F8;
- --lavender:#C9C3DE; --lavender-soft:#F0EDF6; --blue:#B8C9E2; --blue-soft:#ECF1F8; --blush:#E5CEDD; --blush-soft:#F6EDF3;
- --text:#293246; --text-secondary:#697387; --text-muted:#969FB0; --line:rgba(45,59,86,.07);
+ --bg:#F7F7F2; --surface:#FFFFFF; --surface-soft:#EEF0EB;
+ --primary:#7D9C8E; --primary-deep:#37695C; --primary-soft:#D9E8DF; --primary-pale:#ECF2ED;
+ --lavender:#C5C3D9; --lavender-soft:#F0EEF5; --blue:#B9CED8; --blue-soft:#EDF3F5; --blush:#DEA88F; --blush-soft:#F8EEE7;
+ --sage:#DDE9DC; --apricot:#EFC6AB; --butter:#ECE4B6; --clay:#A15F46; --ink:#293E38;
+ --text:#2D3D36; --text-secondary:#6E7971; --text-muted:#8D978E; --line:rgba(47,70,55,.09);
  --background-primary:var(--bg); --background-secondary:var(--surface-soft); --surface-primary:var(--surface); --surface-elevated:var(--surface);
  --text-primary:var(--text); --text-tertiary:var(--text-muted); --border-subtle:var(--line); --accent:var(--primary-deep); --accent-soft:var(--primary-pale);
- --danger:#536C9B; --success:#536C9B; --overlay:rgba(41,37,43,.3); --material:rgba(255,255,255,.97); --chapter-surface:var(--lavender-soft);
+ --danger:#A75F49; --success:#37695C; --overlay:rgba(41,37,43,.3); --material:rgba(255,255,252,.96); --chapter-surface:var(--lavender-soft);
  --font-ui:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; --font-display:Georgia,"Times New Roman","Songti SC",serif;
  --type-display:60rpx; --type-page-title:48rpx; --type-section-title:34rpx; --type-body:30rpx; --type-caption:26rpx; --type-metadata:24rpx; --type-micro:22rpx;
  --space-1:8rpx; --space-2:16rpx; --space-3:24rpx; --space-4:32rpx; --space-5:40rpx; --space-6:48rpx; --space-8:64rpx; --space-10:80rpx; --space-12:96rpx; --space-16:128rpx;

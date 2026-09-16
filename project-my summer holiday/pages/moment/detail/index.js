@@ -26,7 +26,7 @@ Page({
   const moment = store.getMoment(this.data.id)
   const echo = this.fromEcho ? store.getEchoMoment() : null
   this.setData({
-   moment, perspectives: moment ? store.getPerspectives(moment.id).filter(item => !item.isOriginal) : [],
+   syncStatus: cloud.getSyncStatus ? cloud.getSyncStatus() : {}, moment, perspectives: moment ? store.getPerspectives(moment.id).filter(item => !item.isOriginal) : [],
    headline: moment ? moment.media.length ? '这一刻的画面' : moment.voicePath ? '把声音留给以后' : '记下这一刻' : '',
    imageIndex: moment ? Math.min(this.data.imageIndex, Math.max(0, moment.media.length - 1)) : 0,
    chapter: moment ? store.getChapter(moment.chapterId) : null, missing: !moment, currentId: store.getCurrentUser().id,
@@ -34,6 +34,7 @@ Page({
    myPerspectiveLabel: moment && moment.myPerspectiveId ? '编辑我的视角' : '留下我的视角'
   })
  },
+ async retrySync() { await cloud.refreshAll(); this.load() },
  dismissReceipt() { this.setData({ showReceipt: false }) },
  changeImage(e) { this.setData({ imageIndex: e.detail.current }) },
  imageError(e) { this.setData({ ['failedImages.' + e.currentTarget.dataset.index]: true }) },

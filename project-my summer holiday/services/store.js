@@ -614,6 +614,9 @@ function setReviewPhotos(chapterId, momentIds) {
   const chapter = rawChapter(state, chapterId)
   if (!chapter || chapter.ownerId !== state.currentUserId) return false
   chapter.reviewPhotoIds = Array.from(new Set(momentIds || [])).slice(0, 3)
+  chapter.updatedAt = new Date().toISOString()
+  chapter.syncState = 'pending'
+  queueOperation(state, 'saveChapter', chapter.id, { chapter })
   setState(state)
   return true
 }
@@ -876,7 +879,7 @@ function revokeAccess(kind, id) {
 function queueLocalContent() {
   const state = getState()
   const enqueue = (action, item, field) => { if (!state.pendingOps.some(op => op.action === action && op.id === item.id)) queueOperation(state, action, item.id, { [field]: item }) }
-  state.chapters.filter(item => item.ownerId === state.currentUserId && !item.syncState && !item.accessRevoked).forEach(item => enqueue('saveChapter',item,'chapter'))
+  state.chapters.filter(item => item.ownerId === state.currentUserId && !item.syncState && !item.accessRevoked).forEach(item => { item.syncState = 'pending'; enqueue('saveChapter',item,'chapter') })
   state.moments.filter(item => item.creatorId === state.currentUserId && item.status !== 'DRAFT' && !item.syncState && !item.accessRevoked).forEach(item => { item.syncState = 'pending'; enqueue('saveMoment',item,'moment') })
   state.contributions.filter(item => item.creatorId === state.currentUserId && !item.syncState).forEach(item => { item.syncState = 'pending'; enqueue('saveContribution',item,'contribution') })
   setState(state)
