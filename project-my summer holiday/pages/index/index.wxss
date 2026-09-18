@@ -164,7 +164,7 @@
 .echo-card.echo-card { border:1rpx solid #DCD9C7; border-radius:9rpx; background:#F1F4E5; box-shadow:0 8rpx 0 rgba(93,107,85,.06); }.echo-heading { border-radius:6rpx; }.echo-reason,.echo-excerpt { font-family:var(--font-hand); }
 .home-empty-guide { border:1rpx dashed #C7C6B2; border-radius:9rpx; background:#F7F4E9; }.chapter-empty-guide { background:#EEF4E5; }
 
-.invite-card { display:flex; align-items:center; width:100%; margin-top:32rpx; padding:24rpx 28rpx; border-radius:16rpx; background:#F5E8E0; text-align:left; color:#2A3A2D; line-height:1.4; box-sizing:border-box; gap:20rpx; }
+.invite-card.invite-card { display:flex; align-items:center; width:100%; min-height:88rpx; margin-top:16rpx; padding:18rpx 20rpx; border:1rpx solid #DED6C8; border-radius:7rpx; background:#FFFDF8; box-shadow:0 6rpx 14rpx rgba(76,69,54,.045); text-align:left; color:#2A3A2D; line-height:1.4; box-sizing:border-box; gap:20rpx; }
 .invite-icon-box { flex:none; width:64rpx; height:64rpx; border-radius:12rpx; background:rgba(255,255,255,.6); display:flex; align-items:center; justify-content:center; }
 .invite-icon-box image { width:32rpx; height:32rpx; }
 .invite-icon { flex:none; width:72rpx; height:72rpx; border-radius:50%; background:var(--primary-deep); display:flex; align-items:center; justify-content:center; }
