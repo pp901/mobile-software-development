@@ -10,3 +10,7 @@
 .remove.remove { display:flex; align-items:center; justify-content:center; flex:none; width:auto; min-width:88rpx; min-height:88rpx; color:var(--text-secondary); font-size:25rpx; }
 .invite-box,.leave.leave { margin-top:48rpx; }
 .invite-scope { display:block; text-align:center; font-size:23rpx; color:var(--text-secondary); margin:20rpx 12rpx; }
+
+.members-heading { padding:44rpx 0 28rpx; }.members-title { font-family:var(--font-display); font-size:48rpx; letter-spacing:-1rpx; }.members-description { max-width:590rpx; line-height:1.7; }
+.member-row { padding:26rpx 0; }.member-avatar { border-radius:20rpx; background:var(--sage); }.invite-box { padding:28rpx 0 12rpx; }
+.members-title { color:#31573E; font-family:var(--font-hand); font-size:52rpx; letter-spacing:1rpx; }.member-row { margin-bottom:14rpx; padding:18rpx 20rpx; border:1rpx solid #E5DDCF; border-radius:7rpx; background:#FFFDF8; box-shadow:0 4rpx 10rpx rgba(73,68,58,.035); }.member-row:nth-child(even) { background:#F7FAF1; transform:rotate(.15deg); }.member-avatar { border:5rpx solid #fff; border-radius:5rpx; box-shadow:0 4rpx 9rpx rgba(70,65,55,.09); transform:rotate(-2deg); }.member-copy>text:first-child { color:#35533E; font-family:var(--font-hand); font-size:30rpx; }.invite-box { padding:24rpx; border:1rpx dashed #B7C9AF; border-radius:8rpx; background:#EEF6E8; }

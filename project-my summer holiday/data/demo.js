@@ -59,7 +59,12 @@ const contributions = [
   { id: 'contribution-3', momentId: 'm03', chapterId: 'summer-2026', creatorId: 'user-lin', type: 'text', content: '那天你说终于敢把想法做出来了。', media: [], voicePath: '', voiceDuration: 0, createdAt: '2026-09-06T22:10:00' }
 ]
 
+const comments = [
+  { id: 'comment-1', momentId: 'm01', perspectiveId: 'contribution-1', chapterId: 'summer-2026', creatorId: 'user-owner', content: '我也记得，天暗下来之后海边的灯一盏盏亮了。', createdAt: '2026-09-07T21:11:00' },
+  { id: 'comment-2', momentId: 'm01', perspectiveId: 'contribution-2', chapterId: 'summer-2026', creatorId: 'user-lin', content: '原来你拍到了我们那时的样子。', createdAt: '2026-09-07T21:27:00' }
+]
+
 module.exports = {
   version: 2, schemaVersion: 2, activeChapterId: 'summer-2026', currentUserId: 'user-owner',
-  users, chapters, moments, contributions, invites: [], settings: { privateMode: true, saveOriginal: true, imageQuality: 'compressed' }, profile: users[0]
+  users, chapters, moments, contributions, comments, invites: [], settings: { privateMode: true, saveOriginal: true, imageQuality: 'compressed' }, profile: users[0]
 }

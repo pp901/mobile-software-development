@@ -1,7 +1,7 @@
 <view class="page-shell tabbar-space">
  <navigation-bar home><view slot="home" class="app-masthead"><text class="app-wordmark">ongoing_</text></view></navigation-bar>
  <view class="page-pad">
-  <view class="life-profile">
+  <view class="life-profile"><image class="stamp-frame" src="/assets/images/stamp-frame-cream.svg" mode="scaleToFill"/>
    <view class="archive-eyebrow"><text>生活档案</text><text class="archive-english">a life, ongoing_</text></view>
    <view class="profile-head"><view class="profile-identity"><input class="name" type="nickname" value="{{profile.nickname}}" bindblur="saveNickname" maxlength="40"/><text class="edit-hint">每一刻，都在成为你。</text></view><button class="ui-button avatar-picker" open-type="chooseAvatar" bindchooseavatar="chooseAvatar" aria-label="更换头像"><image wx:if="{{profile.avatar && !avatarFailed}}" src="{{profile.avatar}}" mode="aspectFill" binderror="avatarError"/><view wx:else class="avatar-placeholder"><image src="/assets/icons/user.svg"/></view></button></view>
    <view class="life-numbers"><view><text class="life-number">{{stats.momentCount}}</text><text class="life-number-label">Moment</text></view><view><text class="life-number">{{stats.recordedDayCount}}</text><text class="life-number-label">个记录日</text></view><view><text class="life-number">{{stats.chapterCount}}</text><text class="life-number-label">Chapter</text></view></view>

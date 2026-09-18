@@ -82,7 +82,7 @@ async function run() {
  assert.equal(await a.cloud.flush(), false)
  assert.equal(a.cloud.getSyncStatus().diagnostic.code, 'DATABASE_COLLECTION_NOT_EXIST', '缺集合明确报错，不伪装成离线')
  assert.equal(a.store.getPendingOps().length, 2)
- ;['users', 'chapters', 'moments', 'contributions', 'invites'].forEach(name => collections.add('ongoing_' + name))
+ ;['users', 'chapters', 'moments', 'contributions', 'comments', 'invites'].forEach(name => collections.add('ongoing_' + name))
  assert.equal(await a.cloud.refreshAll(), true, '建齐集合后原本待上传的内容恢复，无需清缓存')
  assert.equal(a.store.getCurrentUser().id, 'openid_A')
  assert.equal(a.store.getMoment(original.id).syncState, 'synced')

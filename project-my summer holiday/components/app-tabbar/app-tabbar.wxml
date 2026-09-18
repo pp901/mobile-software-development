@@ -1,13 +1,13 @@
 <view class="navigation-dock">
   <view class="nav-pill" role="navigation" aria-label="主导航">
     <button class="ui-button nav-item {{active === 'now' ? 'selected' : ''}}" bindtap="openNow" aria-label="当下{{active === 'now' ? '，当前页面' : ''}}">
-      <image src="/assets/icons/home{{active === 'now' ? '-active' : ''}}.svg"/><text>当下</text>
+      <image class="nav-icon" src="/assets/icons/home{{active === 'now' ? '-active' : ''}}.svg"/><text>当下</text>
     </button>
     <button class="ui-button nav-item {{active === 'chapters' || active === 'history' ? 'selected' : ''}}" bindtap="openChapters" aria-label="生活{{active === 'chapters' || active === 'history' ? '，当前页面' : ''}}">
-      <image src="/assets/icons/book-open{{active === 'chapters' || active === 'history' ? '-active' : ''}}.svg"/><text>生活</text>
+      <image class="nav-icon" src="/assets/icons/book-open{{active === 'chapters' || active === 'history' ? '-active' : ''}}.svg"/><text>生活</text>
     </button>
     <button class="ui-button nav-item {{active === 'profile' ? 'selected' : ''}}" bindtap="openProfile" aria-label="我的{{active === 'profile' ? '，当前页面' : ''}}">
-      <image src="/assets/icons/user{{active === 'profile' ? '-active' : ''}}.svg"/><text>我的</text>
+      <image class="nav-icon" src="/assets/icons/user{{active === 'profile' ? '-active' : ''}}.svg"/><text>我的</text>
     </button>
   </view>
   <button wx:if="{{showCreate}}" class="ui-button dock-create" bindtap="createMoment" aria-label="记录此刻">

@@ -7,9 +7,9 @@
 1. 在微信开发者工具右键 `cloudfunctions/collaboration` → **上传并部署：云端安装依赖**，选择 `cloud1-d3gkyt79x24b49e66`。
 2. 上传最新小程序并设为体验版。确保 A、B 都是此小程序的体验成员，并分别用自己的微信打开新版体验版；邀请码用于授予内容权限，不能替代微信后台的体验成员资格。
 
-AppID 沿用 `project.config.json` 中的 `wxbda0de1c39652c2d`。用户已确认建好五个集合：`ongoing_users`、`ongoing_chapters`、`ongoing_moments`、`ongoing_contributions`、`ongoing_invites`。无需新增集合、清空缓存或迁移数据。
+AppID 沿用 `project.config.json` 中的 `wxbda0de1c39652c2d`。请确认已建好六个集合：`ongoing_users`、`ongoing_chapters`、`ongoing_moments`、`ongoing_contributions`、`ongoing_comments`、`ongoing_invites`。`ongoing_comments` 用于共同 Moment 视角下的互相评论；无需清空缓存或迁移既有数据。
 
-数据库五个集合由云函数读写，客户端不直连集合；可保持仅管理员读写。云存储需允许用户上传自己的文件，成员读取由云函数校验内容访问权后签发临时地址。已有权限配置本轮未在线读取或修改。
+数据库六个集合由云函数读写，客户端不直连集合；可保持仅管理员读写。云存储需允许用户上传自己的文件，成员读取由云函数校验内容访问权后签发临时地址。已有权限配置本轮未在线读取或修改。
 
 ## Chapter：A 创建 → B 加入 → B 填写 → A 看见
 
@@ -48,6 +48,7 @@ AppID 沿用 `project.config.json` 中的 `wxbda0de1c39652c2d`。用户已确认
 - `ongoing_chapters`：同一 Chapter 的 `memberIds` 同时包含 A、B，重复加入不会增加重复成员。
 - `ongoing_moments`：A、B 创建的记录具有不同 `creatorId`；共享 Chapter 中两人的 `chapterId` 相同。
 - `ongoing_contributions`：B 的视角使用 B 的 `creatorId`、A 原 Moment 的 `momentId`；编辑后同一视角内容和 `serverVersion` 更新。
+- `ongoing_comments`：评论关联 `momentId` 和 `perspectiveId`，仅共同 Moment 的可见成员可读写；评论者只能删除自己的评论。
 - 照片和语音写入云存储，数据库保留 `cloud://` 文件标识；其他成员通过授权后的临时地址读取。
 - 一台手机关闭网络后保存 / 修改，再联网、回到前台，待同步队列应自动减少，另一台手机刷新可见。
 

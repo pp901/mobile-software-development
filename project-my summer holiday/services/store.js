@@ -79,6 +79,7 @@ function migrate(input) {
       updatedAt: item.updatedAt || item.createdAt
     })),
     contributions: source.contributions || [],
+    comments: source.comments || [],
     invites: source.invites || [],
     settings: Object.assign({ privateMode: true, saveOriginal: true, imageQuality: 'compressed' }, source.settings || {}),
     profile
@@ -100,6 +101,7 @@ function normalizeV2(input) {
   state.chapters = (Array.isArray(state.chapters) ? state.chapters : []).filter(item => item && typeof item === 'object')
   state.moments = (Array.isArray(state.moments) ? state.moments : []).filter(item => item && typeof item === 'object')
   state.contributions = (Array.isArray(state.contributions) ? state.contributions : []).filter(item => item && typeof item === 'object')
+  state.comments = (Array.isArray(state.comments) ? state.comments : []).filter(item => item && typeof item === 'object')
   state.invites = (Array.isArray(state.invites) ? state.invites : []).filter(item => item && typeof item === 'object')
   state.settings = Object.assign({ privateMode: true, saveOriginal: true, imageQuality: 'compressed' }, state.settings || {})
   state.currentUserId = state.currentUserId || (state.profile && state.profile.id) || 'user-owner'
@@ -131,7 +133,7 @@ function normalizeV2(input) {
 
 function emptyState() {
   const id = makeId('local')
-  return { schemaVersion: 3, currentUserId: id, profile: { id, nickname: '我', avatar: '', bio: '' }, users: [{ id, nickname: '我', avatar: '' }], chapters: [], moments: [], contributions: [], invites: [], activeChapterId: '', settings: { privateMode: true, saveOriginal: false } }
+  return { schemaVersion: 3, currentUserId: id, profile: { id, nickname: '我', avatar: '', bio: '' }, users: [{ id, nickname: '我', avatar: '' }], chapters: [], moments: [], contributions: [], comments: [], invites: [], activeChapterId: '', settings: { privateMode: true, saveOriginal: false } }
 }
 function init(reload) {
   if (reload) cachedState = null
@@ -184,8 +186,18 @@ function hasContent(item) { return !!(String(item.content || '').trim() || norma
 function displayPath(path, state) { const cached = state.mediaUrls[path]; return state.mediaCache[path] || (cached && cached.expiresAt > Date.now() ? cached.url : path) }
 function displayUser(id,state) { const user = clone(rawUser(state,id)); user.avatar = displayPath(user.avatar,state); return user }
 function displayMedia(item,state) { return normalizeMedia(item).map(media => Object.assign({},media,{displayPath:displayPath(media.path,state)})) }
+function decorateComment(item, state) {
+  return Object.assign({}, item, {
+    creator: displayUser(item.creatorId, state),
+    content: String(item.content || ''),
+    dateLabel: date.displayDate(item.createdAt, true) || '刚刚',
+    canDelete: item.creatorId === state.currentUserId
+  })
+}
+
 function decorateContribution(item, state) {
   const media = displayMedia(item,state)
+  const comments = state.comments.filter(comment => comment.perspectiveId === item.id).sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt))).map(comment => decorateComment(comment, state))
   return Object.assign({}, item, {
     creator: displayUser(item.creatorId,state),
     displayVoicePath: displayPath(item.voicePath,state),
@@ -194,7 +206,9 @@ function decorateContribution(item, state) {
     content: typeof item.content === 'string' ? item.content : '',
     voicePath: typeof item.voicePath === 'string' ? item.voicePath : '',
     voiceDuration: Number.isFinite(item.voiceDuration) ? Math.max(0, item.voiceDuration) : 0,
-    dateLabel: date.displayDate(item.createdAt, true) || '日期未知'
+    dateLabel: date.displayDate(item.createdAt, true) || '日期未知',
+    comments,
+    commentCount: comments.length
   })
 }
 
@@ -223,6 +237,7 @@ function decorateMoment(item, state) {
     syncState: item.syncState || '',
     type: contentType(item),
     canEdit: item.creatorId === state.currentUserId,
+    pinned: !!item.pinned,
     canDelete,
     localDateKey,
     dateLabel: date.displayDate(localDateKey || created, true) || '日期未知',
@@ -286,6 +301,7 @@ function adoptIdentity(payload) {
   })
   state.moments.forEach(moment => { if (moment.creatorId === oldId) moment.creatorId = payload.id })
   state.contributions.forEach(item => { if (item.creatorId === oldId) item.creatorId = payload.id })
+  state.comments.forEach(item => { if (item.creatorId === oldId) item.creatorId = payload.id })
   state.invites.forEach(item => { if (item.createdBy === oldId) item.createdBy = payload.id })
   state.moments.forEach(item => { item.participantIds = (item.participantIds || []).map(id => id === oldId ? payload.id : id) })
   const rewrite = value => { if (Array.isArray(value)) return value.map(rewrite); if (value && typeof value === 'object') return Object.keys(value).reduce((result,key) => { result[key] = rewrite(value[key]); return result }, {}); return value === oldId ? payload.id : value }
@@ -434,11 +450,12 @@ function deleteMoment(id) {
   if (!target) return false
   const chapter = rawChapter(state, target.chapterId)
   if (target.creatorId !== state.currentUserId && (!chapter || chapter.ownerId !== state.currentUserId)) return false
-  const removed = [target].concat(state.contributions.filter(item => item.momentId === id))
+  const removed = [target].concat(state.contributions.filter(item => item.momentId === id)).concat(state.comments.filter(item => item.momentId === id))
   removed.forEach(item => markDeleted(state, item.id))
   if (target.status !== 'DRAFT') queueOperation(state, 'deleteMoment', id, { momentId: id })
   state.moments = state.moments.filter(item => item.id !== id)
   state.contributions = state.contributions.filter(item => item.momentId !== id)
+  state.comments = state.comments.filter(item => item.momentId !== id)
   setState(state)
   removed.forEach(cleanupMomentMedia)
   return true
@@ -558,10 +575,37 @@ function deleteContribution(id) {
   const item = state.contributions.find(one => one.id === id)
   if (!item || item.creatorId !== state.currentUserId) return false
   markDeleted(state, id)
+  state.comments.filter(comment => comment.perspectiveId === id).forEach(comment => markDeleted(state, comment.id))
   queueOperation(state, 'deleteContribution', id, { contributionId: id })
   state.contributions = state.contributions.filter(one => one.id !== id)
+  state.comments = state.comments.filter(comment => comment.perspectiveId !== id)
   setState(state)
   cleanupMomentMedia(item)
+  return true
+}
+
+function saveComment(payload) {
+  const state = getState()
+  const moment = state.moments.find(item => item.id === payload.momentId)
+  const perspective = state.contributions.find(item => item.id === payload.perspectiveId && item.momentId === payload.momentId)
+  const content = String(payload.content || '').trim().slice(0, 300)
+  if (!canReadMoment(moment, state) || !perspective || !content) return null
+  const now = new Date().toISOString()
+  const item = { id: makeId('comment'), momentId: moment.id, perspectiveId: perspective.id, chapterId: moment.chapterId, creatorId: state.currentUserId, content, createdAt: now, updatedAt: now, syncState: 'pending' }
+  state.comments.push(item)
+  queueOperation(state, 'saveComment', item.id, { comment: item })
+  setState(state)
+  return decorateComment(item, state)
+}
+
+function deleteComment(id) {
+  const state = getState()
+  const item = state.comments.find(comment => comment.id === id)
+  if (!item || item.creatorId !== state.currentUserId) return false
+  markDeleted(state, id)
+  queueOperation(state, 'deleteComment', id, { commentId: id })
+  state.comments = state.comments.filter(comment => comment.id !== id)
+  setState(state)
   return true
 }
 
@@ -654,12 +698,13 @@ function deleteChapter(id) {
   const chapter = rawChapter(state, id)
   if (!chapter || chapter.ownerId !== state.currentUserId) return false
   const momentIds = state.moments.filter(item => item.chapterId === id).map(item => item.id)
-  const removed = state.moments.filter(item => item.chapterId === id).concat(state.contributions.filter(item => momentIds.includes(item.momentId)))
+  const removed = state.moments.filter(item => item.chapterId === id).concat(state.contributions.filter(item => momentIds.includes(item.momentId))).concat(state.comments.filter(item => momentIds.includes(item.momentId)))
   removed.concat([chapter]).forEach(item => markDeleted(state, item.id))
   queueOperation(state, 'deleteChapter', id, { chapterId: id })
   state.chapters = state.chapters.filter(item => item.id !== id)
   state.moments = state.moments.filter(item => item.chapterId !== id)
   state.contributions = state.contributions.filter(item => !momentIds.includes(item.momentId))
+  state.comments = state.comments.filter(item => !momentIds.includes(item.momentId))
   state.invites = state.invites.filter(item => item.chapterId !== id)
   if (state.activeChapterId === id) state.activeChapterId = ''
   setState(state)
@@ -794,6 +839,7 @@ function exportChapterSnapshot(chapterId) {
     chapter,
     moments,
     contributions: state.contributions.filter(item => momentIds.includes(item.momentId)),
+    comments: state.comments.filter(item => momentIds.includes(item.momentId)),
     users: chapter.memberIds.map(id => rawUser(state, id))
   })
 }
@@ -821,10 +867,12 @@ function mergeSharedSnapshot(snapshot) {
   }
   state.moments = merge(state.moments, snapshot.moments || (snapshot.moment ? [snapshot.moment] : []))
   state.contributions = merge(state.contributions, snapshot.contributions)
+  state.comments = merge(state.comments, snapshot.comments)
   ;(snapshot.deletedIds || []).forEach(id => {
     state.chapters = state.chapters.filter(item => item.id !== id || state.pendingOps.some(op => op.id === id))
     state.moments = state.moments.filter(item => item.id !== id || item.syncState === 'pending')
     state.contributions = state.contributions.filter(item => item.id !== id || item.syncState === 'pending')
+    state.comments = state.comments.filter(item => item.id !== id || item.syncState === 'pending')
   })
   setState(state)
   return snapshot.chapter ? getChapter(snapshot.chapter.id) : getMoment(snapshot.moment.id)
@@ -836,7 +884,7 @@ module.exports = {
   init, getState, setState, getCurrentUser, getUser, getUsers, setCurrentUser, adoptIdentity, activateCloudIdentity, saveProfile, getSettings, updateSettings,
   getChapters, getChapter, getActiveChapter, setActiveChapter, getMembers, getMoments, getTimelineMoments, getCalendarData, getMapData,
   getMoment, saveMoment, deleteMoment,
-  toggleFavorite, saveChapter, saveGoal, deleteGoal, moveGoal, toggleGoal, saveContribution, deleteContribution,
+  toggleFavorite, saveChapter, saveGoal, deleteGoal, moveGoal, toggleGoal, saveContribution, deleteContribution, saveComment, deleteComment,
   createInvite, joinChapter, removeMember, completeChapter, setChapterStatus, setReviewPhotos, deleteChapter,
   getReviewData, getEchoMoment, getLifeStats, search, exportChapterSnapshot, mergeSharedSnapshot, reset
 }
@@ -877,15 +925,15 @@ function acknowledgeOperation(operation, remote) {
   const state = getState()
   const current = state.pendingOps.find(item => item.key === operation.key)
   if (!current) return false
-  const source = operation.data.moment || operation.data.contribution || operation.data.chapter || {}
+  const source = operation.data.moment || operation.data.contribution || operation.data.comment || operation.data.chapter || {}
   if (remote) {
     ;(remote.media||[]).forEach(media=>{const local=(source.media||[]).find(item=>item.id===media.id);if(local && local.path && !/^(cloud:|https?:)/.test(local.path))state.mediaCache[media.path]=local.path})
     if(remote.voicePath && source.voicePath && !/^(cloud:|https?:)/.test(source.voicePath))state.mediaCache[remote.voicePath]=source.voicePath
     if(remote.cover && source.cover && !/^(cloud:|https?:)/.test(source.cover))state.mediaCache[remote.cover]=source.cover
   }
   if (current.revision !== operation.revision) {
-    const field = operation.action === 'saveMoment' ? 'moment' : operation.action === 'saveContribution' ? 'contribution' : operation.action === 'saveChapter' ? 'chapter' : ''
-    if (field && remote) { current.data[field].serverVersion = remote.serverVersion; const list = field === 'chapter' ? state.chapters : field === 'moment' ? state.moments : state.contributions; const item = list.find(one => one.id === operation.id); if (item) item.serverVersion = remote.serverVersion; setState(state) }
+    const field = operation.action === 'saveMoment' ? 'moment' : operation.action === 'saveContribution' ? 'contribution' : operation.action === 'saveComment' ? 'comment' : operation.action === 'saveChapter' ? 'chapter' : ''
+    if (field && remote) { current.data[field].serverVersion = remote.serverVersion; const list = field === 'chapter' ? state.chapters : field === 'moment' ? state.moments : field === 'contribution' ? state.contributions : state.comments; const item = list.find(one => one.id === operation.id); if (item) item.serverVersion = remote.serverVersion; setState(state) }
     return false
   }
   state.pendingOps = state.pendingOps.filter(item => item.revision !== operation.revision)
@@ -898,7 +946,7 @@ function acknowledgeOperation(operation, remote) {
     state.profile = clone(user)
   }
   if (operation.action === 'saveChapter' && remote) { const chapter = state.chapters.find(item => item.id === operation.id); if (chapter) Object.assign(chapter, remote, { syncState: 'synced' }) }
-  const list = operation.action === 'saveMoment' ? state.moments : operation.action === 'saveContribution' ? state.contributions : null
+  const list = operation.action === 'saveMoment' ? state.moments : operation.action === 'saveContribution' ? state.contributions : operation.action === 'saveComment' ? state.comments : null
   if (list) { const item = list.find(one => one.id === operation.id); if (item) Object.assign(item, remote || {}, { syncState: 'synced' }) }
   setState(state)
   return true
@@ -918,6 +966,7 @@ function queueLocalContent() {
   state.chapters.filter(item => item.ownerId === state.currentUserId && !item.syncState && !item.accessRevoked).forEach(item => { item.syncState = 'pending'; enqueue('saveChapter',item,'chapter') })
   state.moments.filter(item => item.creatorId === state.currentUserId && item.status !== 'DRAFT' && !item.syncState && !item.accessRevoked).forEach(item => { item.syncState = 'pending'; enqueue('saveMoment',item,'moment') })
   state.contributions.filter(item => item.creatorId === state.currentUserId && !item.syncState).forEach(item => { item.syncState = 'pending'; enqueue('saveContribution',item,'contribution') })
+  state.comments.filter(item => item.creatorId === state.currentUserId && !item.syncState).forEach(item => { item.syncState = 'pending'; enqueue('saveComment',item,'comment') })
   if (changed) setState(state)
   return true
 }
@@ -926,8 +975,8 @@ function setSyncIssue(op, error) { const state = getState(); if(state.pendingOps
 function getSyncIssues() { const state=getState();return Object.values(state.syncIssues).filter(issue=>state.pendingOps.some(op=>op.key===issue.key)) }
 function resolveConflict(op, remote, useLocal) {
  const state=getState();const current=state.pendingOps.find(item=>item.key===op.key);if(!current||current.revision!==op.revision)return false
- const field=op.action==='saveChapter'?'chapter':op.action==='saveMoment'?'moment':'contribution'
- const list=field==='chapter'?state.chapters:field==='moment'?state.moments:state.contributions
+ const field=op.action==='saveChapter'?'chapter':op.action==='saveMoment'?'moment':op.action==='saveContribution'?'contribution':'comment'
+ const list=field==='chapter'?state.chapters:field==='moment'?state.moments:field==='contribution'?state.contributions:state.comments
  const index=list.findIndex(item=>item.id===op.id);if(index<0)return false
  if(useLocal){list[index].serverVersion=remote.serverVersion;queueOperation(state,op.action,op.id,{[field]:list[index]})}
  else{list[index]=Object.assign({},remote,{syncState:'synced',favorite:list[index].favorite||false});state.pendingOps=state.pendingOps.filter(item=>item.key!==op.key)}
@@ -936,5 +985,5 @@ function resolveConflict(op, remote, useLocal) {
 Object.assign(module.exports,{setSyncIssue,getSyncIssues,resolveConflict})
 function getLastError() { return lastError }
 Object.assign(module.exports, { getDrafts, getWritingDrafts, saveEditorDraft, getEditorDraft, getPerspectives, getPendingOps, acknowledgeOperation, getLastError, hasContent })
-const writes = ['saveMoment','saveChapter','saveContribution','deleteMoment','deleteChapter','deleteContribution','saveEditorDraft','completeChapter','setChapterStatus','saveProfile','updateSettings','removeMember','toggleFavorite','acknowledgeOperation','revokeAccess','queueLocalContent','adoptIdentity','activateCloudIdentity','setSyncIssue','resolveConflict']
+const writes = ['saveMoment','saveChapter','saveContribution','saveComment','deleteMoment','deleteChapter','deleteContribution','deleteComment','saveEditorDraft','completeChapter','setChapterStatus','saveProfile','updateSettings','removeMember','toggleFavorite','acknowledgeOperation','revokeAccess','queueLocalContent','adoptIdentity','activateCloudIdentity','setSyncIssue','resolveConflict']
 writes.forEach(name => { const action = module.exports[name]; module.exports[name] = function () { lastError = ''; try { return action.apply(null, arguments) } catch (error) { lastError = error.message; return null } } })

@@ -86,6 +86,7 @@ function buildCalendarData(chapter, moments, options) {
     return Object.assign({}, item, {
       count,
       hasMoments: count > 0,
+      heatLevel: count === 0 ? 0 : count === 1 ? 1 : count === 2 ? 2 : count <= 4 ? 3 : 4,
       countLabel: count > 9 ? '9+' : String(count || ''),
       isToday: item.key === todayKey,
       isSelected: item.key === selectedDateKey,

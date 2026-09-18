@@ -1,9 +1,9 @@
 page { background: var(--background-primary); }
-.splash { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--background-primary); }
+.splash { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; background:#F8F6F0; }
 .grain { position: absolute; inset: 0; opacity: .08; background-image: radial-gradient(rgba(32,32,30,.3) .6rpx, transparent .6rpx); background-size: 10rpx 10rpx; }
 .edition { position: absolute; top: calc(180rpx + env(safe-area-inset-top)); left: 32rpx; right: 32rpx; text-align:center; color: var(--text-tertiary); font-size: var(--type-micro); letter-spacing: 2rpx; }
 .brand-wrap { position: relative; display: flex; flex-direction: column; align-items: center; animation: reveal 200ms ease both; }
-.brand { font-size: 76rpx; font-weight: 650; letter-spacing: -4rpx; }
+.brand { font-size: 84rpx; font-weight: 650; letter-spacing: -5rpx; }
 .cn { margin-top: var(--space-2); color: var(--text-secondary); font-size: var(--type-metadata); font-weight: 600; letter-spacing: 12rpx; text-indent: 12rpx; }
 .brand-dot { position: absolute; top: -8rpx; right: -20rpx; width: 12rpx; height: 12rpx; border-radius: 50%; background: var(--accent); }
 .splash-bottom { position: absolute; bottom: calc(var(--space-12) + env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: center; gap: var(--space-2); color: var(--text-secondary); font-size: var(--type-metadata); letter-spacing: 2rpx; animation: reveal 200ms 120ms ease both; }
@@ -12,3 +12,4 @@ page { background: var(--background-primary); }
 @keyframes reveal { from { opacity: 0; transform: translateY(12rpx); } to { opacity: 1; transform: translateY(0); } }
 @keyframes breathe { 0%,100% { opacity: .35; } 50% { opacity: .85; } }
 @media (prefers-reduced-motion: reduce) { .brand-wrap, .splash-bottom, .loading-copy { animation: none; } }
+.splash { background-color:#FBF8F0; background-image:radial-gradient(rgba(70,91,72,.06) .8rpx,transparent .9rpx),linear-gradient(155deg,#FFFDF8,#F2F7EC); background-size:14rpx 14rpx,100% 100%; }.brand-wrap { padding:64rpx 76rpx; border:1rpx dashed #B8C8AF; border-radius:8rpx; background:rgba(255,253,247,.86); box-shadow:0 8rpx 0 rgba(77,91,74,.06); transform:rotate(-.3deg); }.brand { color:#31583E; font-family:var(--font-display); }.cn { color:#718371; font-family:var(--font-hand); }.brand-dot { background:#D69D7E; }.hairline { background:#7E9F7A; }

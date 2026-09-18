@@ -5,10 +5,10 @@
   <view class="preview-copy">
     <text wx:if="{{moment.image || moment.voicePath}}" class="preview-excerpt">{{moment.content || (moment.voicePath ? '留住这一刻的声音' : '此刻的画面')}}</text>
     <text class="preview-date">{{moment.dateLabel}} · {{moment.canEdit ? '我' : moment.creator.nickname}}</text>
-    <view wx:if="{{moment.participantCount > 1}}" class="shared-note"><view class="shared-rings"><view></view><view></view></view><text>{{moment.participantCount}} 人共同记录</text></view>
+    <view wx:if="{{moment.participantCount > 1}}" class="shared-note"><view class="shared-avatars"><image wx:for="{{moment.participantPreview}}" wx:key="id" wx:for-item="p" wx:if="{{p.avatar}}" src="{{p.avatar}}" mode="aspectFill"/><view wx:for="{{moment.participantPreview}}" wx:key="id" wx:for-item="p" wx:if="{{!p.avatar}}" class="shared-avatar-fallback">{{p.nickname ? p.nickname[0] : "?"}}</view></view><text>{{moment.participantCount}} 人共同记录</text></view>
   </view>
 </button>
-<button wx:elif="{{layout === 'album'}}" class="ui-button album-entry {{albumPhotos.length ? 'has-photos' : 'words-only'}}" bindtap="open" hover-class="card-hover" aria-label="打开 {{moment.creator.nickname}} 在 {{moment.dateLabel}} 的 Moment">
+<button wx:elif="{{layout === 'album'}}" class="ui-button album-entry {{albumPhotos.length ? 'has-photos' : 'words-only'}} {{moment.tone || ''}} {{moment.participantCount > 1 ? 'is-shared' : 'not-shared'}}" bindtap="open" hover-class="card-hover" aria-label="打开 {{moment.creator.nickname}} 在 {{moment.dateLabel}} 的 Moment"><image class="stamp-frame" src="/assets/images/stamp-frame-cream.svg" mode="scaleToFill"/><view wx:if="{{moment.pinned}}" class="pin-badge">📌</view>
   <view wx:if="{{albumPhotos.length}}" class="album-photos album-photos-{{albumPhotos.length}}">
     <view wx:for="{{albumPhotos}}" wx:key="id" class="album-photo"><image wx:if="{{!albumFailed[index]}}" src="{{item.displayPath || item.path}}" mode="aspectFill" lazy-load data-index="{{index}}" binderror="albumImageError"/><image wx:else class="album-photo-fallback" src="/assets/icons/image.svg"/></view>
   </view>
@@ -34,6 +34,6 @@
   <view wx:if="{{(showChapter && moment.chapterId) || moment.participantCount > 1}}" class="feed-footer">
     <button wx:if="{{showChapter && moment.chapterId && moment.chapterTitle !== '受邀 Moment'}}" class="ui-button feed-chapter" catchtap="openChapter" aria-label="打开 Chapter：{{moment.chapterTitle}}"><image src="/assets/icons/book-open.svg"/><text>{{moment.chapterTitle}}</text></button>
     <text wx:elif="{{showChapter && moment.chapterId}}" class="invited-note">受邀的共同 Moment</text>
-    <view wx:if="{{moment.participantCount > 1}}" class="shared-note"><view class="shared-rings"><view></view><view></view></view><text>{{moment.participantCount}} 人共同记录</text></view>
+    <view wx:if="{{moment.participantCount > 1}}" class="shared-note"><view class="shared-avatars"><image wx:for="{{moment.participantPreview}}" wx:key="id" wx:for-item="p" wx:if="{{p.avatar}}" src="{{p.avatar}}" mode="aspectFill"/><view wx:for="{{moment.participantPreview}}" wx:key="id" wx:for-item="p" wx:if="{{!p.avatar}}" class="shared-avatar-fallback">{{p.nickname ? p.nickname[0] : "?"}}</view></view><text>{{moment.participantCount}} 人共同记录</text></view>
   </view>
 </view>

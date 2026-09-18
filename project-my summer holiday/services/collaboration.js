@@ -12,7 +12,7 @@ const uploaded = new Map()
 const errors = {
  CLOUD_OFFLINE: '暂时无法连接云端，内容已保存在本机',
  CLOUD_DISABLED: '云开发尚未启用，请检查小程序的云环境配置',
- DATABASE_COLLECTION_NOT_EXIST: '云数据库集合尚未建齐，请按项目说明创建 5 个 ongoing_* 集合',
+ DATABASE_COLLECTION_NOT_EXIST: '云数据库集合尚未建齐，请按项目说明创建 6 个 ongoing_* 集合',
  DATABASE_PERMISSION_DENIED: '云数据库访问被拒绝，请检查环境和云函数权限',
  FUNCTION_NOT_FOUND: '当前云环境没有 collaboration 云函数，请确认部署环境',
  CLOUD_TIMEOUT: '云端响应超时，内容已保留，稍后会继续同步',
@@ -28,7 +28,7 @@ const errors = {
  CONFLICT: '其他设备修改了同一内容，请在“我的 → 同步与数据”选择保留的版本',
  DELETED: '这条内容已在另一台设备删除', UNKNOWN_ACTION: '云端 collaboration 需要重新部署',
  CHAPTER_NOT_FOUND: '这个 Chapter 不存在或已被删除',
- MOMENT_NOT_FOUND: '这个 Moment 不存在或已被删除',
+ MOMENT_NOT_FOUND: '这个 Moment 不存在或已被删除', PERSPECTIVE_NOT_FOUND: '这段视角已不存在，暂时无法评论',
  SHARED_MOVE_FORBIDDEN: '共同记录暂时不能更换 Chapter，以免改变他人的访问范围',
  UNAUTHENTICATED: '没有取得微信身份，请从小程序重新进入',
  EMPTY_CONTENT: '内容为空，暂时无法同步', INVALID_STATUS: '记录状态无效，请重新保存',
@@ -116,7 +116,7 @@ function flush() {
  flushing = (async () => {
   if (!await bootstrap()) return false
   const actor = store.getCurrentUser().id
-  const priority = { ensureUser: -1, saveChapter: 0, saveMoment: 1, saveContribution: 2 }
+  const priority = { ensureUser: -1, saveChapter: 0, saveMoment: 1, saveContribution: 2, saveComment: 3 }
   const attempted = new Set()
   let firstFailure = null
   let stop = false
@@ -128,11 +128,12 @@ function flush() {
     if (store.getCurrentUser().id !== actor) return false
     attempted.add(op.revision)
     if (!store.getPendingOps().some(current => current.revision === op.revision)) continue
-    const field = op.action === 'saveChapter' ? 'chapter' : op.action === 'saveMoment' ? 'moment' : op.action === 'saveContribution' ? 'contribution' : ''
+    const field = op.action === 'saveChapter' ? 'chapter' : op.action === 'saveMoment' ? 'moment' : op.action === 'saveContribution' ? 'contribution' : op.action === 'saveComment' ? 'comment' : ''
     const item = field && op.data[field]
     const pending = store.getPendingOps()
     if (item && field !== 'chapter' && pending.some(parent => parent.action === 'saveChapter' && parent.id === item.chapterId)) continue
     if (field === 'contribution' && pending.some(parent => parent.action === 'saveMoment' && parent.id === item.momentId)) continue
+    if (field === 'comment' && pending.some(parent => parent.action === 'saveContribution' && parent.id === item.perspectiveId)) continue
     try {
      const data = Object.assign({}, op.data, { operationId: op.revision })
      if (field) data[field] = await prepare(item)
@@ -270,10 +271,10 @@ async function readConflict(key) {
  await ready()
  const op = store.getPendingOps().find(item => item.key === key)
  if (!op) throw new Error('这项内容已更新，请重新检查')
- const field = op.action === 'saveChapter' ? 'chapter' : op.action === 'saveMoment' ? 'moment' : 'contribution'
+ const field = op.action === 'saveChapter' ? 'chapter' : op.action === 'saveMoment' ? 'moment' : op.action === 'saveContribution' ? 'contribution' : 'comment'
  const local = op.data[field]
  const snapshot = await call(field === 'chapter' ? 'getChapter' : 'getMoment', field === 'chapter' ? { chapterId: op.id } : { momentId: field === 'moment' ? op.id : local.momentId })
- const remote = field === 'chapter' ? snapshot.chapter : field === 'moment' ? snapshot.moment : snapshot.contributions.find(item => item.id === op.id)
+ const remote = field === 'chapter' ? snapshot.chapter : field === 'moment' ? snapshot.moment : field === 'contribution' ? snapshot.contributions.find(item => item.id === op.id) : snapshot.comments.find(item => item.id === op.id)
  if (!remote) throw new Error('远端内容已删除，本机版本仍被保留')
  return { op, local, remote, snapshot }
 }

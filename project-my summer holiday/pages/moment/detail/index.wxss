@@ -96,3 +96,20 @@ page { background:var(--surface); }
 @keyframes receipt-arrive { from { opacity:0; transform:translateY(-10rpx); } to { opacity:1; transform:translateY(0); } }
 @keyframes receipt-check { from { opacity:0; transform:scale(.8); } to { opacity:1; transform:scale(1); } }
 @media (prefers-reduced-motion:reduce) { .saved-receipt,.receipt-check,.moment-gallery,.detail { animation:none; } }
+
+.moment-page { background:var(--bg); }
+.moment-gallery { margin:0 24rpx; border:1rpx solid rgba(70,84,73,.08); border-radius:0 0 28rpx 28rpx; background:#EFEFE9; box-shadow:0 10rpx 24rpx rgba(61,72,65,.06); }
+.detail-swiper { height:590rpx; }.detail { padding-top:36rpx; }
+.moment-kicker { color:var(--primary-deep); letter-spacing:2rpx; }.event-title { font-family:var(--font-display); font-size:39rpx; letter-spacing:-.8rpx; }
+.event-meta { margin-top:18rpx; }.detail-actions { margin-top:24rpx; padding-bottom:18rpx; border-bottom:1rpx solid var(--line); }
+.together-banner { margin:18rpx 32rpx 0; padding:22rpx 24rpx; border:1rpx solid rgba(114,108,133,.1); border-radius:22rpx; background:#F0EFF3; }
+.perspectives-section { margin-top:36rpx; padding-top:36rpx; }.perspectives-heading .section-title { font-family:var(--font-display); font-size:38rpx; }
+.perspective { position:relative; margin:22rpx 0; padding:26rpx; border:1rpx solid rgba(75,88,77,.09); border-radius:24rpx; background:var(--surface); box-shadow:0 6rpx 18rpx rgba(61,71,64,.035); }.perspective:nth-child(odd) { background:#FCF8F2; }
+.perspective-content { padding:18rpx 0 0; margin-top:18rpx; border-left:0; border-top:1rpx solid var(--line); }
+.my-perspective-card { border:1rpx solid rgba(72,102,83,.12); border-radius:24rpx; background:#EEF4EA; }.invite-perspective-row.invite-perspective-row { margin-top:18rpx; padding:26rpx 4rpx; }
+.chapter-link.chapter-link { border:1rpx solid rgba(72,102,83,.1); border-radius:22rpx; background:#EEF4EA; }
+.moment-page { background-color:#FBF8F0; background-image:radial-gradient(rgba(70,91,72,.045) .7rpx,transparent .8rpx); background-size:14rpx 14rpx; }.moment-gallery { margin:16rpx 24rpx 0; padding:10rpx 10rpx 32rpx; border:1rpx solid #E0D7C8; border-radius:5rpx; background:#FFFDF8; box-shadow:0 9rpx 20rpx rgba(72,66,54,.10); transform:rotate(.25deg); }.detail-swiper { border-radius:2rpx; overflow:hidden; }.photo-counter { border-radius:5rpx; }
+.event-title { color:#304D39; font-family:var(--font-hand); font-size:42rpx; letter-spacing:.5rpx; }.moment-kicker { color:#739072; font-family:var(--font-display); }.event-meta { padding-bottom:22rpx; border-bottom:1rpx dashed #CEC8B9; }
+.saved-receipt { border:1rpx dashed #ACC2A4; border-radius:8rpx; background:#EDF5E5; }.echo-context { border:1rpx dashed #C7C3B4; border-radius:7rpx; background:#FFF8E8; }.together-banner { border:1rpx dashed #C8BDD0; border-radius:8rpx; background:#F4EFF5; transform:rotate(-.2deg); }
+.perspectives-heading .section-title { font-family:var(--font-hand); }.my-perspective-card { border:1rpx dashed #B7CBAF; border-radius:8rpx; background:#EFF7E9; }.chapter-link.chapter-link { border:1rpx dashed #B8CBAF; border-radius:8rpx; background:#F0F7EA; }
+.perspectives-section perspective-card+perspective-card { display:block; margin-top:18rpx; }

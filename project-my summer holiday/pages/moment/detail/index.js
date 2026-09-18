@@ -33,7 +33,7 @@ Page({
   const moment = store.getMoment(this.data.id)
   const echo = this.fromEcho ? store.getEchoMoment() : null
   this.setData({
-   pendingHere: !!moment && (moment.syncState === 'pending' || moment.contributions.some(item => item.syncState === 'pending')),
+   pendingHere: !!moment && (moment.syncState === 'pending' || moment.contributions.some(item => item.syncState === 'pending' || item.comments.some(comment => comment.syncState === 'pending'))),
    syncStatus: cloud.getSyncStatus ? cloud.getSyncStatus() : {}, moment, perspectives: moment ? store.getPerspectives(moment.id).filter(item => !item.isOriginal) : [],
    headline: moment ? moment.media.length ? '这一刻的画面' : moment.voicePath ? '把声音留给以后' : '记下这一刻' : '',
    imageIndex: moment ? Math.min(this.data.imageIndex, Math.max(0, moment.media.length - 1)) : 0,
@@ -48,9 +48,11 @@ Page({
  preview(e) { const urls = this.data.moment.media.filter(x => x.type === 'image').map(x => x.displayPath || x.path); if (urls.length) wx.previewImage({ urls, current: e.currentTarget.dataset.src }) },
  onPullDownRefresh() { this.refreshMoment().finally(() => wx.stopPullDownRefresh()) },
  perspectiveMore(e) {
+  const id = (e.detail && e.detail.id) || e.currentTarget.dataset.id
   wx.showActionSheet({ itemList: ['编辑我的视角', '删除我的视角'], success: result => {
-   if (result.tapIndex === 0) this.edit(e)
-   else this.deletePerspective(e)
+   const event = { currentTarget: { dataset: { id } } }
+   if (result.tapIndex === 0) this.edit(event)
+   else this.deletePerspective(event)
   } })
  },
  edit(e) { const original = e.currentTarget.dataset.original; const id = e.currentTarget.dataset.id; wx.navigateTo({ url: original ? '/pages/moment/editor/index?id=' + this.data.id : '/pages/moment/editor/index?momentId=' + this.data.id + '&contributionId=' + id }) },
@@ -106,6 +108,15 @@ Page({
   } })
  },
  deletePerspective(e) { const id = e.currentTarget.dataset.id; wx.showModal({ title: '删除自己的这段记录？', confirmText: '删除', success: r => { if (r.confirm) { if (store.deleteContribution(id)) { cloud.flush(); this.load() } else wx.showToast({ title: store.getLastError() || '无法删除', icon: 'none' }) } } }) },
+ submitComment(e) {
+  const saved = store.saveComment({ momentId: this.data.id, perspectiveId: e.detail.perspectiveId, content: e.detail.content })
+  if (!saved) return wx.showToast({ title: store.getLastError() || '评论未能保存', icon: 'none' })
+  this.load(); cloud.flush()
+ },
+ deleteComment(e) {
+  const id = e.detail.id
+  wx.showModal({ title: '删除这条评论？', confirmText: '删除', success: result => { if (result.confirm) { if (store.deleteComment(id)) { this.load(); cloud.flush() } else wx.showToast({ title: store.getLastError() || '无法删除评论', icon: 'none' }) } } })
+ },
  goBack() { wx.navigateBack({ fail: () => wx.redirectTo({ url: '/pages/index/index' }) }) },
  goHome() { wx.reLaunch({ url: '/pages/index/index' }) },
  onShareAppMessage() { return this.data.invite ? { title: '在你的记忆里，这一刻是什么样的？', path: '/pages/chapter/join/index?scope=moment&code=' + this.data.invite.code } : { title: 'ongoing_', path: '/pages/index/index' } }

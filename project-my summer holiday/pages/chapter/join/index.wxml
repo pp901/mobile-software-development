@@ -1,7 +1,7 @@
 <view class="page-shell safe-bottom">
  <navigation-bar title="共同记录"/>
  <view class="invitation page-pad">
-  <image class="invite-logo" src="/assets/images/logo.webp"/>
+  <image class="invite-logo" src="{{avatar}}" wx:if="{{avatar}}"/><image class="invite-logo" src="/assets/images/logo.webp" wx:else/>
   <view wx:if="{{!invitation}}" class="join-entry">
    <text class="invitation-title">一起，把生活记下来。</text>
    <text class="invitation-scope">粘贴朋友发来的邀请信息，就能找到同一段生活或同一个 Moment。</text>

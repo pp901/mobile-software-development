@@ -17,7 +17,7 @@ Page({
     const chapters = store.getChapters()
     const visibleChapters = this.data.active === 'all' ? chapters : chapters.filter(chapter =>
       this.data.active === 'ONGOING' ? chapter.status === 'ONGOING' : chapter.status !== 'ONGOING')
-    const all = store.getMoments().sort((a, b) =>
+    const all = store.getMoments().filter(m => m.canEdit || m.participantCount > 1).sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) ||
       String(b.localDateKey || '').localeCompare(String(a.localDateKey || '')) ||
       date.timestamp(b.createdAt) - date.timestamp(a.createdAt))
     const months = []
@@ -35,12 +35,14 @@ Page({
         group.days.push(day)
       }
       // The album needs only a short preview; full content and all photos stay in Detail.
-      day.moments.push({
-        id: moment.id, content: moment.content.slice(0, 180), media: moment.media.slice(0, 4),
-        image: moment.image, imageCount: moment.imageCount, dateLabel: moment.dateLabel,
-        voicePath: moment.voicePath, voiceDuration: moment.voiceDuration, location: moment.location,
-        creator: moment.creator, canEdit: moment.canEdit, participantCount: moment.participantCount
-      })
+      const tones = ['tone-sage','tone-lilac','tone-apricot','tone-blue','tone-blush'];
+      const toneIndex = (day.moments ? day.moments.length : 0) % 5;
+      const packed = { id: moment.id, content: moment.content.slice(0, 180), media: moment.media.slice(0, 4), image: moment.image, imageCount: moment.imageCount, dateLabel: moment.dateLabel, voicePath: moment.voicePath, voiceDuration: moment.voiceDuration, location: moment.location, creator: moment.creator, canEdit: moment.canEdit, participantCount: moment.participantCount, tone: tones[toneIndex] };
+      day.moments.push(packed);
+      if (!day.mine) day.mine = [];
+      if (!day.shared) day.shared = [];
+      const isMineOnly = moment.canEdit && moment.participantCount <= 1;
+      if (isMineOnly) day.mine.push(packed); else day.shared.push(packed);
     })
     this.setData({
       chapters: visibleChapters, months, totalMoments: all.length,

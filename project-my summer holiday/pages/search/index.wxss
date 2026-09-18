@@ -14,3 +14,6 @@
 .place-result text:last-child { overflow: hidden; color: var(--text-primary); font-size: var(--type-caption); text-overflow: ellipsis; white-space: nowrap; }
 .result-list { border-top: 1rpx solid var(--border-subtle); }
 .result-list chapter-card { display: block; margin-bottom: var(--space-4); }
+
+.search-wrap { padding-top:44rpx; }.search-box { height:104rpx; padding:0 24rpx; border:1rpx solid rgba(69,83,72,.1); border-radius:20rpx; background:var(--surface); box-shadow:0 8rpx 22rpx rgba(62,73,65,.035); }.search-box input { height:104rpx; font-size:28rpx; }.place-results,.result-list { border-top:0; }.place-result { min-height:104rpx; }.place-result text:first-child { color:var(--primary-deep); }
+.search-box { border:1rpx dashed #B9C8B0; border-radius:8rpx; background:#FFFDF8; box-shadow:0 6rpx 14rpx rgba(72,67,57,.05); }.search-box input { color:#344E3A; font-family:var(--font-hand); font-size:30rpx; }.suggestions>.eyebrow { font-family:var(--font-display); letter-spacing:2rpx; }.place-result { margin-top:10rpx; padding:18rpx; border:1rpx solid #E6DECF; border-radius:7rpx; background:#FFFDF8; }

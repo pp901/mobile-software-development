@@ -1,1 +1,1 @@
-{"usingComponents": {"navigation-bar": "/components/navigation-bar/navigation-bar", "moment-content": "/components/moment-content/moment-content"}, "enablePullDownRefresh": true}
+{"usingComponents": {"navigation-bar": "/components/navigation-bar/navigation-bar", "moment-content": "/components/moment-content/moment-content", "perspective-card": "/components/perspective-card/perspective-card"}, "enablePullDownRefresh": true}

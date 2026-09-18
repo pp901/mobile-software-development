@@ -19,7 +19,7 @@ Page({
       echo, echoImageFailed: this.data.echo && echo && this.data.echo.id === echo.id ? this.data.echoImageFailed : false,
       todayDay: String(now.getDate()).padStart(2, '0'), todayMonth: now.getFullYear() + '年 ' + (now.getMonth() + 1) + '月',
       weekday: '星期' + '日一二三四五六'[now.getDay()], todayCount: stats.todayMomentCount,
-      draft: store.getEditorDraft(store.getCurrentUser().id + ':new')
+      draft: store.getEditorDraft(store.getCurrentUser().id + ':new'), userAvatar: (store.getCurrentUser() || {}).avatar || ''
     })
   },
   onPullDownRefresh() { cloud.refreshAll().finally(() => { this.load(); wx.stopPullDownRefresh() }) },
@@ -34,5 +34,7 @@ Page({
   openSync() { wx.redirectTo({ url: '/pages/profile/index?panel=sync' }) },
   captureImageError(e) { this.setData({ ['capturePhotos[' + e.currentTarget.dataset.index + '].image']: '' }) },
   openSearch() { wx.navigateTo({ url: '/pages/search/index' }) },
-  openLife() { wx.redirectTo({ url: '/pages/history/index' }) }
+  openLife() { wx.redirectTo({ url: '/pages/history/index' }) },
+  openInvite() { wx.navigateTo({ url: '/pages/chapter/join/index' }) },
+  openJoin() { wx.navigateTo({ url: '/pages/chapter/join/index' }) }
 })

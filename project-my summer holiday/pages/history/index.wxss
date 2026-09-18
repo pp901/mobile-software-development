@@ -41,3 +41,67 @@
 .library-empty .empty-copy { font-size:26rpx; }
 .empty-copy>text { display:block; }
 .library-empty .primary-button,.library-empty .secondary-button { width:auto; padding-left:36rpx; padding-right:36rpx; margin-top:16rpx; font-size:27rpx; }
+
+.library { padding-top:36rpx; }
+.library-title { font-family:var(--font-display); font-size:54rpx; letter-spacing:-2rpx; }
+.library-subtitle { margin-top:6rpx; }
+.join-shared.join-shared { width:120rpx; min-height:120rpx; border-radius:20rpx; background:var(--primary-deep); border:2rpx solid rgba(255,255,255,.3); box-shadow:0 8rpx 20rpx rgba(69,110,80,.25); font-size:22rpx; font-weight:500; color:#fff; gap:6rpx; flex-direction:column; align-items:center; justify-content:center; }
+.join-shared>image { width:36rpx; height:36rpx; }
+.reading-tabs { gap:32rpx; border-bottom:1rpx solid rgba(47,70,55,.07); }
+.reading-tab.reading-tab { min-height:94rpx; font-size:27rpx; }
+.month-heading { margin-top:42rpx; color:var(--text-muted); font-size:21rpx; letter-spacing:2rpx; font-weight:500; }
+.month-heading>view { height:1rpx; background:rgba(47,70,55,.06); }
+.album-day { gap:18rpx; margin-top:32rpx; }
+.album-date>text:first-child { font-family:var(--font-display); font-size:52rpx; font-weight:600; letter-spacing:-2rpx; }
+.library-toolbar { margin:26rpx 0 20rpx; padding:8rpx 0; }
+.chapter-filters { padding:4rpx; border-radius:var(--radius-full); background:var(--surface-soft); }
+.chapter-filter.chapter-filter { min-height:64rpx; border-radius:var(--radius-full); padding:8rpx 18rpx; }
+.chapter-filter.selected { background:var(--surface); box-shadow:0 4rpx 10rpx rgba(57,70,60,.05); }
+.new-chapter.new-chapter { min-height:72rpx; padding:0 16rpx; border-radius:var(--radius-full); background:var(--primary-deep); color:#fff; }
+.library-item { margin-bottom:28rpx; }
+
+/* Keep the library as a collection of printed pieces rather than coloured panels. */
+.join-shared.join-shared { position:relative; width:auto; min-height:112rpx; padding:16rpx 28rpx; overflow:visible; border:1rpx solid #DED6C8; border-radius:6rpx; background:#FFFDF8; color:var(--primary-deep); box-shadow:0 7rpx 14rpx rgba(76,69,54,.07); white-space:nowrap; }
+.join-shared.join-shared::before { content:''; position:absolute; top:-9rpx; right:13rpx; width:54rpx; height:16rpx; background:#DCE5CF; transform:rotate(8deg); }
+.join-shared>image { padding:8rpx; border-radius:50%; background:#EDF1E8; }
+.new-chapter.new-chapter { min-height:68rpx; border:1rpx dashed #BEB29D; border-radius:4rpx; background:#FFFDF8; color:var(--primary-deep); box-shadow:0 4rpx 8rpx rgba(76,69,54,.04); }
+.chapter-filters { background:#F3F0E8; }.chapter-filter.selected { background:#FFFDF8; box-shadow:0 2rpx 6rpx rgba(76,69,54,.05); }
+.library-item { --chapter-surface:#E8EFE0; }
+.chapter-tone-1 { --chapter-surface:#ECE8F0; }
+.chapter-tone-2 { --chapter-surface:#F5E8D5; }
+
+.join-shared.join-shared { border:0; border-radius:0; background-color:#E8F2D9; box-shadow:0 8rpx 16rpx rgba(91,113,78,.13); }
+.join-shared.join-shared::before { background:#FFF1D5; }
+.join-shared>.stamp-frame { position:absolute; inset:0; z-index:0; width:100%; height:100%; padding:0; border-radius:0; background:transparent; pointer-events:none; }.join-shared>text,.join-shared>image:not(.stamp-frame) { position:relative; z-index:1; }
+
+.library-title { color:#2F573E; font-size:58rpx; }.library-subtitle { color:#718174; font-size:26rpx; }
+.reading-tab.selected { color:#396447; }.tab-count { color:#91A08F; }.selected .tab-count { color:#78A078; }
+.month-heading { color:#829281; letter-spacing:2.5rpx; }.album-date { color:#365B43; }.album-date>text+text { color:#849184; }
+.library { background:transparent; }.library-title { font-family:var(--font-hand); letter-spacing:1rpx; }.reading-tabs { border-bottom:1rpx dashed #CFCABC; }.reading-indicator { border-radius:0; }.selected .reading-indicator { height:6rpx; background:#789A76; transform:rotate(-1deg); }
+.month-heading>view { background:repeating-linear-gradient(90deg,#CDD4C6 0,#CDD4C6 12rpx,transparent 12rpx,transparent 20rpx); }.album-date>text:first-child { font-family:var(--font-display); }.reading-end { font-family:var(--font-hand); }
+.chapter-filters { border:1rpx dashed #D7D0C1; border-radius:8rpx; background:#F5F1E8; }.chapter-filter.chapter-filter { border-radius:5rpx; }.chapter-filter.selected { background:#FFFDF5; }.new-chapter.new-chapter { border-radius:7rpx; background:#FFF9E8; }
+
+/* Rotate moment card colors */
+.album-entries moment-card:nth-child(5n+1) .album-entry { background-color:#E8EFE0; }
+.album-entries moment-card:nth-child(5n+1) .album-entry::before { background:#C8D8BE; }
+.album-entries moment-card:nth-child(5n+2) .album-entry { background-color:#ECE8F0; }
+.album-entries moment-card:nth-child(5n+2) .album-entry::before { background:#D0C8DC; }
+.album-entries moment-card:nth-child(5n+3) .album-entry { background-color:#F5E8D5; }
+.album-entries moment-card:nth-child(5n+3) .album-entry::before { background:#E4CCA5; }
+.album-entries moment-card:nth-child(5n+4) .album-entry { background-color:#E2ECEE; }
+.album-entries moment-card:nth-child(5n+4) .album-entry::before { background:#B8D0D5; }
+.album-entries moment-card:nth-child(5n+5) .album-entry { background-color:#F5E4DC; }
+.album-entries moment-card:nth-child(5n+5) .album-entry::before { background:#E4BFAE; }
+/* Shared moments: dashed border */
+.album-entries .album-entry.is-shared { border:2rpx dashed #6B8A6E; }
+.album-entries .album-entry.is-shared::after { border:0; }
+/* Colorful moment cards via CSS variable */
+.album-entries > moment-card:nth-child(5n+1) { --moment-surface:#E8EFE0; }
+.album-entries > moment-card:nth-child(5n+2) { --moment-surface:#ECE8F0; }
+.album-entries > moment-card:nth-child(5n+3) { --moment-surface:#F5E8D5; }
+.album-entries > moment-card:nth-child(5n+4) { --moment-surface:#E2ECEE; }
+.album-entries > moment-card:nth-child(5n+5) { --moment-surface:#F5E4DC; }
+/* Shared divider */
+.shared-divider { display:flex; align-items:center; gap:16rpx; margin:20rpx 0 16rpx; }
+.shared-divider::before, .shared-divider::after { content:''; flex:1; border-top:2rpx dashed rgba(107,138,110,.4); }
+.shared-divider text { font-size:22rpx; color:#6B8A6E; white-space:nowrap; letter-spacing:2rpx; }

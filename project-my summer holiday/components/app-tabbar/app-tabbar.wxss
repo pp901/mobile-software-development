@@ -1,25 +1,28 @@
 .navigation-dock {
   position:fixed; z-index:80; left:32rpx; right:32rpx;
-  bottom:calc(20rpx + env(safe-area-inset-bottom));
+  bottom:calc(22rpx + env(safe-area-inset-bottom));
   display:flex; align-items:center; justify-content:center; pointer-events:none;
 }
 .nav-pill {
-  display:flex; width:504rpx; max-width:100%; min-width:0; padding:8rpx;
-  border:1rpx solid rgba(255,255,255,.8); border-radius:var(--radius-full);
+  display:flex; width:520rpx; max-width:100%; min-width:0; height:104rpx; box-sizing:border-box; overflow:hidden; padding:8rpx;
+  border:1rpx solid rgba(89,103,88,.12); border-radius:var(--radius-full);
   background:var(--material); box-shadow:var(--elevation-material);
   -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px); pointer-events:auto;
 }
 .nav-item.nav-item {
-  flex:1; width:0; min-width:0; min-height:max(88rpx,44px); padding:10rpx 8rpx;
+  flex:1; width:0; min-width:0; height:88rpx; min-height:44px; overflow:hidden; padding:10rpx 8rpx;
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2rpx;
   color:var(--text-secondary); font-size:21rpx; line-height:1.4; border-radius:var(--radius-full);
 }
-.nav-item>image { width:34rpx; height:34rpx; }
-.nav-item.selected { color:var(--primary-deep); background:var(--primary-pale); font-weight:600; }
+.nav-icon { display:block; flex:none; width:34rpx !important; height:34rpx !important; max-width:34rpx; max-height:34rpx; }
+.nav-item.selected { color:var(--primary-deep); background:#E8F0E4; font-weight:600; }
 .dock-create.dock-create {
   position:absolute; left:calc(50% - 22px); bottom:calc(100% + 12rpx); width:44px; height:44px; min-width:44px; min-height:44px;
-  border-radius:50%; background:var(--primary-deep); color:var(--surface); transform:translateX(0);
+  border:4rpx solid var(--bg); border-radius:50%; background:var(--primary-deep); color:var(--surface); transform:translateX(0);
   box-shadow:0 8rpx 24rpx rgba(55,105,92,.18); pointer-events:auto;
 }
 .create-stroke { position:absolute; left:calc(50% - 18rpx); top:calc(50% - 2rpx); width:36rpx; height:4rpx; border-radius:4rpx; background:currentColor; }
 .create-stroke.vertical { transform:rotate(90deg); }
+.nav-pill { height:108rpx; padding:9rpx; overflow:hidden; border:1rpx solid #DBD5C5; border-radius:26rpx; background:#FFFEF9; box-shadow:0 9rpx 0 rgba(91,104,88,.06),0 18rpx 34rpx rgba(73,86,72,.12); }
+.nav-item.nav-item { height:88rpx; border-radius:18rpx; color:#7C897D; font-size:20rpx; }.nav-item.selected { color:#315E43; background:#EAF3E3; box-shadow:inset 0 -3rpx 0 #B5CDAE; }
+.nav-icon { width:32rpx !important; height:32rpx !important; max-width:32rpx; max-height:32rpx; }.dock-create.dock-create { border:6rpx solid #FFFDF7; background:#426F51; box-shadow:0 7rpx 0 rgba(47,82,58,.12),0 12rpx 24rpx rgba(55,94,65,.18); }
