@@ -50,6 +50,8 @@ function validateMarkup(file) {
     assert.doesNotThrow(() => new Function(`return (${match[1]})`), `WXML 表达式语法异常：${path.relative(root, file)} -> ${match[1]}`)
   }
 
+  for (const tag of tags.filter(tag => /^<button\b/.test(tag))) assert.match(tag, /class="ui-button(?: |")/, `原生按钮缺少样式重置：${path.relative(root, file)}`)
+
   const scriptFile = file.replace(/\.wxml$/, '.js')
   if (fs.existsSync(scriptFile)) {
     const script = fs.readFileSync(scriptFile, 'utf8')

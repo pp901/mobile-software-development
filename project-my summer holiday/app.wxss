@@ -17,7 +17,6 @@ page {
   --motion-fast:150ms; --motion-content:200ms; --motion-sheet:200ms; --ease-out:cubic-bezier(.2,.7,.2,1);
   min-height:100%; background:var(--bg); color:var(--text); font:30rpx/1.6 var(--font-ui); -webkit-font-smoothing:antialiased;
 }
-view,text,image,button[class],input,textarea,scroll-view,swiper,swiper-item,picker { box-sizing:border-box; }
 button[class] { width:auto; max-width:100%; margin:0; padding:0; border:0; background:transparent; color:inherit; font:inherit; line-height:inherit; }
 button[class]::after { border:0; }
 button[disabled] { opacity:.45; }

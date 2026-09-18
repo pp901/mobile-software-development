@@ -4,18 +4,18 @@
 
 ## 1. 产品定位
 
-`ongoing_` 是一个假期记录小程序。用户用 Chapter 表示一段假期，用 Moment 持续记录照片、文字、声音和地点。Chapter 最终通过“瞬间、日历、回望”三个维度组织这段经历。
+`ongoing_` 是一个生活记录小程序。Moment 是此刻，Chapter 是一段生活，Perspective 是同一经历的不同视角，Memory Echo 是时间带来的回报。今天很容易留下一刻，以后能重新看见自己的生活。
 
-产品优先保持记录低成本、内容有归属、共同记录有边界、回望有上下文。V1 不引入与假期记录无关的一级概念。
+产品优先保持记录低成本、归类可选、共同记录有边界、回望有上下文。V1 不引入与生活记录无关的一级概念。
 
 ## 2. 核心用户流程
 
-1. 用户创建或进入一个正在发生的 Chapter。
-2. 首页“当下”展示当前 Chapter 与最近 Moment。
-3. 用户通过底部中央 `+` 进入全局 Quick Capture，选择照片、文字或语音并创建 Moment。
-4. 用户在 Moment Detail 查看、编辑或补完记录；其他 Chapter 成员可以通过 Contribution 补充自己记得的内容。
-5. 用户在 Chapter Detail 中从瞬间、日历和回望三个维度浏览整段假期。
-6. Chapter 结束时生成 Review，并可输出 Poster；过去的 Chapter 在 Gallery / 回望中继续可访问。
+1. 首页“当下”展示今日状态与「记录此刻」，最近 Moment 默认来自全部可见记录。
+2. 用户进入 Composer 直接写文字、加入照片或声音；Chapter 可选，从 Chapter 内记录才预选归属。
+3. 新建发布后进入 Moment Detail，显示留存完成反馈与累计记录日数；编辑仍普通返回。
+4. 在同一 Moment 中阅读彼此的 Perspective；已有自己的视角时优先编辑，不重复新建同义视角。
+5. Memory Echo 按真实时间关系带回旧 Moment；没有足够旧内容时隐藏。
+6. 用户通过 Chapter 组织一段生活，通过月度回望阅读全部 Moment，通过个人档案看到长期积累；原有 Calendar、Review、Poster 继续可用。
 
 ## 3. V1 功能范围
 
@@ -63,17 +63,17 @@ Goal 退出 V1 主流程，不再作为 Chapter 的一级模块，新建 Chapter
 
 ## 6. 主要页面职责
 
-- **首页“当下”**：当前 Chapter 与最近 Moment。首页不再另设三个 Quick Capture 入口。
-- **底部中央 `+`**：唯一的全局 Quick Capture 入口，负责选择照片、文字或语音记录。
-- **Moment Editor**：低成本完成一次记录，可稍后补充地点、心情和标签。
-- **Moment Detail**：查看、编辑和完善一条记录，展示 Contribution。
+- **首页“当下”**：今日状态、记录此刻、全部可见的最近 Moment、Memory Echo、紧凑的进行中 Chapter。
+- **首页「记录此刻」**：进入统一 Composer，默认不绑定 Chapter；底部保留当下、章节、回望、我的四个入口。
+- **Moment Editor**：内容优先，日期地点其次，Chapter 归属可选。草稿自动保存。
+- **Moment Detail**：查看、编辑和完善一条记录，展示发布回执与共同 Perspective，允许未共享的独立 Moment 稍后整理到 Chapter。
 - **Chapter Detail**：浏览整段假期，承载瞬间、日历与回望导航。
 - **Calendar**：从时间维度浏览当前 Chapter，在月视图内选择日期并阅读当天 Moment。
 - **Review**：总结 Chapter，管理结语、完整时间线与 Poster。
-- **Gallery / 回望**：浏览正在发生、已成章和已归档的 Chapter。
+- **Gallery / 回望**：按月份阅读全部可见 Moment，包括未归类记录；也可按 Chapter 浏览。
 - **Together / 共同记录**：管理成员、邀请与共同记录关系。
 - **Search**：查找已有 Chapter、Moment、文字、地点和标签。
-- **Profile**：用户资料、设置、个性化、同步状态和隐私入口。
+- **Profile**：生活档案优先，展示真实 Moment、记录日、Chapter、共同 Moment 和开始日期；草稿、同步与数据、隐私、关于位于下方。
 
 不新增其他一级导航。局部页面可保留与当前 Chapter 上下文绑定的操作，但不得建立第二套全局 Quick Capture。
 

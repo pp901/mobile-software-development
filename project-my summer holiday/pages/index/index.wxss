@@ -35,9 +35,32 @@
 .recent-scroll,.chapter-scroll { width:calc(100% + 32rpx); }
 .recent-cards { display:flex; align-items:flex-start; gap:20rpx; padding:0 32rpx 6rpx 0; }
 .recent-card { width:336rpx; flex:none; min-width:0; }
-.recent-empty { display:flex; flex-direction:column; gap:10rpx; padding:32rpx; border-radius:var(--radius-medium); background:#F0F0E5; font-size:28rpx; }
-.recent-empty>text+text { color:var(--text-secondary); font-size:25rpx; }
-.empty-line { width:48rpx; height:3rpx; margin-bottom:12rpx; border-radius:3rpx; background:#BBBDA1; }
+.home-empty-guide { position:relative; display:flex; align-items:center; gap:20rpx; min-height:264rpx; padding:28rpx; overflow:hidden; border-radius:var(--radius-large); text-align:left; }
+.moment-empty-guide { background:#F0F0E5; }
+.chapter-empty-guide { background:#EAF1DD; }
+.empty-guide-art { position:relative; flex:none; width:134rpx; height:154rpx; }
+.empty-guide-copy { position:relative; z-index:1; flex:1; min-width:0; padding-bottom:58rpx; display:flex; flex-direction:column; align-items:flex-start; }
+.empty-guide-kicker { color:var(--primary-deep); font-size:21rpx; letter-spacing:1rpx; }
+.empty-guide-title { display:block; margin-top:5rpx; font-size:29rpx; font-weight:600; line-height:1.4; }
+.empty-guide-description { display:block; margin-top:8rpx; color:var(--text-secondary); font-size:22rpx; line-height:1.65; }
+.empty-guide-action.empty-guide-action { position:absolute; z-index:1; right:28rpx; bottom:25rpx; display:flex; align-items:center; gap:10rpx; min-height:54rpx; padding:0 2rpx; color:var(--primary-deep); font-size:23rpx; font-weight:500; }
+.guide-arrow { font-size:28rpx; line-height:1; }
+.moment-guide-art { margin-top:-2rpx; }
+.moment-sheet { position:absolute; width:100rpx; height:128rpx; border-radius:12rpx; }
+.sheet-back { left:16rpx; top:13rpx; background:#D8D8C8; transform:rotate(-10deg); }
+.sheet-front { left:24rpx; top:7rpx; padding:25rpx 16rpx; background:#FFFDF7; box-shadow:0 8rpx 18rpx rgba(86,99,72,.08); transform:rotate(6deg); }
+.sheet-front>view { height:4rpx; margin-bottom:12rpx; border-radius:4rpx; background:#C6C8B3; }
+.sheet-front>view:nth-child(2) { width:70%; }
+.sheet-front>view:nth-child(3) { width:45%; margin-bottom:0; }
+.moment-spark { position:absolute; right:0; top:0; display:flex; align-items:center; justify-content:center; width:42rpx; height:42rpx; border-radius:50%; background:var(--primary-deep); color:#fff; font-size:27rpx; line-height:1; }
+.chapter-guide-art { margin-top:4rpx; }
+.chapter-book-cover { position:absolute; z-index:2; left:15rpx; top:14rpx; display:flex; flex-direction:column; width:98rpx; height:120rpx; padding:18rpx 14rpx; border-radius:9rpx 14rpx 14rpx 9rpx; background:#B9CFA6; color:#527252; box-shadow:0 8rpx 18rpx rgba(70,102,67,.12); transform:rotate(-7deg); }
+.chapter-book-cover>text { font:500 17rpx/1 var(--font-display); letter-spacing:1rpx; }
+.chapter-book-cover>view { width:42rpx; height:3rpx; margin-top:auto; border-radius:3rpx; background:rgba(67,99,69,.45); }
+.chapter-book-cover>view+view { width:58rpx; margin-top:8rpx; }
+.chapter-book-page { position:absolute; right:13rpx; top:20rpx; width:88rpx; height:112rpx; border-radius:6rpx 12rpx 12rpx 6rpx; background:#FFFDF6; transform:rotate(8deg); }
+.chapter-book-tab { position:absolute; z-index:3; right:10rpx; bottom:14rpx; width:31rpx; height:40rpx; border-radius:4rpx 4rpx 0 0; background:#E7CFA3; transform:rotate(8deg); }
+.empty-section-note { flex:none; color:var(--text-muted); font-size:22rpx; }
 .echo-card.echo-card { position:relative; width:100%; overflow:hidden; margin-top:40rpx; border-radius:32rpx; text-align:left; background:#E8ECD9; }
 .echo-photo { position:absolute; width:100%; height:100%; inset:0; }
 .echo-veil { position:absolute; inset:0; background:linear-gradient(130deg,#E8ECD9,#F1EDDC); }
@@ -75,8 +98,4 @@
 .member-bubble>image { width:100%; height:100%; }
 .palette-1 .member-bubble { border-color:#E9E5EF; }
 .palette-2 .member-bubble { border-color:#F0E6D5; }
-.chapter-empty.chapter-empty { width:100%; display:flex; justify-content:space-between; align-items:center; gap:24rpx; padding:24rpx 0; text-align:left; border-top:1rpx solid var(--line); }
-.chapter-empty view>text { display:block; font-size:27rpx; }
-.chapter-empty view>text+text { margin-top:6rpx; color:var(--text-secondary); font-size:23rpx; }
-.chapter-empty>text { font-size:36rpx; color:var(--primary); }
 .home-colophon { display:block; margin:40rpx 0 8rpx; text-align:center; color:var(--text-muted); font-size:22rpx; letter-spacing:1rpx; }
